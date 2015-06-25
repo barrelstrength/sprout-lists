@@ -6,24 +6,24 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 
 	public function isSubscribed($criteria)
 	{
-		if (!$criteria['elementId'] or !$criteria['key'])
+		if (!isset($criteria['elementId']) OR !isset($criteria['key']))
 	    {
-	      return false;
+	    	return false;
 	    }
 
 	    $query = craft()->db->createCommand()
-	            ->select('userId, elementId')
-	            ->from('sproutsubscribe_subscriptions')
-	            ->where(array(
-	              'AND', 
-	              'userId = :userId', 
-	              'elementId = :elementId',
-	              'listsId = :listsId'
-	            ), array(
-	              ':userId' => craft()->userSession->id, 
-	              ':elementId' => $criteria['elementId'],
-	              ':listsId' => $this->getKeyId($criteria['key'])
-	            ))->queryRow();
+	        ->select('userId, elementId')
+	        ->from('sproutsubscribe_subscriptions')
+	        ->where(array(
+	            'AND', 
+	            'userId = :userId', 
+	            'elementId = :elementId',
+	            'listsId = :listsId'
+	        ), array(
+	            ':userId' => craft()->userSession->id, 
+	            ':elementId' => $criteria['elementId'],
+	            ':listsId' => $this->getKeyId($criteria['key'])
+	        ))->queryRow();
 	    
 	    return (is_array($query)) ? true : false;
 	}
@@ -32,30 +32,29 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	{
 	    // Find key else create key entry
 	    $query = craft()->db->createCommand()
-	      ->select('id')
-	      ->from('sproutsubscribe_lists')
-	      ->where(array(
-	        'key = :key'
-	      ), array(
-	        ':key' => $key
-	      ))->queryAll();
+	      	->select('id')
+	      	->from('sproutsubscribe_lists')
+	      	->where(array(
+	        	'key = :key'
+	      	), array(
+	        	':key' => $key
+	      	))->queryAll();
 
 	    // Set KeyID
 	    if(!empty($query))
 	    {
-	        $listsId = $query[0]["id"];
+	       	$listsId = $query[0]["id"];
 	    } else {
-	        return false;
+	      	return false;
 	    }
 
 	    // If no user id's provided
 	    // return count for current handle
 	    if($userId == null)
 	    {
-
 	        // Find key else create key entry
 	        $query = craft()->db->createCommand()
-	            ->select('count(listsId) as count')
+	        	->select('count(listsId) as count')
 	            ->from('sproutsubscribe_subscriptions')
 	            ->where(array(
 	                'listsId = :listsId'
@@ -63,20 +62,20 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	                ':listsId' => $listsId
 	            ))->queryAll();
 
-	        return $query[0]["count"];
+	    	return $query[0]["count"];
 
 	    // If userID is not null
 	    } else {
 	        if(!is_array($userId))
 	        {
-	            $userArray = array();
+	        	$userArray = array();
 	            array_push($userArray, $userId); 
 	            $userId = $userArray;
 	        }
 
 	        // Find key else create key entry
 	        $query = craft()->db->createCommand()
-	             ->select('count(listsId) as count')
+	            ->select('count(listsId) as count')
 	            ->from('sproutsubscribe_subscriptions')
 	            ->where(array('and', 'listsId = :listsId', array('in', 'userId', $userId)))
 	            ->where(array(
@@ -85,8 +84,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	                ':listsId' => $listsId
 	            ))->queryAll();
 
-	            return $query[0]["count"];
-
+	        return $query[0]["count"];
 	    }
 	}
 

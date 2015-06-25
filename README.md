@@ -29,3 +29,32 @@
     {{ favoritedEntry.title }}<br/>
   {% endfor %}
 {% endif %}
+
+
+----
+
+total elements everyone has subscribed to (unique element IDs)
+{% total = craft.sproutSubscribe.subscriptionCount($key) %}
+
+total elements a user, or array of users is subscribed to
+{% total = craft.sproutSubscribe.subscriptionCount($key, $userIds) %}
+
+ids of the elements that have been subscribed to
+{% ids = craft.sproutSubscribe.subscriptionIds($key) %}
+
+ids of the elements a user, or array of users is subscribed to
+{% ids = craft.sproutSubscribe.subscriptionIds($key, $userIds) %}
+
+----
+
+total users that have subscribed to everything (unique user IDs)
+{% total = craft.sproutSubscribe.subscriberCount($key) %}
+
+total users an element, or array of elements has as subscribers
+{% total = craft.sproutSubscribe.subscriberCount($key, $elementIds) %}
+
+ids of the users that have subscribed to an element
+{% ids = craft.sproutSubscribe.subscriberIds($key) %}
+
+ids of the users that have subscribed to an element, or array of elements
+{% ids = craft.sproutSubscribe.subscriberIds($key, $elementIds) %}

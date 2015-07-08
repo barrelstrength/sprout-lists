@@ -11,7 +11,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 */
 	public function isSubscribed($criteria)
 	{
-		if (!isset($criteria['elementId']) OR !isset($criteria['key']))
+		if (!isset($criteria['elementId']) OR !isset($criteria['key']) OR !isset($criteria['userId']))
 		{
 			return false;
 		}
@@ -25,7 +25,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 				'elementId = :elementId',
 				'listsId = :listsId'
 			), array(
-				':userId' => craft()->userSession->id, 
+				':userId' => $criteria['userId'], 
 				':elementId' => $criteria['elementId'],
 				':listsId' => $this->getKeyId($criteria['key'])
 			))->queryRow();
@@ -40,7 +40,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 */
 	public function newSubscription($key)
 	{
-		$listsId = this->getKeyId($key);
+		$listsId = $this->getKeyId($key);
 
 		$record = new SproutSubscribe_SubscriptionRecord;
 		$record->userId = $userId;
@@ -52,10 +52,8 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		{
 			return true;
 		}
-		else 
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -65,7 +63,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 */
 	public function unsubscribe($key)
 	{
-		$listsId = this->getKeyId($key);
+		$listsId = $this->getKeyId($key);
 
 		$result = craft()->db->createCommand()
 			->delete('sproutsubscribe_subscriptions', array(
@@ -78,10 +76,9 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		{
 			return true;
 		}
-		else 
-		{
-			return false;
-		}
+
+		return false;
+
 	}
 
 
@@ -94,7 +91,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	public function subcriptionCount($key, $userId = null)
 	{
 		// Get key Id
-		$listsId = this->getKeyId($key);
+		$listsId = $this->getKeyId($key);
 
 		// If no user id's provided
 		// return count for current handle
@@ -145,7 +142,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	{
 
 		// Get key Id
-		$listsId = this->getKeyId($key); 
+		$listsId = $this->getKeyId($key); 
 
 		if($userId == null)
 		{
@@ -193,7 +190,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	{
 
 		// Get key Id
-		$listsId = this->getKeyId($key);
+		$listsId = $this->getKeyId($key);
 
 		// @TODO simplify queries in all functions 2x
 		if($elementId == null)
@@ -312,7 +309,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	{
 		$userId = craft()->userSession->id;
 		// Get key Id
-		$listsId = this->getKeyId($key);
+		$listsId = $this->getKeyId($key);
 
 		$query = craft()->db->createCommand()
 		  ->select('elementId, dateCreated')

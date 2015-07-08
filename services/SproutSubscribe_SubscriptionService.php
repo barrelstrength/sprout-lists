@@ -38,7 +38,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $key 	String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function newSubscription($key)
+	public function newSubscription($userId, $elementId, $key)
 	{
 		$listsId = $this->getKeyId($key);
 
@@ -61,7 +61,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $key 	String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe($key)
+	public function unsubscribe($userId, $elementId, $key)
 	{
 		$listsId = $this->getKeyId($key);
 

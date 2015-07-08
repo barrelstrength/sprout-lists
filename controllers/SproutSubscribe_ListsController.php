@@ -15,16 +15,11 @@ class SproutSubscribe_ListsController extends BaseController
 	public function actionSubscribe()
 	{ 
 		$userId = craft()->request->getRequiredPost('userId');
-		$elementId = craft()->request->getPost('elementId');
-		$keyName = craft()->request->getPost('key');
-
-		if (!$userId OR !$elementId)
-		{
-			return false;
-		}
+		$elementId = craft()->request->getRequiredPost('elementId');
+		$key = craft()->request->getRequiredPost('key');
 
 		// Create a new Subscription
-		$status = craft()->sproutSubscribe_subscription->newSubscription($keyName);
+		$status = craft()->sproutSubscribe_subscription->newSubscription($userId, $elementId, $key);
 
 		if ($status)
 		{
@@ -69,15 +64,10 @@ class SproutSubscribe_ListsController extends BaseController
 	public function actionUnsubscribe()
 	{
 		$userId = craft()->request->getRequiredPost('userId');
-		$elementId = craft()->request->getPost('elementId');
-		$keyName = craft()->request->getPost('key');
+		$elementId = craft()->request->geRequiredPost('elementId');
+		$key = craft()->request->getRequiredPost('key');
 
-		if (!$userId OR !$elementId)
-		{
-			return false;
-		}
-
-		$status = craft()->sproutSubscribe_subscription->unsubscribe($keyName);
+		$status = craft()->sproutSubscribe_subscription->unsubscribe($userId, $elementId, $key);
 
 		if ($status)
 		{

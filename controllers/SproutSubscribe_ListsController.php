@@ -14,7 +14,7 @@ class SproutSubscribe_ListsController extends BaseController
 	 */
 	public function actionSubscribe()
 	{ 
-		$userId = craft()->userSession->id;
+		$userId = craft()->request->getRequiredPost('userId');
 		$elementId = craft()->request->getPost('elementId');
 		$keyName = craft()->request->getPost('key');
 
@@ -68,7 +68,7 @@ class SproutSubscribe_ListsController extends BaseController
 	 */
 	public function actionUnsubscribe()
 	{
-		$userId = craft()->userSession->id;
+		$userId = craft()->request->getRequiredPost('userId');
 		$elementId = craft()->request->getPost('elementId');
 		$keyName = craft()->request->getPost('key');
 

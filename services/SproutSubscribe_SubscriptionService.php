@@ -131,16 +131,16 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		$query = craft()->db->createCommand()
 			->select('userId')
 			->from('sproutsubscribe_subscriptions')
-			->group('userId');
+			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if (isset($criteria['elementId']))
 		{
 			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
-			$query->where(array('and', "listId = $listId", array('in', 'elementId', $elementId)));
+			$query->andWhere(array('in', 'elementId', $elementId));
 		}
 		else
 		{
-			$query->where(array('listId = :listId'), array(':listId' => $listId));
+			$query->group('userId');
 		}
 
 		if (isset($criteria['limit']))
@@ -150,7 +150,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 
 		$subscriptions = $query->queryAll();
 
-		$subscriptionModels = SproutSubscribe_SubscriptionModel::populateModels($subscriptions, 'userId');
+		$subscriptionModels = SproutSubscribe_SubscriptionModel::populateModels($subscriptions);
 
 		return $subscriptionModels;
 	}

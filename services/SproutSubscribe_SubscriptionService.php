@@ -8,14 +8,14 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription grouping
 	 * @return Bool       	Status True/False
 	 */
-	public function subscribe($list, $userId, $elementId)
+	public function subscribe(SproutSubscribe_SubscriptionModel $subscription)
 	{
-		$listId = $this->getListId($list);
+		$listId = $this->getListId($subscription->list);
 
 		$record = new SproutSubscribe_SubscriptionRecord;
 		$record->listId = $listId;
-		$record->userId = $userId;
-		$record->elementId = $elementId;
+		$record->userId = $subscription->userId;
+		$record->elementId = $subscription->elementId;
 
 		if($record->save())
 		{
@@ -30,15 +30,15 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe($list, $userId, $elementId)
+	public function unsubscribe(SproutSubscribe_SubscriptionModel $subscription)
 	{
-		$listId = $this->getListId($list);
+		$listId = $this->getListId($subscription->list);
 
 		$result = craft()->db->createCommand()
 			->delete('sproutsubscribe_subscriptions', array(
 				'listId' => $listId,
-				'userId' => $userId,
-				'elementId' => $elementId,
+				'userId' => $subscription->userId,
+				'elementId' => $subscription->elementId,
 			));
 
 		if($result)

@@ -10,6 +10,7 @@ class SproutSubscribe_SubscriptionModel extends BaseModel
 	protected function defineAttributes()
 	{
 		return array(
+			'list'        => AttributeType::String,
 			'userId'      => AttributeType::String,
 			'elementId'   => AttributeType::String,
 			'dateCreated' => AttributeType::DateTime,

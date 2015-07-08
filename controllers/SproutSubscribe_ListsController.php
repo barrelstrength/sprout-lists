@@ -13,15 +13,14 @@ class SproutSubscribe_ListsController extends BaseController
 	 *                       array of errors
 	 */
 	public function actionSubscribe()
-	{ 
-		$userId = craft()->request->getRequiredPost('userId');
-		$elementId = craft()->request->getRequiredPost('elementId');
-		$list = craft()->request->getRequiredPost('list');
+	{
+		$subscription['userId'] = craft()->request->getRequiredPost('userId');
+		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
+		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		// Create a new Subscription
-		$status = craft()->sproutSubscribe_subscription->subscribe($list, $userId, $elementId);
+		$subscriptionModel = SproutSubscribe_SubscriptionModel::populateModel($subscription);
 
-		if ($status)
+		if (!craft()->sproutSubscribe_subscription->subscribe($subscriptionModel))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -36,8 +35,9 @@ class SproutSubscribe_ListsController extends BaseController
 		} 
 		else 
 		{
-			// @TODO Should be a Model
-			$errors = $record->getErrors();
+			// @todo - might need to add settings to determine what errors matter
+			// Subscriptions may require uniqueness, voting may allow multiple subscribes
+			$errors = array(Craft::t('Subscription did not save.'));
 
 			if (craft()->request->isAjaxRequest())
 			{
@@ -63,13 +63,13 @@ class SproutSubscribe_ListsController extends BaseController
 	 */
 	public function actionUnsubscribe()
 	{
-		$userId = craft()->request->getRequiredPost('userId');
-		$elementId = craft()->request->geRequiredPost('elementId');
-		$list = craft()->request->getRequiredPost('list');
+		$subscription['userId'] = craft()->request->getRequiredPost('userId');
+		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
+		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$status = craft()->sproutSubscribe_subscription->unsubscribe($list, $userId, $elementId);
+		$subscriptionModel = SproutSubscribe_SubscriptionModel::populateModel($subscription);
 
-		if ($status)
+		if (!craft()->sproutSubscribe_subscription->unsubscribe($subscriptionModel))
 		{
 			if (craft()->request->isAjaxRequest())
 			{

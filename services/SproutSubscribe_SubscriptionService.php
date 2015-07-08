@@ -69,7 +69,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 			->delete('sproutsubscribe_subscriptions', array(
 				'userId' => $userId,
 				'elementId' => $elementId,
-				'listsId' => $keyId
+				'listsId' => $listsId
 			));
 
 		if($result)
@@ -281,7 +281,7 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		{
 			// Find key else create key entry
 			$query = craft()->db->createCommand()
-				->select('count(userId) as count')
+				->select('COUNT(userId) as count')
 				->from('sproutsubscribe_subscriptions')
 				->queryScalar();
 
@@ -289,10 +289,10 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		} else {
 
 			$query = craft()->db->createCommand()
-				->select('elementId')
+				->select('COUNT(elementId) as count')
 				->from('sproutsubscribe_subscriptions')
 				->where("elementId= $elementId")
-				->query();
+				->queryScalar();
 
 			return $query;
 

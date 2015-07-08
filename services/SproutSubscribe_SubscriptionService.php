@@ -75,76 +75,43 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	}
 
 	/**
-	 * Retrieve subscription count based on list/userIds
-	 * @param  String $list    		String representing subscription category.
-	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
-	 * @return Array         		Subscription Count.
-	 */
-	public function subscriptionCount($list, $userId = null)
-	{
-		$listId = $this->getListId($list);
-
-		// If no user id's provided return count for current handle
-		if($userId == null)
-		{
-			$count = craft()->db->createCommand()
-				->select('count(listId) as count')
-				->from('sproutsubscribe_subscriptions')
-				->where(array(
-					'listId = :listId'
-				), array(
-					':listId' => $listId
-				))->queryScalar();
-
-			return $count;
-		} 
-		else 
-		{
-			$userId = $this->prepareIdsForQuery($userId);
-
-			$count = craft()->db->createCommand()
-				->select('count(listId) as count')
-				->from('sproutsubscribe_subscriptions')
-				->where(array('and', 'listId = :listId', array('in', 'userId', $userId)))
-				->where(array(
-					'listId = :listId'
-				), array(
-					':listId' => $listId
-				))->queryScalar();
-
-			return $count;
-		}
-	}
-
-	/**
 	 * Retrieve element ids based on user ids
 	 * @param  String $list   String representing subscription category.
 	 * @param  Int $userId    Int or Array of Ints for User Ids.
 	 * @return Array          Int or Array of Ints of element Ids.
 	 */
-	public function getSubscriptions($list, $userId = null)
+	public function getSubscriptions($criteria)
 	{
-		$listId = $this->getListId($list);
-		$subscriptions = null;
+		$listId = $this->getListId($criteria['list']);
 
-		if($userId == null)
-		{
-			$subscriptions = craft()->db->createCommand()
-				->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
-				->from('sproutsubscribe_subscriptions')
-				->where(array('listId = :listId'), array(':listId' => $listId))
-				->queryAll();
-		} 
-		else 
-		{
-			$userId = $this->prepareIdsForQuery($userId);
+		$query = craft()->db->createCommand()
+			->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
+			->from('sproutsubscribe_subscriptions')
+			->group('elementId');
 
-			$subscriptions = craft()->db->createCommand()
-				->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
-				->from('sproutsubscribe_subscriptions')
-				->where(array('and', "listId = $listId", array('in', 'userId', $userId)))
-				->queryAll();
+		if (isset($criteria['userId']))
+		{
+			// Search by user ID or array of user IDs
+			$userIds = $this->prepareIdsForQuery($criteria['userId']);
+
+			$query->where(array('and', "listId = $listId", array('in', 'userId', $userIds)));
 		}
+		else
+		{
+			$query->where(array('listId = :listId'), array(':listId' => $listId));
+		}
+
+		if (isset($criteria['order']))
+		{
+			$query->order($criteria['order']);
+		}
+
+		if (isset($criteria['limit']))
+		{
+			$query->limit($criteria['limit']);
+		}
+
+		$subscriptions = $query->queryAll();
 
 		$subscriptionModels = SproutSubscribe_SubscriptionModel::populateModels($subscriptions, 'elementId');
 
@@ -157,33 +124,93 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 * @param  Int $elementId     Int or Array of Ints for Elements.
 	 * @return Array              Int or Array of Ints of User Ids.
 	 */
-	public function getSubscribers($list, $elementId = null)
+	public function getSubscribers($criteria)
 	{
-		$listId = $this->getListId($list);
-		$subscriptions = null;
+		$listId = $this->getListId($criteria['list']);
 
-		if($elementId == null)
-		{
-			$subscriptions = craft()->db->createCommand()
-				->select('userId')
-				->from('sproutsubscribe_subscriptions')
-				->where(array('listId = :listId'), array(':listId' => $listId))
-				->queryAll();
-		} 
-		else 
-		{
-			$elementId = $this->prepareIdsForQuery($elementId);
+		$query = craft()->db->createCommand()
+			->select('userId')
+			->from('sproutsubscribe_subscriptions')
+			->group('userId');
 
-			$subscriptions = craft()->db->createCommand()
-				->select('userId')
-				->from('sproutsubscribe_subscriptions')
-				->where(array('and', "listId = $listId", array('in', 'elementId', $elementId)))
-				->queryAll();
+		if (isset($criteria['elementId']))
+		{
+			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+			$query->where(array('and', "listId = $listId", array('in', 'elementId', $elementId)));
 		}
+		else
+		{
+			$query->where(array('listId = :listId'), array(':listId' => $listId));
+		}
+
+		if (isset($criteria['limit']))
+		{
+			$query->limit($criteria['limit']);
+		}
+
+		$subscriptions = $query->queryAll();
 
 		$subscriptionModels = SproutSubscribe_SubscriptionModel::populateModels($subscriptions, 'userId');
 
 		return $subscriptionModels;
+	}
+
+	/**
+	 * Retrieve subscription count based on list/userIds
+	 * @param  String $list    		String representing subscription category.
+	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
+	 * @return Array         		Subscription Count.
+	 */
+	public function subscriptionCount($criteria)
+	{
+		$listId = $this->getListId($criteria['list']);
+
+		$query = craft()->db->createCommand()
+			->select('count(listId) as count')
+			->from('sproutsubscribe_subscriptions')
+			->where(array('listId = :listId'), array(':listId' => $listId));
+
+		if(isset($criteria['userId']))
+		{
+			$userId = $this->prepareIdsForQuery($criteria['userId']);
+
+			$query->where(array('and', 'listId = :listId', array('in', 'userId', $userId)));
+			$query->group('userId');
+		}
+
+		$count = $query->queryScalar();
+
+		return $count;
+	}
+
+	/**
+	 * Get total count of subscribers to an element.
+	 * @param  Int $elementId    Id of Element.
+	 * @return Int            	 Subscription count.
+	 */
+	public function subscriberCount($criteria)
+	{
+		$listId = $this->getListId($criteria['list']);
+
+		$query = craft()->db->createCommand()
+			->select('count(listId) as count')
+			->from('sproutsubscribe_subscriptions')
+			->where(array('listId = :listId'), array(':listId' => $listId));
+
+		if(isset($criteria['elementId']))
+		{
+			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+
+			$query->andWhere(array('in', 'elementId', $elementId));
+		}
+		else
+		{
+			$query->group('userId');
+		}
+
+		$count = $query->queryScalar();
+
+		return $count;
 	}
 
 	/**
@@ -198,16 +225,16 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		$handle = $this->camelCase($name);
 
 		$listId = craft()->db->createCommand()
-		  ->select('id')
-		  ->from('sproutsubscribe_lists')
-		  ->where(array(
-			'AND', 
-			'name = :name',
-			'handle = :handle'
-		  ), array(
-			':name' => $name,
-			':handle' => $handle
-		  ))->queryScalar();
+			->select('id')
+			->from('sproutsubscribe_lists')
+			->where(array(
+				'AND',
+				'name = :name',
+				'handle = :handle'
+			), array(
+				':name' => $name,
+				':handle' => $handle
+			))->queryScalar();
 
 		// If no key found dynamically create one
 		if(!$listId)
@@ -222,79 +249,6 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		}
 
 		return $listId;
-	}
-
-	/**
-	 * Get total count of subscriptions on an element.
-	 * @param  Int $elementId    Id of Element.
-	 * @return Int            	 Subscription count.
-	 */
-	public function totalSubscriptions($elementId = null)
-	{
-		if($elementId == null)
-		{
-			$query = craft()->db->createCommand()
-				->select('COUNT(userId) as count')
-				->from('sproutsubscribe_subscriptions')
-				->queryScalar();
-
-			return $query;
-		}
-		else
-		{
-			$query = craft()->db->createCommand()
-				->select('COUNT(elementId) as count')
-				->from('sproutsubscribe_subscriptions')
-				->where("elementId= $elementId")
-				->queryScalar();
-
-			return $query;
-		}
-	}
-
-	/**
-	 * Reutnrs top subscripts limit is defined
-	 * @param  Int $limit   Number of wanted returns
-	 * @return Array        Returned Elements
-	 */
-	public function popularSubscriptions($limit)
-	{
-		$subscriptions = craft()->db->createCommand()
-			->select('elementId, COUNT(elementId) AS count')
-			->from('sproutsubscribe_subscriptions')
-			->group('elementId')
-			->order('count DESC')
-			->limit($limit)
-			->queryAll();
-
-		$subscriptionModels = SproutSubscribe_SubscriptionModel::populateModels($subscriptions, 'elementId');
-
-		return $subscriptionModels;
-	}
-
-	/**
-	 * Query to retrieve elementIds and DateCreated.
-	 * @param  string $list String representing subscription category.
-	 * @return array       Array contains returned elementIds and Dates.
-	 */
-	public function userData($list)
-	{
-		$userId = craft()->userSession->id;
-		$listId = $this->getListId($list);
-
-		$query = craft()->db->createCommand()
-			->select('elementId, dateCreated')
-			->from('sproutsubscribe_subscriptions')
-			->where(array(
-				'AND',
-				'listId = :listId',
-				'userId = :userId'
-			), array(
-				':listId' => $listId,
-				':userId' => $userId
-			))->queryAll();
-
-		return $query;
 	}
 
 	/**

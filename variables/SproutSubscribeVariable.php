@@ -27,39 +27,49 @@ class SproutSubscribeVariable
 		return craft()->sproutSubscribe_subscription->isSubscribed($criteria);
 	}
 
-	public function getUserData($list)
-	{
-		return craft()->sproutSubscribe_subscription->userData($list);
-	}
-
 	// Counts
 	// =========================================================================
 
-	public function getSubscriptionCount($list, $userId = null)
+	public function getSubscriptionCount($criteria)
 	{
-		return craft()->sproutSubscribe_subscription->subscriptionCount($list, $userId);
+		if (!isset($criteria['list']))
+		{
+			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
+		}
+
+		return craft()->sproutSubscribe_subscription->subscriptionCount($criteria);
 	}
 
-	public function getTotalSubscriptions($elementId)
+	public function getSubscriberCount($criteria)
 	{
-		return craft()->sproutSubscribe_subscription->totalSubscriptions($elementId);
+		if (!isset($criteria['list']))
+		{
+			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
+		}
+
+		return craft()->sproutSubscribe_subscription->subscriberCount($criteria);
 	}
 
 	// Subscriptions
 	// =========================================================================
 
-	public function getSubscriptions($list, $userId = null)
+	public function getSubscriptions($criteria)
 	{
-		return craft()->sproutSubscribe_subscription->getSubscriptions($list, $userId);
+		if (!isset($criteria['list']))
+		{
+			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
+		}
+
+		return craft()->sproutSubscribe_subscription->getSubscriptions($criteria);
 	}
 
-	public function getSubscribers($list, $elementId = null)
+	public function getSubscribers($criteria)
 	{
-		return craft()->sproutSubscribe_subscription->getSubscribers($list, $elementId);
-	}
+		if (!isset($criteria['list']))
+		{
+			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
+		}
 
-	public function getPopularSubscriptions($limit)
-	{
-		return craft()->sproutSubscribe_subscription->popularSubscriptions($limit);
+		return craft()->sproutSubscribe_subscription->getSubscribers($criteria);
 	}
 }

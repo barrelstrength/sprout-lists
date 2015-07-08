@@ -23,17 +23,17 @@ class SproutSubscribeVariable
 		return craft()->sproutSubscribe_subscription->isSubscribed($criteria);
 	}
 
-	public function getSubscriptionCount($key, $userId)
+	public function getSubscriptionCount($key, $userId = null)
 	{
 		return craft()->sproutSubscribe_subscription->subcriptionCount($key, $userId);
 	}
 
-	public function getElementIds($key, $userId)
+	public function getElementIds($key, $userId = null)
 	{
 		return craft()->sproutSubscribe_subscription->elementIds($key, $userId);
 	}
 
-	public function getUserIds($key, $elementId)
+	public function getUserIds($key, $elementId = null)
 	{
 		return craft()->sproutSubscribe_subscription->userIds($key, $elementId);
 	}

@@ -1,60 +1,141 @@
+# Sprout Subscribe
+
+## Subscribe and Unsubscribe Forms
+
+{% set params = {
+	list: 'listHandle',
+	userId: currentUser.id,
+	elementId: entry.id,
+} %}
+
 {# Check if a user is subscribed already #}
-{% if craft.sproutSubscribe.isSubscribed(currentUser.id, entry.id) %}
-  
+{% if craft.sproutSubscribe.isSubscribed(params) %}
+
   {# Unsubscribe a user from a specific ID #}
   <form method="post" accept-charset="utf-8">
   	<input type="hidden" name="action" value="sproutSubscribe/lists/unsubscribe">
   	<input type="hidden" name="elementId" value="{{ entry.id }}">
+  	<input type="hidden" name="userId" value="{{ currentUser.id }}">
+  	<input type="hidden" name="list" value="listHandle">
     <input type="submit" value="Remove from My Favorites">
   </form>
 
 {% else %}
-  
+
   {# Subscribe a user to a specific ID #}
   <form method="post" accept-charset="utf-8">
   	<input type="hidden" name="action" value="sproutSubscribe/lists/subscribe">
-  	<input type="text" name="elementId" value="{{ entry.id }}">
+  	<input type="hidden" name="elementId" value="{{ entry.id }}">
+  	<input type="hidden" name="userId" value="{{ currentUser.id }}">
+  	<input type="hidden" name="list" value="listHandle">
     <input type="submit" value="Add to My Favorites">
   </form>
 
 {% endif %}
 
+----
 
-{# Get all IDs that a user is subscribed to #}
-{% set ids = craft.sproutSubscribe.subscriptionIds(currentUser.id) %}
+## Displaying Counts
 
-{# Display all entries that match one of the IDs a user is subscribed to #}
-{% if ids|length %}
-  {% for favoritedEntry in craft.entries({ id : ids }) %}
-    {{ favoritedEntry.title }}<br/>
-  {% endfor %}
-{% endif %}
+### Subscription Counts
 
+{# Total Subscriptions for a List #}
+{{ craft.sproutSubscribe.subscriptionCount({ list: 'listHandle' }) }}
+
+{# Total Subscriptions for a specific User on a List #}
+{{ craft.sproutSubscribe.subscriptionCount({
+	list: 'listHandle',
+	userId: currentUser.id
+}) }}
+
+### Subscriber Counts
+
+{# Total Subscribers for a List #}
+{{ craft.sproutSubscribe.subscriberCount({ list: 'listHandle' }) }}
+
+{# Total Subscribers for a specific Element on a List #}
+{{ craft.sproutSubscribe.subscriberCount({
+	list: 'listHandle',
+	elementId: entry.id
+}) }}
 
 ----
 
-total elements everyone has subscribed to (unique element IDs)
-{% total = craft.sproutSubscribe.subscriptionCount($key) %}
+## Retrieving IDs of Subscriptions
 
-total elements a user, or array of users is subscribed to
-{% total = craft.sproutSubscribe.subscriptionCount($key, $userIds) %}
+{# All Subscriptions on a List #}
+{% set subscriptions = craft.sproutSubscribe.subscriptions({
+	list: 'listHandle'
+}) %}
 
-ids of the elements that have been subscribed to
-{% ids = craft.sproutSubscribe.subscriptionIds($key) %}
+{# All Subscriptions for a specific User on a List #}
+{% set subscriptions = craft.sproutSubscribe.subscriptions({
+	list: 'listHandle',
+	userId: currentUser.id
+}) %}
 
-ids of the elements a user, or array of users is subscribed to
-{% ids = craft.sproutSubscribe.subscriptionIds($key, $userIds) %}
+### Looping through the results using the `subscriptionIds` filter
+
+{% for entry in craft.entries
+	.section('news')
+	.id(subscriptions|subscriptionIds)
+	%}
+  {{ entry.title }}
+{% endfor %}
+
+
+## Displaying the most popular subscriptions
+
+{% set popularSubscriptions = craft.sproutSubscribe.subscriptions({
+	list: 'listHandle',
+	userId: currentUser.id,
+	order: 'count DESC',
+	limit: 10
+}) %}
+
+{% for entry in craft.entries
+	.section('news')
+	.id(popularSubscriptions|subscriptionIds)
+	.fixedOrder(true)
+	.limit(10)
+	%}
+  {{ entry.title }} ({{ popularSubscriptions[entry.id].count }} ❤)<br/>
+{% endfor %}
+
+## Displaying the date a User subscribed to an Element
+
+{% set subscriptions = craft.sproutSubscribe.subscriptions({
+	list: 'listHandle',
+	userId: currentUser.id
+}) %}
+
+{% for entry in craft.entries
+	.section('news')
+	.id(subscriptions|subscriptionIds)
+	%}
+  {{ entry.title }}: Subscribed on: {{ subscriptions[entry.id].dateCreated|date('F d, Y') }}
+{% endfor %}
 
 ----
 
-total users that have subscribed to everything (unique user IDs)
-{% total = craft.sproutSubscribe.subscriberCount($key) %}
+## Retrieving IDs of Subscribers
 
-total users an element, or array of elements has as subscribers
-{% total = craft.sproutSubscribe.subscriberCount($key, $elementIds) %}
+{# All Subscribers on a List #}
+{% set subscribers = craft.sproutSubscribe.subscribers({
+	list: 'listHandle'
+}) %}
 
-ids of the users that have subscribed to an element
-{% ids = craft.sproutSubscribe.subscriberIds($key) %}
+{# All Subscribers to a specific Element on a List #}
+{% set subscribers = craft.sproutSubscribe.subscribers({
+	list: 'listHandle',
+  elementId: entry.id
+}) %}
 
-ids of the users that have subscribed to an element, or array of elements
-{% ids = craft.sproutSubscribe.subscriberIds($key, $elementIds) %}
+### Looping through the results using the `subscriberIds` filter
+
+{% for user in craft.users
+	.id(subscribers|subscriberIds)
+	.limit(10)
+	%}
+  {{ user.username }}<br/>
+{% endfor %}

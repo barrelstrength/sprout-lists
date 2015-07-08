@@ -20,7 +20,6 @@ class SproutSubscribe_SubscriptionRecord extends BaseRecord
 	{
 		return array();
 	}
-	
 
 	public function defineRelations()
 	{
@@ -43,7 +42,6 @@ class SproutSubscribe_SubscriptionRecord extends BaseRecord
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),
-		  
 		);
 	}
 }

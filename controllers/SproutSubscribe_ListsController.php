@@ -23,14 +23,10 @@ class SproutSubscribe_ListsController extends BaseController
 			return false;
 		}
 
-		$keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
+		// Create a new Subscription
+		$status = craft()->sproutSubscribe_subscription->newSubscription($keyName);
 
-		$record = new SproutSubscribe_SubscriptionRecord;
-		$record->userId = $userId;
-		$record->elementId = $elementId;
-		$record->listsId = $keyId;
-
-		if ($record->save())
+		if ($status)
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -45,6 +41,7 @@ class SproutSubscribe_ListsController extends BaseController
 		} 
 		else 
 		{
+			// @TODO Should be a Model
 			$errors = $record->getErrors();
 
 			if (craft()->request->isAjaxRequest())
@@ -80,17 +77,9 @@ class SproutSubscribe_ListsController extends BaseController
 			return false;
 		}
 
-		$keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
+		$status = craft()->sproutSubscribe_subscription->unsubscribe($keyName);
 
-		// @TODO refactor for validation of result && json responses
-		$result = craft()->db->createCommand()
-			->delete('sproutsubscribe_subscriptions', array(
-				'userId' => $userId,
-				'elementId' => $elementId,
-				'listsId' => $keyId
-			));
-
-		if ($result)
+		if ($status)
 		{
 			if (craft()->request->isAjaxRequest())
 			{

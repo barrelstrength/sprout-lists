@@ -34,6 +34,58 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	}
 
 	/**
+	 * Creates a new subscription
+	 * @param  String $key 	String representing subscription category.
+	 * @return Bool       	Status True/False
+	 */
+	public function newSubscription($key)
+	{
+		$listsId = this->getKeyId($key);
+
+		$record = new SproutSubscribe_SubscriptionRecord;
+		$record->userId = $userId;
+		$record->elementId = $elementId;
+		$record->listsId = $listsId;
+
+
+		if($record->save())
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Creates a new subscription
+	 * @param  String $key 	String representing subscription category.
+	 * @return Bool       	Status True/False
+	 */
+	public function unsubscribe($key)
+	{
+		$listsId = this->getKeyId($key);
+
+		$result = craft()->db->createCommand()
+			->delete('sproutsubscribe_subscriptions', array(
+				'userId' => $userId,
+				'elementId' => $elementId,
+				'listsId' => $keyId
+			));
+
+		if($result)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
+
+	/**
 	 * Retrieve subscription count based on key/userIds
 	 * @param  String $key    		String representing subscription category.
 	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
@@ -41,20 +93,8 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	 */
 	public function subcriptionCount($key, $userId = null)
 	{
-
-		$listsId = craft()->db->createCommand()
-            ->select('id')
-            ->from('sproutsubscribe_lists')
-            ->where(array(
-            	'key = :key'
-            ), array(
-               ':key' => $key
-            ))->queryScalar();
-
-		if($listsId == false)
-		{
-			return false;
-		}
+		// Get key Id
+		$listsId = this->getKeyId($key);
 
 		// If no user id's provided
 		// return count for current handle
@@ -104,21 +144,8 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	public function elementIds($key, $userId = null)
 	{
 
-		$listsId = craft()->db->createCommand()
-            ->select('id')
-            ->from('sproutsubscribe_lists')
-            ->where(array(
-            	'key = :key'
-            ), array(
-               ':key' => $key
-            ))->queryScalar();
-
-
-		// Set KeyID
-		if($listsId == false)
-		{
-			return false;
-		}
+		// Get key Id
+		$listsId = this->getKeyId($key); 
 
 		if($userId == null)
 		{
@@ -139,7 +166,6 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		} 
 		else 
 		{
-			die("you are here");
 			if(!is_array($userId))
 			{
 				ArrayHelper::stringToArray($userId);
@@ -151,8 +177,8 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 				->from('sproutsubscribe_subscriptions')
 				->where(array('and', "listsId = $listsId", array('in', 'userId', $userId)))
 				->queryAll();
-
-			//return ArrayHelper::flattenArray($query);
+			// @TODO Check this is returning correct data
+			return $query;
 
 		}
 	}
@@ -166,21 +192,10 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 	public function userIds($key, $elementId = null)
 	{
 
-		$listsId = craft()->db->createCommand()
-            ->select('id')
-            ->from('sproutsubscribe_lists')
-            ->where(array(
-            	'key = :key'
-            ), array(
-               ':key' => $key
-            ))->queryScalar();
+		// Get key Id
+		$listsId = this->getKeyId($key);
 
-		if($listsId == false)
-		{
-			return false;
-		}
-
-
+		// @TODO simplify queries in all functions 2x
 		if($elementId == null)
 		{
 
@@ -242,9 +257,6 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 			':handle' => $handle
 		  ))->queryScalar();
 
-
-
-
 		if(!$listId)
 		{
 			// If no key found dynamically create one
@@ -258,41 +270,6 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		}
 
 		return $listId;
-	}
-
-	/**
-	 * Query to retrieve elementIds and DateCreated.
-	 * @param  string $key String representing subscription category.
-	 * @return array       Array contains returned elementIds and Dates.
-	 */
-	public function userData($key)
-	{
-		$userId = craft()->userSession->id;
-
-		// Get the lists Id
-		$listsId = craft()->db->createCommand()
-            ->select('id')
-            ->from('sproutsubscribe_lists')
-            ->where(array(
-            	'key = :key'
-            ), array(
-               ':key' => $key
-            ))->queryScalar();
-
-		$query = craft()->db->createCommand()
-		  ->select('elementId, dateCreated')
-		  ->from('sproutsubscribe_subscriptions')
-		  ->where(array(
-			'AND', 
-			'listsId = :listsId',
-			'userId = :userId'
-		  ), array(
-			':listsId' => $listsId,
-			':userId' => $userId
-		  ))->queryAll();
-
-
-		return $query;
 	}
 
 	/**
@@ -325,6 +302,34 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 		}
 	}
 
+
+	/**
+	 * Query to retrieve elementIds and DateCreated.
+	 * @param  string $key String representing subscription category.
+	 * @return array       Array contains returned elementIds and Dates.
+	 */
+	public function userData($key)
+	{
+		$userId = craft()->userSession->id;
+		// Get key Id
+		$listsId = this->getKeyId($key);
+
+		$query = craft()->db->createCommand()
+		  ->select('elementId, dateCreated')
+		  ->from('sproutsubscribe_subscriptions')
+		  ->where(array(
+			'AND', 
+			'listsId = :listsId',
+			'userId = :userId'
+		  ), array(
+			':listsId' => $listsId,
+			':userId' => $userId
+		  ))->queryAll();
+
+
+		return $query;
+	}
+
 	/**
 	 * Reutnrs top subscripts limit is defined
 	 * @param  Int $limit   Number of wanted returns
@@ -337,7 +342,6 @@ class SproutSubscribe_SubscriptionService extends BaseApplicationComponent
 
 		return $query;
 	}
-
 
 	/**
 	 * Returns camelCased version of original string.

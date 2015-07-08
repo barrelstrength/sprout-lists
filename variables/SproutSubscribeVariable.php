@@ -3,7 +3,6 @@ namespace Craft;
 
 class SproutSubscribeVariable
 {
-
 	public function getName()
 	{
 		$plugin = craft()->plugins->getPlugin('sproutsubscribe');
@@ -20,22 +19,25 @@ class SproutSubscribeVariable
 
 	public function getIsSubscribed($criteria)
 	{
+		if (!isset($criteria['list']) OR !isset($criteria['userId']) OR !isset($criteria['elementId']))
+		{
+			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
+		}
+
 		return craft()->sproutSubscribe_subscription->isSubscribed($criteria);
 	}
 
-	public function getSubscriptionCount($key, $userId = null)
+	public function getUserData($list)
 	{
-		return craft()->sproutSubscribe_subscription->subcriptionCount($key, $userId);
+		return craft()->sproutSubscribe_subscription->userData($list);
 	}
 
-	public function getElementIds($key, $userId = null)
-	{
-		return craft()->sproutSubscribe_subscription->elementIds($key, $userId);
-	}
+	// Counts
+	// =========================================================================
 
-	public function getUserIds($key, $elementId = null)
+	public function getSubscriptionCount($list, $userId = null)
 	{
-		return craft()->sproutSubscribe_subscription->userIds($key, $elementId);
+		return craft()->sproutSubscribe_subscription->subscriptionCount($list, $userId);
 	}
 
 	public function getTotalSubscriptions($elementId)
@@ -43,14 +45,21 @@ class SproutSubscribeVariable
 		return craft()->sproutSubscribe_subscription->totalSubscriptions($elementId);
 	}
 
-	public function getUserData($key)
+	// Subscriptions
+	// =========================================================================
+
+	public function getSubscriptions($list, $userId = null)
 	{
-		return craft()->sproutSubscribe_subscription->userData($key);
+		return craft()->sproutSubscribe_subscription->getSubscriptions($list, $userId);
+	}
+
+	public function getSubscribers($list, $elementId = null)
+	{
+		return craft()->sproutSubscribe_subscription->getSubscribers($list, $elementId);
 	}
 
 	public function getPopularSubscriptions($limit)
 	{
 		return craft()->sproutSubscribe_subscription->popularSubscriptions($limit);
 	}
-  
 }

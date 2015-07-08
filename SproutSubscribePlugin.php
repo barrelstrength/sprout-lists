@@ -10,7 +10,7 @@ class SproutSubscribePlugin extends BasePlugin
 
 	public function getVersion()
 	{
-		return '0.0.1';
+		return '0.6.0';
 	}
 
 	public function getDeveloper()
@@ -21,5 +21,12 @@ class SproutSubscribePlugin extends BasePlugin
 	public function getDeveloperUrl()
 	{
 		return 'http://barrelstrengthdesign.com';
+	}
+
+	public function addTwigExtension()
+	{
+		Craft::import('plugins.sproutsubscribe.twigextensions.SproutSubscribeTwigExtension');
+
+		return new SproutSubscribeTwigExtension();
 	}
 }

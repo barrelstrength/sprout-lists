@@ -7,99 +7,121 @@ namespace Craft;
  */
 class SproutSubscribe_ListsController extends BaseController
 {
+	/**
+	 * Action to submit new subscription
+	 * @return boolean/array bool if successful/redirect
+	 *                       array of errors
+	 */
+	public function actionSubscribe()
+	{ 
+		$userId = craft()->userSession->id;
+		$elementId = craft()->request->getPost('elementId');
+		$keyName = craft()->request->getPost('key');
 
-    public function actionSubscribe()
-    { 
-        $userId = craft()->userSession->id;
-        $elementId = craft()->request->getPost('elementId');
-        $keyName = craft()->request->getPost('key');
+		if (!$userId OR !$elementId)
+		{
+			return false;
+		}
 
-        if (!$userId OR !$elementId)
-        {
-            return false;
-        }
+		$keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
 
-        $keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
+		$record = new SproutSubscribe_SubscriptionRecord;
+		$record->userId = $userId;
+		$record->elementId = $elementId;
+		$record->listsId = $keyId;
 
-        $record = new SproutSubscribe_SubscriptionRecord;
-        $record->userId = $userId;
-        $record->elementId = $elementId;
-        $record->listsId = $keyId;
+		if ($record->save())
+		{
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array(
+					'success' => true,
+				));
+			} 
+			else 
+			{
+				$this->redirectToPostedUrl();
+			}
+		} 
+		else 
+		{
+			$errors = $record->getErrors();
 
-        if ($record->save())
-        {
-            if (craft()->request->isAjaxRequest())
-            {
-                $this->returnJson(array(
-                'response' => 'success',
-            ));
-            } else {
-                $this->redirectToPostedUrl();
-            }
-        } else {
-            $errors = $record->getErrors();
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array(
+					'errors' => $errors,
+				));
+			} 
+			else 
+			{
+				craft()->urlManager->setRouteVariables(array(
+					'errors' => $errors
+				));
 
-            if (craft()->request->isAjaxRequest())
-            {
-                $this->returnJson(array(
-                    'response' => $errors,
-                ));
-            } else {
-                craft()->urlManager->setRouteVariables(array(
-                    'response' => $errors
-                ));
+				$this->redirectToPostedUrl();
+			}
+		}
+	}
 
-                $this->redirectToPostedUrl();
-            }
-        }
-    }
+	/**
+	 * Action to unsubscribe to an element.
+	 * @return boolean/array bool if successful/redirect
+	 *                       array of errors
+	 */
+	public function actionUnsubscribe()
+	{
+		$userId = craft()->userSession->id;
+		$elementId = craft()->request->getPost('elementId');
+		$keyName = craft()->request->getPost('key');
 
-    public function actionUnsubscribe()
-    {
-        $userId = craft()->userSession->id;
-        $elementId = craft()->request->getPost('elementId');
-        $keyName = craft()->request->getPost('key');
+		if (!$userId OR !$elementId)
+		{
+			return false;
+		}
 
-        if (!$userId OR !$elementId)
-        {
-            return false;
-        }
+		$keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
 
-        $keyId = craft()->sproutSubscribe_subscription->getKeyId($keyName);
+		// @TODO refactor for validation of result && json responses
+		$result = craft()->db->createCommand()
+			->delete('sproutsubscribe_subscriptions', array(
+				'userId' => $userId,
+				'elementId' => $elementId,
+				'listsId' => $keyId
+			));
 
-        $result = craft()->db->createCommand()
-            ->delete('sproutsubscribe_subscriptions', array(
-                'userId' => $userId,
-                'elementId' => $elementId,
-                'listsId' => $keyId
-            ));
+		if ($result)
+		{
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array(
+					'success' => true,
+				));
+			} 
+			else 
+			{
+				$this->redirectToPostedUrl();
+			}
+		} 
+		else 
+		{
+			if (craft()->request->isAjaxRequest())
+			{
+				$this->returnJson(array(
+					'response' => 'fail',
+				));
+			} 
+			else 
+			{
+				craft()->urlManager->setRouteVariables(array(
+					'response' => 'fail',
+				));
 
-        if ($result)
-        {
-            if (craft()->request->isAjaxRequest())
-            {
-                $this->returnJson(array(
-                    'response' => 'success',
-                ));
-            } else {
-                $this->redirectToPostedUrl();
-            }
-        } else {
-            if (craft()->request->isAjaxRequest())
-            {
-                $this->returnJson(array(
-                    'response' => 'fail',
-                ));
-            } else {
-                craft()->urlManager->setRouteVariables(array(
-                    'response' => 'fail',
-                ));
+				$this->redirectToPostedUrl();
+			}
+		}
 
-                $this->redirectToPostedUrl();
-            }
-        }
-
-        $this->redirectToPostedUrl();
-    }
+		$this->redirectToPostedUrl();
+	}
 
 }

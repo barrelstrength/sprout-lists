@@ -16,19 +16,19 @@ class SproutSubscribe_ListsRecord extends BaseRecord
 	 * These have to be explicitly defined in order for the plugin to install
 	 * @return array
 	 */
-    public function defineAttributes()
-    {
-        return array(
-            'name' => AttributeType::String,
-            'handle' => AttributeType::String,
-        );
-    }
-    
+	public function defineAttributes()
+	{
+		return array(
+			'name' => AttributeType::String,
+			'handle' => AttributeType::String,
+		);
+	}
+	
 
-    public function defineRelations()
-    {
+	public function defineRelations()
+	{
 
-        return array();
+	   return array();
 
-    }
+	}
 }

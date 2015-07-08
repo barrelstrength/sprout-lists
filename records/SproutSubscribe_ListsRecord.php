@@ -19,16 +19,13 @@ class SproutSubscribe_ListsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'name' => AttributeType::String,
+			'name'   => AttributeType::String,
 			'handle' => AttributeType::String,
 		);
 	}
-	
 
 	public function defineRelations()
 	{
-
 	   return array();
-
 	}
 }

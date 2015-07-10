@@ -36,7 +36,7 @@ class SproutSubscribe_SubscriptionRecord extends BaseRecord
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),
-			'lists' => array(
+			'list' => array(
 				static::BELONGS_TO, 
 				'SproutSubscribe_ListsRecord',
 				'required' => true, 

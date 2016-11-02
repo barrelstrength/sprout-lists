@@ -1,6 +1,6 @@
-# Sprout Subscribe
+# Sprout List
 
-## Subscribe and Unsubscribe Forms
+## List and Unsubscribe Forms
 
 {% set params = {
 	list: 'listHandle',
@@ -9,11 +9,11 @@
 } %}
 
 {# Check if a user is subscribed already #}
-{% if craft.sproutSubscribe.isSubscribed(params) %}
+{% if craft.sproutList.isSubscribed(params) %}
 
   {# Unsubscribe a user from a specific ID #}
   <form method="post" accept-charset="utf-8">
-  	<input type="hidden" name="action" value="sproutSubscribe/lists/unsubscribe">
+  	<input type="hidden" name="action" value="sproutList/lists/unsubscribe">
   	<input type="hidden" name="elementId" value="{{ entry.id }}">
   	<input type="hidden" name="userId" value="{{ currentUser.id }}">
   	<input type="hidden" name="list" value="listHandle">
@@ -24,7 +24,7 @@
 
   {# Subscribe a user to a specific ID #}
   <form method="post" accept-charset="utf-8">
-  	<input type="hidden" name="action" value="sproutSubscribe/lists/subscribe">
+  	<input type="hidden" name="action" value="sproutList/lists/subscribe">
   	<input type="hidden" name="elementId" value="{{ entry.id }}">
   	<input type="hidden" name="userId" value="{{ currentUser.id }}">
   	<input type="hidden" name="list" value="listHandle">
@@ -40,10 +40,10 @@
 ### Subscription Counts
 
 {# Total Subscriptions for a List #}
-{{ craft.sproutSubscribe.subscriptionCount({ list: 'listHandle' }) }}
+{{ craft.sproutList.subscriptionCount({ list: 'listHandle' }) }}
 
 {# Total Subscriptions for a specific User on a List #}
-{{ craft.sproutSubscribe.subscriptionCount({
+{{ craft.sproutList.subscriptionCount({
 	list: 'listHandle',
 	userId: currentUser.id
 }) }}
@@ -51,10 +51,10 @@
 ### Subscriber Counts
 
 {# Total Subscribers for a List #}
-{{ craft.sproutSubscribe.subscriberCount({ list: 'listHandle' }) }}
+{{ craft.sproutList.subscriberCount({ list: 'listHandle' }) }}
 
 {# Total Subscribers for a specific Element on a List #}
-{{ craft.sproutSubscribe.subscriberCount({
+{{ craft.sproutList.subscriberCount({
 	list: 'listHandle',
 	elementId: entry.id
 }) }}
@@ -64,12 +64,12 @@
 ## Retrieving IDs of Subscriptions
 
 {# All Subscriptions on a List #}
-{% set subscriptions = craft.sproutSubscribe.subscriptions({
+{% set subscriptions = craft.sproutList.subscriptions({
 	list: 'listHandle'
 }) %}
 
 {# All Subscriptions for a specific User on a List #}
-{% set subscriptions = craft.sproutSubscribe.subscriptions({
+{% set subscriptions = craft.sproutList.subscriptions({
 	list: 'listHandle',
 	userId: currentUser.id
 }) %}
@@ -86,7 +86,7 @@
 
 ## Displaying the most popular subscriptions
 
-{% set popularSubscriptions = craft.sproutSubscribe.subscriptions({
+{% set popularSubscriptions = craft.sproutList.subscriptions({
 	list: 'listHandle',
 	userId: currentUser.id,
 	order: 'count DESC',
@@ -104,7 +104,7 @@
 
 ## Displaying the date a User subscribed to an Element
 
-{% set subscriptions = craft.sproutSubscribe.subscriptions({
+{% set subscriptions = craft.sproutList.subscriptions({
 	list: 'listHandle',
 	userId: currentUser.id
 }) %}
@@ -121,12 +121,12 @@
 ## Retrieving IDs of Subscribers
 
 {# All Subscribers on a List #}
-{% set subscribers = craft.sproutSubscribe.subscribers({
+{% set subscribers = craft.sproutList.subscribers({
 	list: 'listHandle'
 }) %}
 
 {# All Subscribers to a specific Element on a List #}
-{% set subscribers = craft.sproutSubscribe.subscribers({
+{% set subscribers = craft.sproutList.subscribers({
 	list: 'listHandle',
   elementId: entry.id
 }) %}

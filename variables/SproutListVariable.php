@@ -1,18 +1,18 @@
 <?php
 namespace Craft;
 
-class SproutSubscribeVariable
+class SproutListVariable
 {
 	public function getName()
 	{
-		$plugin = craft()->plugins->getPlugin('sproutsubscribe');
+		$plugin = craft()->plugins->getPlugin('sproutlist');
 
 		return $plugin->getName();
 	}
 
 	public function getVersion()
 	{
-		$plugin = craft()->plugins->getPlugin('sproutsubscribe');
+		$plugin = craft()->plugins->getPlugin('sproutlist');
 
 		return $plugin->getVersion();
 	}
@@ -24,7 +24,7 @@ class SproutSubscribeVariable
 			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
 		}
 
-		return craft()->sproutSubscribe_subscription->isSubscribed($criteria);
+		return craft()->sproutList_subscription->isSubscribed($criteria);
 	}
 
 	// Counts
@@ -37,7 +37,7 @@ class SproutSubscribeVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutSubscribe_subscription->subscriptionCount($criteria);
+		return craft()->sproutList_subscription->subscriptionCount($criteria);
 	}
 
 	public function getSubscriberCount($criteria)
@@ -47,7 +47,7 @@ class SproutSubscribeVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutSubscribe_subscription->subscriberCount($criteria);
+		return craft()->sproutList_subscription->subscriberCount($criteria);
 	}
 
 	// Subscriptions
@@ -60,7 +60,7 @@ class SproutSubscribeVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutSubscribe_subscription->getSubscriptions($criteria);
+		return craft()->sproutList_subscription->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
@@ -70,6 +70,6 @@ class SproutSubscribeVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutSubscribe_subscription->getSubscribers($criteria);
+		return craft()->sproutList_subscription->getSubscribers($criteria);
 	}
 }

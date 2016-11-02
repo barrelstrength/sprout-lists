@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutSubscribe_SubscriptionModel extends BaseModel
+class SproutList_SubscriptionModel extends BaseModel
 {
 	/**
 	 * @access protected

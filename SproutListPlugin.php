@@ -1,11 +1,11 @@
 <?php
 namespace Craft;
 
-class SproutSubscribePlugin extends BasePlugin
+class SproutListPlugin extends BasePlugin
 {
 	public function getName()
 	{
-		return 'Sprout Subscribe';
+		return 'Sprout Lists';
 	}
 
 	public function getVersion()
@@ -25,8 +25,8 @@ class SproutSubscribePlugin extends BasePlugin
 
 	public function addTwigExtension()
 	{
-		Craft::import('plugins.sproutsubscribe.twigextensions.SproutSubscribeTwigExtension');
+		Craft::import('plugins.sproutlist.twigextensions.SproutListTwigExtension');
 
-		return new SproutSubscribeTwigExtension();
+		return new SproutListTwigExtension();
 	}
 }

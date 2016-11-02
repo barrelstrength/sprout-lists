@@ -5,7 +5,7 @@ namespace Craft;
  * Lists controller
  *
  */
-class SproutSubscribe_ListsController extends BaseController
+class SproutList_ListsController extends BaseController
 {
 	/**
 	 * Action to submit new subscription
@@ -18,9 +18,9 @@ class SproutSubscribe_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$subscriptionModel = SproutSubscribe_SubscriptionModel::populateModel($subscription);
+		$subscriptionModel = SproutList_SubscriptionModel::populateModel($subscription);
 
-		if (!craft()->sproutSubscribe_subscription->subscribe($subscriptionModel))
+		if (!craft()->sproutList_subscription->subscribe($subscriptionModel))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -67,9 +67,9 @@ class SproutSubscribe_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$subscriptionModel = SproutSubscribe_SubscriptionModel::populateModel($subscription);
+		$subscriptionModel = SproutList_SubscriptionModel::populateModel($subscription);
 
-		if (!craft()->sproutSubscribe_subscription->unsubscribe($subscriptionModel))
+		if (!craft()->sproutList_subscription->unsubscribe($subscriptionModel))
 		{
 			if (craft()->request->isAjaxRequest())
 			{

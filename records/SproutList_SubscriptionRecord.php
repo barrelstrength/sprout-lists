@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutSubscribe_SubscriptionRecord extends BaseRecord
+class SproutList_SubscriptionRecord extends BaseRecord
 {	
 	/**
 	 * Return table name corresponding to this record
@@ -9,7 +9,7 @@ class SproutSubscribe_SubscriptionRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutsubscribe_subscriptions';
+		return 'sproutlist_subscriptions';
 	}
 
 	/**
@@ -38,7 +38,7 @@ class SproutSubscribe_SubscriptionRecord extends BaseRecord
 			),
 			'list' => array(
 				static::BELONGS_TO, 
-				'SproutSubscribe_ListsRecord',
+				'SproutList_ListsRecord',
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),

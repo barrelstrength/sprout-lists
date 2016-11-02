@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="Sprout Subscribe" default="build">
+<project name="Sprout List" default="build">
 
-    <property name="pluginFileName" value="SproutSubscribe" />
-    <property name="pluginName" value="sproutsubscribe" />
+    <property name="pluginFileName" value="SproutList" />
+    <property name="pluginName" value="sproutlist" />
     <property name="pluginVersion" value="0.6.1" />
 
     <target name="release">

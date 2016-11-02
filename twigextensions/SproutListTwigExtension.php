@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutSubscribeTwigExtension extends \Twig_Extension
+class SproutListTwigExtension extends \Twig_Extension
 {
   /**
    * Plugin Name
@@ -10,7 +10,7 @@ class SproutSubscribeTwigExtension extends \Twig_Extension
    */
   public function getName()
   {
-    return 'Sprout Subscribe';
+    return 'Sprout List';
   }
 
   /**

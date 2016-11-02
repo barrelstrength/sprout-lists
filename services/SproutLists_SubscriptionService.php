@@ -161,14 +161,14 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
 	 * @return Array         		Subscription Count.
 	 */
-	public function subscriptionCount($criteria)
+	public function listCount($criteria)
 	{
 		$listId = $this->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
 			->from('sproutlists_subscriptions')
-			->where(array('listId = :listId'), array(':listId' => $listId));
+			->where("listId = $listId");
 
 		if(isset($criteria['userId']))
 		{

@@ -40,14 +40,14 @@ class SproutListsVariable
 		return craft()->sproutLists_subscription->subscriptionCount($criteria);
 	}
 
-	public function getSubscriberCount($criteria)
+	public function getListCount($criteria)
 	{
 		if (!isset($criteria['list']))
 		{
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutLists_subscription->subscriberCount($criteria);
+		return craft()->sproutLists_subscription->listCount($criteria);
 	}
 
 	// Subscriptions

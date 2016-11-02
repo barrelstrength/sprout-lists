@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutListPlugin extends BasePlugin
+class SproutListsPlugin extends BasePlugin
 {
 	public function getName()
 	{
@@ -25,8 +25,8 @@ class SproutListPlugin extends BasePlugin
 
 	public function addTwigExtension()
 	{
-		Craft::import('plugins.sproutlist.twigextensions.SproutListTwigExtension');
+		Craft::import('plugins.sproutlists.twigextensions.SproutListsTwigExtension');
 
-		return new SproutListTwigExtension();
+		return new SproutListsTwigExtension();
 	}
 }

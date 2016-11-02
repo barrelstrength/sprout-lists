@@ -2,8 +2,8 @@
 
 <project name="Sprout List" default="build">
 
-    <property name="pluginFileName" value="SproutList" />
-    <property name="pluginName" value="sproutlist" />
+    <property name="pluginFileName" value="SproutLists" />
+    <property name="pluginName" value="sproutlists" />
     <property name="pluginVersion" value="0.6.1" />
 
     <target name="release">

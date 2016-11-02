@@ -1,18 +1,18 @@
 <?php
 namespace Craft;
 
-class SproutListVariable
+class SproutListsVariable
 {
 	public function getName()
 	{
-		$plugin = craft()->plugins->getPlugin('sproutlist');
+		$plugin = craft()->plugins->getPlugin('sproutlists');
 
 		return $plugin->getName();
 	}
 
 	public function getVersion()
 	{
-		$plugin = craft()->plugins->getPlugin('sproutlist');
+		$plugin = craft()->plugins->getPlugin('sproutlists');
 
 		return $plugin->getVersion();
 	}
@@ -24,7 +24,7 @@ class SproutListVariable
 			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
 		}
 
-		return craft()->sproutList_subscription->isSubscribed($criteria);
+		return craft()->sproutLists_subscription->isSubscribed($criteria);
 	}
 
 	// Counts
@@ -37,7 +37,7 @@ class SproutListVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutList_subscription->subscriptionCount($criteria);
+		return craft()->sproutLists_subscription->subscriptionCount($criteria);
 	}
 
 	public function getSubscriberCount($criteria)
@@ -47,7 +47,7 @@ class SproutListVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutList_subscription->subscriberCount($criteria);
+		return craft()->sproutLists_subscription->subscriberCount($criteria);
 	}
 
 	// Subscriptions
@@ -60,7 +60,7 @@ class SproutListVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutList_subscription->getSubscriptions($criteria);
+		return craft()->sproutLists_subscription->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
@@ -70,6 +70,6 @@ class SproutListVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutList_subscription->getSubscribers($criteria);
+		return craft()->sproutLists_subscription->getSubscribers($criteria);
 	}
 }

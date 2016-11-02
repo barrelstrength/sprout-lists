@@ -1,18 +1,18 @@
 <?php
 namespace Craft;
 
-class SproutList_SubscriptionService extends BaseApplicationComponent
+class SproutLists_SubscriptionService extends BaseApplicationComponent
 {
 	/**
 	 * Subscribes a user to an element
 	 * @param  String $list String representing subscription grouping
 	 * @return Bool       	Status True/False
 	 */
-	public function subscribe(SproutList_SubscriptionModel $subscription)
+	public function subscribe(SproutLists_SubscriptionModel $subscription)
 	{
 		$listId = $this->getListId($subscription->list);
 
-		$record = new SproutList_SubscriptionRecord;
+		$record = new SproutLists_SubscriptionRecord;
 		$record->listId = $listId;
 		$record->userId = $subscription->userId;
 		$record->elementId = $subscription->elementId;
@@ -30,12 +30,12 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe(SproutList_SubscriptionModel $subscription)
+	public function unsubscribe(SproutLists_SubscriptionModel $subscription)
 	{
 		$listId = $this->getListId($subscription->list);
 
 		$result = craft()->db->createCommand()
-			->delete('sproutlist_subscriptions', array(
+			->delete('sproutlists_subscriptions', array(
 				'listId' => $listId,
 				'userId' => $subscription->userId,
 				'elementId' => $subscription->elementId,
@@ -59,7 +59,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 	{
 		$isSubscribed = craft()->db->createCommand()
 			->select('userId, elementId')
-			->from('sproutlist_subscriptions')
+			->from('sproutlists_subscriptions')
 			->where(array(
 				'AND',
 				'listId = :listId',
@@ -86,7 +86,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
-			->from('sproutlist_subscriptions')
+			->from('sproutlists_subscriptions')
 			->group('elementId');
 
 		if (isset($criteria['userId']))
@@ -113,7 +113,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$subscriptions = $query->queryAll();
 
-		$subscriptionModels = SproutList_SubscriptionModel::populateModels($subscriptions, 'elementId');
+		$subscriptionModels = SproutLists_SubscriptionModel::populateModels($subscriptions, 'elementId');
 
 		return $subscriptionModels;
 	}
@@ -130,7 +130,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('userId')
-			->from('sproutlist_subscriptions')
+			->from('sproutlists_subscriptions')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if (isset($criteria['elementId']))
@@ -150,7 +150,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$subscriptions = $query->queryAll();
 
-		$subscriptionModels = SproutList_SubscriptionModel::populateModels($subscriptions);
+		$subscriptionModels = SproutLists_SubscriptionModel::populateModels($subscriptions);
 
 		return $subscriptionModels;
 	}
@@ -167,7 +167,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlist_subscriptions')
+			->from('sproutlists_subscriptions')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if(isset($criteria['userId']))
@@ -194,7 +194,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlist_subscriptions')
+			->from('sproutlists_subscriptions')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if(isset($criteria['elementId']))
@@ -226,7 +226,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 
 		$listId = craft()->db->createCommand()
 			->select('id')
-			->from('sproutlist_lists')
+			->from('sproutlists_lists')
 			->where(array(
 				'AND',
 				'name = :name',
@@ -239,7 +239,7 @@ class SproutList_SubscriptionService extends BaseApplicationComponent
 		// If no key found dynamically create one
 		if(!$listId)
 		{
-			$record = new SproutList_ListsRecord;
+			$record = new SproutLists_ListsRecord;
 			$record->name = $name;
 			$record->handle = $handle;
 

@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutListTwigExtension extends \Twig_Extension
+class SproutListsTwigExtension extends \Twig_Extension
 {
   /**
    * Plugin Name

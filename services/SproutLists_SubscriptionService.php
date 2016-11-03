@@ -168,13 +168,13 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
 			->from('sproutlists_subscriptions')
-			->where("listId = $listId");
+			->where(array('and', "listId = :listId"), array(':listId' => $listId) );
 
 		if(isset($criteria['userId']))
 		{
 			$userId = $this->prepareIdsForQuery($criteria['userId']);
 
-			$query->where(array('and', 'listId = :listId', array('in', 'userId', $userId)));
+			$query->where(array('and', 'listId = :listId', array('in', 'userId', $userId)), array(':listId' => $listId));
 			$query->group('userId');
 		}
 

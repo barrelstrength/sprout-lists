@@ -10,7 +10,7 @@ class SproutListsTwigExtension extends \Twig_Extension
    */
   public function getName()
   {
-    return 'Sprout List';
+    return 'Sprout Lists';
   }
 
   /**
@@ -21,7 +21,7 @@ class SproutListsTwigExtension extends \Twig_Extension
   public function getFilters()
   {
     return array(
-      'subscriptionIds' => new \Twig_Filter_Method($this, 'subscriptionIds'),
+      'listIds' => new \Twig_Filter_Method($this, 'listIds'),
       'subscriberIds' => new \Twig_Filter_Method($this, 'subscriberIds'),
     );
   }
@@ -31,10 +31,10 @@ class SproutListsTwigExtension extends \Twig_Extension
 	 *
 	 * @return string
 	 */
-  public function subscriptionIds($subscriptions)
+  public function listIds($lists)
   {
-	  $subscriptionIds = $this->buildArrayOfIds($subscriptions, 'elementId');
-	  return StringHelper::arrayToString($subscriptionIds);
+	  $listIds = $this->buildArrayOfIds($lists, 'elementId');
+	  return StringHelper::arrayToString($listIds);
   }
 
 	/**
@@ -49,18 +49,18 @@ class SproutListsTwigExtension extends \Twig_Extension
 	}
 
 	/**
-	 * @param $subscriptions
+	 * @param $lists
 	 * @return array
 	 */
-	public function buildArrayOfIds($subscriptions, $type)
+	public function buildArrayOfIds($lists, $type)
 	{
-		$subscriptionIds = array();
+		$listIds = array();
 
-		foreach ($subscriptions as $subscription)
+		foreach ($lists as $list)
 		{
-			$subscriptionIds[] = $subscription[$type];
+			$listIds[] = $list[$type];
 		}
 
-		return $subscriptionIds;
+		return $listIds;
 	}
 }

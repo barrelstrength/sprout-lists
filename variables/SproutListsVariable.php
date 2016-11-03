@@ -24,7 +24,16 @@ class SproutListsVariable
 			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
 		}
 
-		return craft()->sproutLists_subscription->isSubscribed($criteria);
+		$type = 'user';
+
+		if (isset($criteria['type']))
+		{
+			$type = $criteria['type'];
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		return $listType->isSubscribed($criteria);
 	}
 
 	// Counts
@@ -37,7 +46,16 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutLists_subscription->subscriptionCount($criteria);
+		$type = 'user';
+
+		if (isset($criteria['type']))
+		{
+			$type = $criteria['type'];
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		return $listType->getSubscriptionCount($criteria);
 	}
 
 	public function getListCount($criteria)
@@ -47,7 +65,16 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutLists_subscription->listCount($criteria);
+		$type = 'user';
+
+		if (isset($criteria['type']))
+		{
+			$type = $criteria['type'];
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		return $listType->getListCount($criteria);
 	}
 
 	// Subscriptions
@@ -60,7 +87,16 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutLists_subscription->getSubscriptions($criteria);
+		$type = 'user';
+
+		if (isset($criteria['type']))
+		{
+			$type = $criteria['type'];
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		return $listType->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
@@ -70,6 +106,15 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		return craft()->sproutLists_subscription->getSubscribers($criteria);
+		$type = 'user';
+
+		if (isset($criteria['type']))
+		{
+			$type = $criteria['type'];
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		return $listType->getSubscribers($criteria);
 	}
 }

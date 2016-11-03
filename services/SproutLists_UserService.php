@@ -1,21 +1,21 @@
 <?php
 namespace Craft;
 
-class SproutLists_SubscriptionService extends BaseApplicationComponent
+class SproutLists_UserService extends BaseApplicationComponent
 {
 	/**
 	 * Subscribes a user to an element
 	 * @param  String $list String representing subscription grouping
 	 * @return Bool       	Status True/False
 	 */
-	public function subscribe(SproutLists_SubscriptionModel $subscription)
+	public function subscribe(SproutLists_UserModel $user)
 	{
-		$listId = $this->getListId($subscription->list);
+		$listId = $this->getListId($user->list);
 
-		$record = new SproutLists_SubscriptionRecord;
+		$record = new SproutLists_UserRecord;
 		$record->listId = $listId;
-		$record->userId = $subscription->userId;
-		$record->elementId = $subscription->elementId;
+		$record->userId = $user->userId;
+		$record->elementId = $user->elementId;
 
 		if($record->save())
 		{
@@ -30,15 +30,15 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe(SproutLists_SubscriptionModel $subscription)
+	public function unsubscribe(SproutLists_UserModel $user)
 	{
-		$listId = $this->getListId($subscription->list);
+		$listId = $this->getListId($user->list);
 
 		$result = craft()->db->createCommand()
-			->delete('sproutlists_subscriptions', array(
+			->delete('sproutlists_users', array(
 				'listId' => $listId,
-				'userId' => $subscription->userId,
-				'elementId' => $subscription->elementId,
+				'userId' => $user->userId,
+				'elementId' => $user->elementId,
 			));
 
 		if($result)
@@ -59,7 +59,7 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 	{
 		$isSubscribed = craft()->db->createCommand()
 			->select('userId, elementId')
-			->from('sproutlists_subscriptions')
+			->from('sproutlists_users')
 			->where(array(
 				'AND',
 				'listId = :listId',
@@ -86,7 +86,7 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
-			->from('sproutlists_subscriptions')
+			->from('sproutlists_users')
 			->group('elementId');
 
 		if (isset($criteria['userId']))
@@ -111,11 +111,11 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 			$query->limit($criteria['limit']);
 		}
 
-		$subscriptions = $query->queryAll();
+		$users = $query->queryAll();
 
-		$subscriptionModels = SproutLists_SubscriptionModel::populateModels($subscriptions, 'elementId');
+		$userModels = SproutLists_UserModel::populateModels($users, 'elementId');
 
-		return $subscriptionModels;
+		return $userModels;
 	}
 
 	/**
@@ -130,7 +130,7 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('userId')
-			->from('sproutlists_subscriptions')
+			->from('sproutlists_users')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if (isset($criteria['elementId']))
@@ -148,11 +148,11 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 			$query->limit($criteria['limit']);
 		}
 
-		$subscriptions = $query->queryAll();
+		$users = $query->queryAll();
 
-		$subscriptionModels = SproutLists_SubscriptionModel::populateModels($subscriptions);
+		$userModels = SproutLists_UserModel::populateModels($users);
 
-		return $subscriptionModels;
+		return $userModels;
 	}
 
 	/**
@@ -167,7 +167,7 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlists_subscriptions')
+			->from('sproutlists_users')
 			->where(array('and', "listId = :listId"), array(':listId' => $listId) );
 
 		if(isset($criteria['userId']))
@@ -194,7 +194,7 @@ class SproutLists_SubscriptionService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlists_subscriptions')
+			->from('sproutlists_users')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if(isset($criteria['elementId']))

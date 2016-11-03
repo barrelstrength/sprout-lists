@@ -23,10 +23,25 @@ class SproutListsPlugin extends BasePlugin
 		return 'http://barrelstrengthdesign.com';
 	}
 
+	public function registerSproutListsListType()
+	{
+		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
+
+		return array(
+			new SproutLists_UserListType()
+		);
+	}
+
 	public function addTwigExtension()
 	{
 		Craft::import('plugins.sproutlists.twigextensions.SproutListsTwigExtension');
 
 		return new SproutListsTwigExtension();
 	}
+}
+
+function sproutLists()
+{
+	return Craft::app()->getComponent('sproutLists');
 }

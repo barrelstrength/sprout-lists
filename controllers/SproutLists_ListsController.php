@@ -18,9 +18,16 @@ class SproutLists_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
+		$type = 'user';
 
-		if (!craft()->sproutLists_subscription->subscribe($subscriptionModel))
+		if (craft()->request->getPost('type') != null)
+		{
+			$type = craft()->request->getPost('type');
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		if (!$listType->subscribe($subscription))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -67,9 +74,16 @@ class SproutLists_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
+		$type = 'user';
 
-		if (!craft()->sproutLists_subscription->unsubscribe($subscriptionModel))
+		if (craft()->request->getPost('type') != null)
+		{
+			$type = craft()->request->getPost('type');
+		}
+
+		$listType = sproutLists()->getListType($type);
+
+		if (!$listType->unsubscribe($subscription))
 		{
 			if (craft()->request->isAjaxRequest())
 			{

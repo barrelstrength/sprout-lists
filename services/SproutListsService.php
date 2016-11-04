@@ -5,8 +5,12 @@ namespace Craft;
 class SproutListsService extends BaseApplicationComponent
 {
 	protected $listTypes = array();
+
 	public $listUser;
 
+	/**
+	 * @property SproutLists_UserService $listUser
+	 */
 	public function init()
 	{
 		parent::init();
@@ -31,7 +35,6 @@ class SproutListsService extends BaseApplicationComponent
 					if ($class && $class instanceof SproutListsBaseListType)
 					{
 						$this->listTypes[$class->getClassName()] = $class;
-
 					}
 				}
 			}

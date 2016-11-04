@@ -41,6 +41,9 @@ class SproutListsPlugin extends BasePlugin
 	}
 }
 
+/**
+ * @return SproutListsService
+ */
 function sproutLists()
 {
 	return Craft::app()->getComponent('sproutLists');

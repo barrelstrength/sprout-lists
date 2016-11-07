@@ -1,11 +1,15 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailModel extends BaseModel
+class SproutLists_EmailModel extends BaseElementModel
 {
+	protected $elementType = 'SproutEmail_ListElementType';
+
 	public function defineAttributes()
 	{
-		return array(
+		$defaults = parent::defineAttributes();
+
+		$attributes = array(
 			'id'          => AttributeType::Number,
 			'list'        => AttributeType::Number,
 			'email'       => AttributeType::String,
@@ -16,5 +20,7 @@ class SproutLists_EmailModel extends BaseModel
 			'dateCreated' => AttributeType::DateTime,
 			'count'       => AttributeType::Number
 		);
+
+		return array_merge($defaults, $attributes);
 	}
 }

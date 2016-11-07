@@ -1,15 +1,18 @@
 <?php
 namespace Craft;
 
-class SproutLists_UserModel extends BaseModel
+class SproutLists_UserModel extends BaseElementModel
 {
+	protected $elementType = 'SproutLists_List';
 	/**
 	 * @access protected
 	 * @return array
 	 */
 	protected function defineAttributes()
 	{
-		return array(
+		$defaults = parent::defineAttributes();
+
+		$attributes = array(
 			'id'          => AttributeType::Number,
 			'list'        => AttributeType::Number,
 			'userId'      => AttributeType::Number,
@@ -17,5 +20,7 @@ class SproutLists_UserModel extends BaseModel
 			'dateCreated' => AttributeType::DateTime,
 			'count'       => AttributeType::Number
 		);
+
+		return array_merge($defaults, $attributes);
 	}
 }

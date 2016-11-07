@@ -30,7 +30,7 @@ abstract class SproutListsBaseListType
 
 	abstract public function getSubscribers($criteria);
 
-	abstract public function listCount($criteria);
+	abstract public function getListCount($criteria);
 
 	abstract public function subscriberCount($criteria);
 

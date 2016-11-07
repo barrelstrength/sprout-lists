@@ -23,6 +23,14 @@ class SproutListsPlugin extends BasePlugin
 		return 'http://barrelstrengthdesign.com';
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function hasCpSection()
+	{
+		return true;
+	}
+
 	public function registerSproutListsListType()
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');

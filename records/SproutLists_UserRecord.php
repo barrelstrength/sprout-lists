@@ -30,16 +30,24 @@ class SproutLists_UserRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
+			'element'        => array(
+				static::BELONGS_TO,
+				'ElementRecord',
+				'id',
+				'required' => true,
+				'onDelete' => static::CASCADE
+			),
 			'user' => array(
 				static::BELONGS_TO, 
 				'UserRecord', 
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),
-			'element' => array(
-				static::BELONGS_TO, 
-				'ElementRecord', 
-				'required' => true, 
+			'elementObject' => array(
+				static::BELONGS_TO,
+				'ElementRecord',
+				'elementId',
+				'required' => true,
 				'onDelete' => static::CASCADE
 			),
 			'list' => array(

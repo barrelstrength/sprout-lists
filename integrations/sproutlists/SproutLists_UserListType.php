@@ -33,7 +33,7 @@ class SproutLists_UserListType extends SproutListsBaseListType
 		return sproutLists()->listUser->getSubscribers($criteria);
 	}
 
-	public function listCount($criteria)
+	public function getListCount($criteria)
 	{
 		return sproutLists()->listUser->listCount($criteria);
 	}

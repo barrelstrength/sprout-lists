@@ -17,10 +17,40 @@ class SproutLists_UserService extends BaseApplicationComponent
 		$record->userId = $user->userId;
 		$record->elementId = $user->elementId;
 
-		if($record->save())
+		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+		if ($record->validate())
 		{
-			return true;
+			try
+			{
+				if (craft()->elements->saveElement($user))
+				{
+					$record->id = $user->id;
+					
+					if ($record->save(false))
+					{
+						if ($transaction && $transaction->active)
+						{
+							$transaction->commit();
+						}
+
+						return true;
+					}
+				}
+
+			}
+			catch (\Exception $e)
+			{
+				if ($transaction && $transaction->active)
+				{
+					$transaction->rollback();
+				}
+
+				throw $e;
+			}
 		}
+
+
 
 		return false;
 	}

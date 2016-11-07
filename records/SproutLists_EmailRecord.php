@@ -23,6 +23,7 @@ class SproutLists_EmailRecord extends BaseRecord
 			'email'       => AttributeType::Number,
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
+			'type'        => AttributeType::String,
 			'details'     => AttributeType::String,
 			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,
@@ -35,8 +36,16 @@ class SproutLists_EmailRecord extends BaseRecord
 		return array(
 			'element' => array(
 				static::BELONGS_TO, 
-				'ElementRecord', 
+				'ElementRecord',
+				'id',
 				'required' => true, 
+				'onDelete' => static::CASCADE
+			),
+			'elementObject' => array(
+				static::BELONGS_TO,
+				'ElementRecord',
+				'elementId',
+				'required' => true,
 				'onDelete' => static::CASCADE
 			),
 			'list' => array(

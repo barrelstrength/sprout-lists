@@ -19,7 +19,6 @@ class SproutLists_UserRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'list'        => AttributeType::Number,
 			'userId'      => AttributeType::Number,
 			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,

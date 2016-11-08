@@ -7,6 +7,7 @@ class SproutListsService extends BaseApplicationComponent
 	protected $listTypes = array();
 
 	public $listUser;
+	public $listEmail;
 
 	/**
 	 * @property SproutLists_UserService $listUser
@@ -17,7 +18,8 @@ class SproutListsService extends BaseApplicationComponent
 
 		$this->getAllListTypes();
 
-		$this->listUser = Craft::app()->getComponent('sproutLists_user');
+		$this->listUser  = Craft::app()->getComponent('sproutLists_user');
+		$this->listEmail = Craft::app()->getComponent('sproutLists_email');
 	}
 
 	public function getAllListTypes()
@@ -59,5 +61,64 @@ class SproutListsService extends BaseApplicationComponent
 		}
 
 		return new $namespace;
+	}
+
+
+	/**
+	 * Retrieve id of "list" from lists table.
+	 * @param  string $name Takes list converts to camel case,
+	 *                      Queries to check if it exists.
+	 *                      If not dynamically creates it.
+	 * @return int          Returns id of existing or dynamic list.
+	 */
+	public function getListId($name)
+	{
+		$handle = $this->camelCase($name);
+
+		$listId = craft()->db->createCommand()
+			->select('id')
+			->from('sproutlists_lists')
+			->where(array(
+				'AND',
+				'name = :name',
+				'handle = :handle'
+			), array(
+				':name' => $name,
+				':handle' => $handle
+			))->queryScalar();
+
+		// If no key found dynamically create one
+		if(!$listId)
+		{
+			$record = new SproutLists_ListsRecord;
+			$record->name = $name;
+			$record->handle = $handle;
+
+			$record->save();
+
+			return $record->id;
+		}
+
+		return $listId;
+	}
+
+	/**
+	 * Returns camelCased version of original string.
+	 * @param  string $str     String to camel case.
+	 * @param  array  $noStrip Characters to strip (optional).
+	 * @return string          Camel cased string.
+	 */
+	private static function camelCase($str, array $noStrip = [])
+	{
+		// non-alpha and non-numeric characters become spaces
+		$str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);
+		$str = trim($str);
+
+		// uppercase the first character of each word
+		$str = ucwords($str);
+		$str = str_replace(" ", "", $str);
+		$str = lcfirst($str);
+
+		return $str;
 	}
 }

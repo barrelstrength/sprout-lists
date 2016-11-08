@@ -19,8 +19,7 @@ class SproutLists_EmailRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'list'        => AttributeType::Number,
-			'email'       => AttributeType::Number,
+			'email'       => AttributeType::String,
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
 			'type'        => AttributeType::String,

@@ -35,9 +35,11 @@ class SproutListsPlugin extends BasePlugin
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_EmailListType');
 
 		return array(
-			new SproutLists_UserListType()
+			new SproutLists_UserListType(),
+			new SproutLists_EmailListType()
 		);
 	}
 

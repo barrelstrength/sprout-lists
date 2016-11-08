@@ -36,4 +36,13 @@ abstract class SproutListsBaseListType
 
 	abstract public function getListId($name);
 
+	public function afterSubscribe()
+	{
+
+	}
+
+	public function afterUnSubscribe()
+	{
+
+	}
 }

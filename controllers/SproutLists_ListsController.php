@@ -14,7 +14,16 @@ class SproutLists_ListsController extends BaseController
 	 */
 	public function actionSubscribe()
 	{
-		$subscription['userId'] = craft()->request->getRequiredPost('userId');
+		if (craft()->request->getPost('userId') != null)
+		{
+			$subscription['userId'] = craft()->request->getPost('userId');
+		}
+
+		if (craft()->request->getPost('email') != null)
+		{
+			$subscription['email'] = craft()->request->getPost('email');
+		}
+
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
@@ -29,6 +38,9 @@ class SproutLists_ListsController extends BaseController
 
 		if (!$listType->subscribe($subscription))
 		{
+			// Save element type for emails
+			$listType->afterSubscribe($subscription);
+
 			if (craft()->request->isAjaxRequest())
 			{
 				$this->returnJson(array(
@@ -70,7 +82,16 @@ class SproutLists_ListsController extends BaseController
 	 */
 	public function actionUnsubscribe()
 	{
-		$subscription['userId'] = craft()->request->getRequiredPost('userId');
+		if (craft()->request->getPost('userId') != null)
+		{
+			$subscription['userId'] = craft()->request->getPost('userId');
+		}
+
+		if (craft()->request->getPost('email') != null)
+		{
+			$subscription['email'] = craft()->request->getPost('email');
+		}
+
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 

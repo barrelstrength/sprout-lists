@@ -1,16 +1,16 @@
 <?php
 namespace Craft;
 
-class SproutLists_UserService extends BaseApplicationComponent
+class SproutLists_EmailService extends BaseApplicationComponent
 {
 	/**
 	 * Subscribes a user to an element
 	 * @param  String $list String representing subscription grouping
 	 * @return Bool       	Status True/False
 	 */
-	public function subscribe(SproutLists_UserModel $model)
+	public function subscribe(SproutLists_EmailModel $model)
 	{
-		$record = new SproutLists_UserRecord;
+		$record = new SproutLists_EmailRecord;
 
 		$modelAttributes = $model->getAttributes();
 
@@ -54,6 +54,10 @@ class SproutLists_UserService extends BaseApplicationComponent
 				throw $e;
 			}
 		}
+		else
+		{
+			Craft::dd($record->getErrors());
+		}
 
 
 
@@ -65,15 +69,15 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe(SproutLists_UserModel $user)
+	public function unsubscribe(SproutLists_EmailModel $model)
 	{
-		$listId = $user->listId;
+		$listId = $model->listId;
 
 		$result = craft()->db->createCommand()
-			->delete('sproutlists_users', array(
-				'listId' => $listId,
-				'userId' => $user->userId,
-				'elementId' => $user->elementId,
+			->delete('sproutlists_emails', array(
+				'listId'    => $listId,
+				'email'     => $model->email,
+				'elementId' => $model->elementId,
 			));
 
 		if($result)
@@ -93,16 +97,16 @@ class SproutLists_UserService extends BaseApplicationComponent
 	public function isSubscribed($criteria)
 	{
 		$query = craft()->db->createCommand()
-			->select('userId, elementId')
-			->from('sproutlists_users')
+			->select('email, elementId')
+			->from('sproutlists_emails')
 			->where(array(
 				'AND',
 				'listId = :listId',
-				'userId = :userId',
+				'email = :email',
 				'elementId = :elementId',
 			), array(
-				':listId' => sproutLists()->getListId($criteria['list']),
-				':userId' => $criteria['userId'],
+				':listId' => $this->getListId($criteria['list']),
+				':email' => $criteria['email'],
 				':elementId' => $criteria['elementId'],
 			));
 
@@ -119,7 +123,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 */
 	public function getSubscriptions($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		$listId = $this->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
@@ -163,7 +167,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 */
 	public function getSubscribers($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		$listId = $this->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('userId')
@@ -200,7 +204,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 */
 	public function listCount($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		$listId = $this->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
@@ -227,7 +231,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 */
 	public function subscriberCount($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		$listId = $this->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
@@ -250,6 +254,43 @@ class SproutLists_UserService extends BaseApplicationComponent
 		return $count;
 	}
 
+	/**
+	 * Retrieve id of "list" from lists table.
+	 * @param  string $name Takes list converts to camel case,
+	 *                      Queries to check if it exists.
+	 *                      If not dynamically creates it.
+	 * @return int          Returns id of existing or dynamic list.
+	 */
+	public function getListId($name)
+	{
+		$handle = $this->camelCase($name);
+
+		$listId = craft()->db->createCommand()
+			->select('id')
+			->from('sproutlists_lists')
+			->where(array(
+				'AND',
+				'name = :name',
+				'handle = :handle'
+			), array(
+				':name' => $name,
+				':handle' => $handle
+			))->queryScalar();
+
+		// If no key found dynamically create one
+		if(!$listId)
+		{
+			$record = new SproutLists_ListsRecord;
+			$record->name = $name;
+			$record->handle = $handle;
+
+			$record->save();
+
+			return $record->id;
+		}
+
+		return $listId;
+	}
 
 	/**
 	 * @param $userId
@@ -262,5 +303,25 @@ class SproutLists_UserService extends BaseApplicationComponent
 		}
 
 		return $ids;
+	}
+
+	/**
+	 * Returns camelCased version of original string.
+	 * @param  string $str     String to camel case.
+	 * @param  array  $noStrip Characters to strip (optional).
+	 * @return string          Camel cased string.
+	 */
+	private static function camelCase($str, array $noStrip = [])
+	{
+		// non-alpha and non-numeric characters become spaces
+		$str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);
+		$str = trim($str);
+		
+		// uppercase the first character of each word
+		$str = ucwords($str);
+		$str = str_replace(" ", "", $str);
+		$str = lcfirst($str);
+	   
+		return $str;
 	}
 }

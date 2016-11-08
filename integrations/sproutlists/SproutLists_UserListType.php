@@ -6,6 +6,10 @@ class SproutLists_UserListType extends SproutListsBaseListType
 {
 	public function subscribe($subscription)
 	{
+		$listId = sproutLists()->getListId($subscription['list']);
+
+		$subscription['listId'] = $listId;
+
 		$user = SproutLists_UserModel::populateModel($subscription);
 
 		return sproutLists()->listUser->subscribe($user);
@@ -13,6 +17,10 @@ class SproutLists_UserListType extends SproutListsBaseListType
 
 	public function unsubscribe($subscription)
 	{
+		$listId = sproutLists()->getListId($subscription['list']);
+
+		$subscription['listId'] = $listId;
+
 		$user = SproutLists_UserModel::populateModel($subscription);
 
 		return sproutLists()->listUser->unsubscribe($user);

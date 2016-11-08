@@ -19,7 +19,7 @@ class SproutListsVariable
 
 	public function getIsSubscribed($criteria)
 	{
-		if (!isset($criteria['list']) OR !isset($criteria['userId']) OR !isset($criteria['elementId']))
+		if (!isset($criteria['list']) OR !isset($criteria['elementId']))
 		{
 			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
 		}

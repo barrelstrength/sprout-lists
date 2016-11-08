@@ -14,7 +14,7 @@ class SproutLists_UserModel extends BaseElementModel
 
 		$attributes = array(
 			'id'          => AttributeType::Number,
-			'list'        => AttributeType::Number,
+			'listId'      => AttributeType::Number,
 			'userId'      => AttributeType::Number,
 			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,

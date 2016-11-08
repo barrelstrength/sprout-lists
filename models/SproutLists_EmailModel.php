@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutLists_EmailModel extends BaseElementModel
 {
-	protected $elementType = 'SproutEmail_ListElementType';
+	protected $elementType = 'SproutLists_List';
 
 	public function defineAttributes()
 	{
@@ -11,7 +11,7 @@ class SproutLists_EmailModel extends BaseElementModel
 
 		$attributes = array(
 			'id'          => AttributeType::Number,
-			'list'        => AttributeType::Number,
+			'listId'      => AttributeType::Number,
 			'email'       => AttributeType::String,
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,

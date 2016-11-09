@@ -32,17 +32,5 @@ abstract class SproutListsBaseListType
 
 	abstract public function getListCount($criteria);
 
-	abstract public function subscriberCount($criteria);
-
-	abstract public function getListId($name);
-
-	public function afterSubscribe()
-	{
-
-	}
-
-	public function afterUnSubscribe()
-	{
-
-	}
+	abstract public function getSubscriberCount($criteria);
 }

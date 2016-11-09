@@ -39,7 +39,7 @@ class SproutListsVariable
 	// Counts
 	// =========================================================================
 
-	public function getSubscriptionCount($criteria)
+	public function getSubscriberCount($criteria)
 	{
 		if (!isset($criteria['list']))
 		{
@@ -55,7 +55,7 @@ class SproutListsVariable
 
 		$listType = sproutLists()->getListType($type);
 
-		return $listType->getSubscriptionCount($criteria);
+		return $listType->getSubscriberCount($criteria);
 	}
 
 	public function getListCount($criteria)

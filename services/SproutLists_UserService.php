@@ -198,7 +198,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
 	 * @return Array         		Subscription Count.
 	 */
-	public function listCount($criteria)
+	public function getListCount($criteria)
 	{
 		$listId = sproutLists()->getListId($criteria['list']);
 
@@ -225,7 +225,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 * @param  Int $elementId    Id of Element.
 	 * @return Int            	 Subscription count.
 	 */
-	public function subscriberCount($criteria)
+	public function getSubscriberCount($criteria)
 	{
 		$listId = sproutLists()->getListId($criteria['list']);
 

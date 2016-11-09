@@ -33,26 +33,21 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 
 	public function getSubscriptions($criteria)
 	{
-
+		return sproutLists()->listEmail->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
 	{
-
+		return sproutLists()->listEmail->getSubscribers($criteria);
 	}
 
 	public function getListCount($criteria)
 	{
-
+		return sproutLists()->listEmail->listCount($criteria);
 	}
 
-	public function subscriberCount($criteria)
+	public function getSubscriberCount($criteria)
 	{
-
-	}
-
-	public function getListId($name)
-	{
-
+		return sproutLists()->listEmail->getSubscriberCount($criteria);
 	}
 }

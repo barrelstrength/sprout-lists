@@ -3,11 +3,6 @@ namespace Craft;
 
 class SproutLists_EmailService extends BaseApplicationComponent
 {
-	/**
-	 * Subscribes a user to an element
-	 * @param  String $list String representing subscription grouping
-	 * @return Bool       	Status True/False
-	 */
 	public function subscribe(SproutLists_EmailModel $model)
 	{
 		$record = new SproutLists_EmailRecord;
@@ -64,11 +59,6 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return false;
 	}
 
-	/**
-	 * Unsubscribes a user from an element
-	 * @param  String $list String representing subscription category.
-	 * @return Bool       	Status True/False
-	 */
 	public function unsubscribe(SproutLists_EmailModel $model)
 	{
 		$listId = $model->listId;
@@ -88,12 +78,6 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return false;
 	}
 
-	/**
-	 * Check to see if a user is already subscribed
-	 * @param  Array  $criteria  Array of element info
-	 * @return boolean           bool true == isSubscribed
-	 *                           bool false == Not subscribed
-	 */
 	public function isSubscribed($criteria)
 	{
 		$query = craft()->db->createCommand()
@@ -105,7 +89,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 				'email = :email',
 				'elementId = :elementId',
 			), array(
-				':listId' => $this->getListId($criteria['list']),
+				':listId' => sproutLists()->getListId($criteria['list']),
 				':email' => $criteria['email'],
 				':elementId' => $criteria['elementId'],
 			));
@@ -115,27 +99,21 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return ($isSubscribed) ? true : false;
 	}
 
-	/**
-	 * Retrieve element ids based on user ids
-	 * @param  String $list   String representing subscription category.
-	 * @param  Int $userId    Int or Array of Ints for User Ids.
-	 * @return Array          Int or Array of Ints of element Ids.
-	 */
 	public function getSubscriptions($criteria)
 	{
-		$listId = $this->getListId($criteria['list']);
+		$listId = sproutLists()->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
-			->select('userId, elementId, dateCreated, COUNT(elementId) AS count')
-			->from('sproutlists_users')
+			->select('email, elementId, dateCreated, COUNT(elementId) AS count')
+			->from('sproutlists_emails')
 			->group('elementId');
 
-		if (isset($criteria['userId']))
+		if (isset($criteria['email']))
 		{
 			// Search by user ID or array of user IDs
-			$userIds = $this->prepareIdsForQuery($criteria['userId']);
+			$emails = $this->prepareIdsForQuery($criteria['email']);
 
-			$query->where(array('and', "listId = $listId", array('in', 'userId', $userIds)));
+			$query->where(array('and', "listId = $listId", array('in', 'email', $emails)));
 		}
 		else
 		{
@@ -152,26 +130,20 @@ class SproutLists_EmailService extends BaseApplicationComponent
 			$query->limit($criteria['limit']);
 		}
 
-		$users = $query->queryAll();
+		$emails = $query->queryAll();
 
-		$userModels = SproutLists_UserModel::populateModels($users, 'elementId');
+		$emailModels = SproutLists_EmailModel::populateModels($emails, 'elementId');
 
-		return $userModels;
+		return $emailModels;
 	}
 
-	/**
-	 * Retrieve userIds by elementId & List
-	 * @param  String $list       String representing subscription category.
-	 * @param  Int $elementId     Int or Array of Ints for Elements.
-	 * @return Array              Int or Array of Ints of User Ids.
-	 */
 	public function getSubscribers($criteria)
 	{
-		$listId = $this->getListId($criteria['list']);
+		$listId = sproutLists()->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
-			->select('userId')
-			->from('sproutlists_users')
+			->select('email')
+			->from('sproutlists_emails')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if (isset($criteria['elementId']))
@@ -181,7 +153,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 		else
 		{
-			$query->group('userId');
+			$query->group('email');
 		}
 
 		if (isset($criteria['limit']))
@@ -189,34 +161,28 @@ class SproutLists_EmailService extends BaseApplicationComponent
 			$query->limit($criteria['limit']);
 		}
 
-		$users = $query->queryAll();
+		$emails = $query->queryAll();
 
-		$userModels = SproutLists_UserModel::populateModels($users);
+		$emailModels = SproutLists_EmailModel::populateModels($emails);
 
-		return $userModels;
+		return $emailModels;
 	}
 
-	/**
-	 * Retrieve subscription count based on list/userIds
-	 * @param  String $list    		String representing subscription category.
-	 * @param  Int/Array $userId 	Int or Array of Ints for User Ids.
-	 * @return Array         		Subscription Count.
-	 */
 	public function listCount($criteria)
 	{
-		$listId = $this->getListId($criteria['list']);
+		$listId = sproutLists()->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlists_users')
+			->from('sproutlists_emails')
 			->where(array('and', "listId = :listId"), array(':listId' => $listId) );
 
-		if(isset($criteria['userId']))
+		if(isset($criteria['email']))
 		{
-			$userId = $this->prepareIdsForQuery($criteria['userId']);
+			$email = $this->prepareIdsForQuery($criteria['email']);
 
-			$query->where(array('and', 'listId = :listId', array('in', 'userId', $userId)), array(':listId' => $listId));
-			$query->group('userId');
+			$query->where(array('and', 'listId = :listId', array('in', 'email', $email)), array(':listId' => $listId));
+			$query->group('email');
 		}
 
 		$count = $query->queryScalar();
@@ -229,13 +195,13 @@ class SproutLists_EmailService extends BaseApplicationComponent
 	 * @param  Int $elementId    Id of Element.
 	 * @return Int            	 Subscription count.
 	 */
-	public function subscriberCount($criteria)
+	public function getSubscriberCount($criteria)
 	{
-		$listId = $this->getListId($criteria['list']);
+		$listId = sproutLists()->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlists_users')
+			->from('sproutlists_emails')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if(isset($criteria['elementId']))
@@ -246,7 +212,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 		else
 		{
-			$query->group('userId');
+			$query->group('email');
 		}
 
 		$count = $query->queryScalar();
@@ -254,47 +220,6 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return $count;
 	}
 
-	/**
-	 * Retrieve id of "list" from lists table.
-	 * @param  string $name Takes list converts to camel case,
-	 *                      Queries to check if it exists.
-	 *                      If not dynamically creates it.
-	 * @return int          Returns id of existing or dynamic list.
-	 */
-	public function getListId($name)
-	{
-		$handle = $this->camelCase($name);
-
-		$listId = craft()->db->createCommand()
-			->select('id')
-			->from('sproutlists_lists')
-			->where(array(
-				'AND',
-				'name = :name',
-				'handle = :handle'
-			), array(
-				':name' => $name,
-				':handle' => $handle
-			))->queryScalar();
-
-		// If no key found dynamically create one
-		if(!$listId)
-		{
-			$record = new SproutLists_ListsRecord;
-			$record->name = $name;
-			$record->handle = $handle;
-
-			$record->save();
-
-			return $record->id;
-		}
-
-		return $listId;
-	}
-
-	/**
-	 * @param $userId
-	 */
 	public function prepareIdsForQuery($ids)
 	{
 		if (!is_array($ids))

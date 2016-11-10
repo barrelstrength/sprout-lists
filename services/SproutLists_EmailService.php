@@ -3,9 +3,9 @@ namespace Craft;
 
 class SproutLists_EmailService extends BaseApplicationComponent
 {
-	public function subscribe(SproutLists_EmailModel $model)
+	public function subscribe(SproutLists_EmailRecipientModel $model)
 	{
-		$record = new SproutLists_EmailRecord;
+		$record = new SproutLists_EmailRecipientRecord;
 
 		$modelAttributes = $model->getAttributes();
 
@@ -59,7 +59,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return false;
 	}
 
-	public function unsubscribe(SproutLists_EmailModel $model)
+	public function unsubscribe(SproutLists_EmailRecipientModel $model)
 	{
 		$listId = $model->listId;
 
@@ -132,7 +132,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$emails = $query->queryAll();
 
-		$emailModels = SproutLists_EmailModel::populateModels($emails, 'elementId');
+		$emailModels = SproutLists_EmailRecipientModel::populateModels($emails, 'elementId');
 
 		return $emailModels;
 	}
@@ -163,7 +163,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$emails = $query->queryAll();
 
-		$emailModels = SproutLists_EmailModel::populateModels($emails);
+		$emailModels = SproutLists_EmailRecipientModel::populateModels($emails);
 
 		return $emailModels;
 	}

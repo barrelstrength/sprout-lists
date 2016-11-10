@@ -10,7 +10,7 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 
 		$subscription['listId'] = $listId;
 
-		$model = SproutLists_EmailModel::populateModel($subscription);
+		$model = SproutLists_EmailRecipientModel::populateModel($subscription);
 
 		return sproutLists()->listEmail->subscribe($model);
 	}
@@ -21,7 +21,7 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 
 		$subscription['listId'] = $listId;
 
-		$model = SproutLists_EmailModel::populateModel($subscription);
+		$model = SproutLists_EmailRecipientModel::populateModel($subscription);
 
 		return sproutLists()->listEmail->unsubscribe($model);
 	}

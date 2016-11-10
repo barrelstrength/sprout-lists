@@ -8,9 +8,9 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription grouping
 	 * @return Bool       	Status True/False
 	 */
-	public function subscribe(SproutLists_UserModel $model)
+	public function subscribe(SproutLists_UserRecipientModel $model)
 	{
-		$record = new SproutLists_UserRecord;
+		$record = new SproutLists_UserRecipientRecord;
 
 		$modelAttributes = $model->getAttributes();
 
@@ -65,7 +65,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 * @param  String $list String representing subscription category.
 	 * @return Bool       	Status True/False
 	 */
-	public function unsubscribe(SproutLists_UserModel $user)
+	public function unsubscribe(SproutLists_UserRecipientModel $user)
 	{
 		$listId = $user->listId;
 
@@ -150,7 +150,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 
 		$users = $query->queryAll();
 
-		$userModels = SproutLists_UserModel::populateModels($users, 'elementId');
+		$userModels = SproutLists_UserRecipientModel::populateModels($users, 'elementId');
 
 		return $userModels;
 	}
@@ -187,7 +187,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 
 		$users = $query->queryAll();
 
-		$userModels = SproutLists_UserModel::populateModels($users);
+		$userModels = SproutLists_UserRecipientModel::populateModels($users);
 
 		return $userModels;
 	}

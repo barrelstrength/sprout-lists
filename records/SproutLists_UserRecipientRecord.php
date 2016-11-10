@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailRecord extends BaseRecord
+class SproutLists_UserRecipientRecord extends BaseRecord
 {	
 	/**
 	 * Return table name corresponding to this record
@@ -9,7 +9,7 @@ class SproutLists_EmailRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_emails';
+		return 'sproutlists_users';
 	}
 
 	/**
@@ -19,11 +19,7 @@ class SproutLists_EmailRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'email'       => AttributeType::String,
-			'firstName'   => AttributeType::String,
-			'lastName'    => AttributeType::String,
-			'type'        => AttributeType::String,
-			'details'     => AttributeType::String,
+			'userId'      => AttributeType::Number,
 			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,
 			'count'       => AttributeType::Number
@@ -33,10 +29,16 @@ class SproutLists_EmailRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'element' => array(
-				static::BELONGS_TO, 
+			'element'        => array(
+				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
+				'required' => true,
+				'onDelete' => static::CASCADE
+			),
+			'user' => array(
+				static::BELONGS_TO, 
+				'UserRecord', 
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),

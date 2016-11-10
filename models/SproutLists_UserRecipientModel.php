@@ -1,26 +1,32 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailModel extends BaseElementModel
+class SproutLists_UserRecipientModel extends BaseElementModel
 {
-	protected $elementType = 'SproutLists_List';
-
-	public function defineAttributes()
+	protected $elementType = 'SproutLists_UserRecipient';
+	/**
+	 * @access protected
+	 * @return array
+	 */
+	protected function defineAttributes()
 	{
 		$defaults = parent::defineAttributes();
 
 		$attributes = array(
 			'id'          => AttributeType::Number,
 			'listId'      => AttributeType::Number,
-			'email'       => AttributeType::String,
-			'firstName'   => AttributeType::String,
-			'lastName'    => AttributeType::String,
-			'details'     => AttributeType::String,
+			'userId'      => AttributeType::Number,
 			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,
 			'count'       => AttributeType::Number
 		);
 
 		return array_merge($defaults, $attributes);
+	}
+
+	public function __toString()
+	{
+		$user = craft()->users->getUserById($this->userId);
+		return $user->email;
 	}
 }

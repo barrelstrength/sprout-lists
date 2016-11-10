@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListElementType extends BaseElementType
+class SproutLists_UserRecipientElementType extends BaseElementType
 {
 	/**
 	 * @return string
@@ -16,7 +16,7 @@ class SproutLists_ListElementType extends BaseElementType
 	 */
 	public function hasTitles()
 	{
-		return true;
+		return false;
 	}
 
 	/**
@@ -56,26 +56,60 @@ class SproutLists_ListElementType extends BaseElementType
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query->addSelect('userlists.*')
-			->join('sproutlists_users userlists', 'userlists.id = elements.id');
-		//	->join('sproutlists_emails emailLists', 'emailLists.id = elements.id');
-		//echo '<pre>' . print_r($query, true) . '</pre>'; exit;
+			->join('sproutlists_users userlists', 'userlists.id = elements.id')
+			->join('users users', 'users.id = userlists.userId')
+			->join('sproutlists_lists lists', 'lists.id = userlists.listId');
+
 		if ($criteria->order)
 		{
+			//$criteria->order = $criteria->order . 'x';
+			// Sort by list name not by listId
+			if (stripos($criteria->order, "listId") !== false)
+			{
+				$criteria->order = str_replace("listId", "lists.name", $criteria->order);
+			}
+
+			// Sort by user email not by userId
+			if (preg_match('/id (.*)/', $criteria->order))
+			{
+				$criteria->order = str_replace("id", "users.email", $criteria->order);
+			}
+
 			// Trying to order by date creates ambiguity errors
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
 			{
-				$criteria->order = str_replace('dateCreated', 'elements.dateCreated', $criteria->order);
-				$criteria->order = str_replace('dateUpdated', 'elements.dateUpdated', $criteria->order);
+				$criteria->order = str_replace('dateCreated', 'userlists.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'userlists.dateUpdated', $criteria->order);
 			}
 		}
 	}
 
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-
 		switch ($attribute)
 		{
+			case "listId":
+				$list = SproutLists_ListsRecord::model()->findById($element->listId);
+
+				if ($list)
+				{
+					return $list->name;
+				}
+
+				break;
+
+			case "elementId":
+					$listElement = craft()->elements->getElementById($element->elementId);
+
+					if (!empty($listElement) && !empty($listElement->title))
+					{
+						return $listElement->title;
+					}
+
+					return $element->elementId;
+				break;
+
 			default:
 			{
 				return parent::getTableAttributeHtml($element, $attribute);
@@ -86,9 +120,10 @@ class SproutLists_ListElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'title'      => array('label' => Craft::t('User')),
+			'id'          => array('label' => Craft::t('Email')),
+			'listId'      => array('label' => Craft::t('List')),
 			'userId'      => array('label' => Craft::t('User ID')),
-			'elementId'      => array('label' => Craft::t('Element ID')),
+			'elementId'   => array('label' => Craft::t('Element')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
@@ -99,8 +134,9 @@ class SproutLists_ListElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'userId' => AttributeType::Number,
+			'userId'    => AttributeType::Number,
 			'elementId' => AttributeType::Number,
+			'listId'    => AttributeType::Number
 		);
 	}
 
@@ -113,6 +149,7 @@ class SproutLists_ListElementType extends BaseElementType
 	{
 		$attributes = array();
 
+		$attributes[] = 'listId';
 		$attributes[] = 'userId';
 		$attributes[] = 'elementId';
 		$attributes[] = 'dateCreated';
@@ -124,6 +161,6 @@ class SproutLists_ListElementType extends BaseElementType
 
 	public function populateElementModel($row)
 	{
-		return SproutLists_UserModel::populateModel($row);
+		return SproutLists_UserRecipientModel::populateModel($row);
 	}
 }

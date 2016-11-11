@@ -117,4 +117,25 @@ class SproutListsVariable
 
 		return $listType->getSubscribers($criteria);
 	}
+
+	public function getListsNav()
+	{
+		$navs = array();
+
+		$lists = sproutLists()->getAllListTypes();
+
+		if (!empty($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$url = $list->getUrl();
+				$navs[$url] = array(
+					'label' => $list->getName(),
+					'url'   => 'sproutlists/' . $url
+				);
+			}
+		}
+
+		return $navs;
+	}
 }

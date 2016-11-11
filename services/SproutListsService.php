@@ -42,8 +42,6 @@ class SproutListsService extends BaseApplicationComponent
 			}
 		}
 
-		ksort($this->listTypes);
-
 		return $this->listTypes;
 	}
 
@@ -102,13 +100,23 @@ class SproutListsService extends BaseApplicationComponent
 		return $listId;
 	}
 
+	public function prepareIdsForQuery($ids)
+	{
+		if (!is_array($ids))
+		{
+			return ArrayHelper::stringToArray($ids);
+		}
+
+		return $ids;
+	}
+
 	/**
 	 * Returns camelCased version of original string.
 	 * @param  string $str     String to camel case.
 	 * @param  array  $noStrip Characters to strip (optional).
 	 * @return string          Camel cased string.
 	 */
-	private static function camelCase($str, array $noStrip = [])
+	public static function camelCase($str, array $noStrip = [])
 	{
 		// non-alpha and non-numeric characters become spaces
 		$str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);

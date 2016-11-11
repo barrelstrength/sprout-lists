@@ -20,6 +20,13 @@ abstract class SproutListsBaseListType
 		return $name;
 	}
 
+	public function getUrl()
+	{
+		$name = $this->getName();
+
+		return strtolower($name) . 's';
+	}
+
 	abstract public function subscribe($user);
 
 	abstract public function unsubscribe($user);

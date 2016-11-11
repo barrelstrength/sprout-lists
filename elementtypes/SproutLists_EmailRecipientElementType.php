@@ -1,14 +1,14 @@
 <?php
 namespace Craft;
 
-class SproutLists_UserRecipientElementType extends BaseElementType
+class SproutLists_EmailRecipientElementType extends BaseElementType
 {
 	/**
 	 * @return string
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout User Lists');
+		return Craft::t('Sprout Email Lists');
 	}
 
 	/**
@@ -50,7 +50,7 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->listUser->getLists();
+		$lists = sproutLists()->listEmail->getLists();
 
 		if (!empty($lists))
 		{
@@ -71,10 +71,9 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
-		$query->addSelect('userlists.*')
-			->join('sproutlists_users userlists', 'userlists.id = elements.id')
-			->join('users users', 'users.id = userlists.userId')
-			->join('sproutlists_lists lists', 'lists.id = userlists.listId');
+		$query->addSelect('emaillists.*')
+			->join('sproutlists_emails emaillists', 'emaillists.id = elements.id')
+			->join('sproutlists_lists lists', 'lists.id = emaillists.listId');
 
 		if ($criteria->order)
 		{
@@ -88,15 +87,15 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 			// Sort by user email not by userId
 			if (preg_match('/id (.*)/', $criteria->order))
 			{
-				$criteria->order = str_replace("id", "users.email", $criteria->order);
+				$criteria->order = str_replace("id", "emaillists.email", $criteria->order);
 			}
 
 			// Trying to order by date creates ambiguity errors
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
 			{
-				$criteria->order = str_replace('dateCreated', 'userlists.dateCreated', $criteria->order);
-				$criteria->order = str_replace('dateUpdated', 'userlists.dateUpdated', $criteria->order);
+				$criteria->order = str_replace('dateCreated', 'emaillists.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'emaillists.dateUpdated', $criteria->order);
 			}
 		}
 
@@ -143,7 +142,6 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
 			'listId'      => array('label' => Craft::t('List')),
-			'userId'      => array('label' => Craft::t('User ID')),
 			'elementId'   => array('label' => Craft::t('Element')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
@@ -155,7 +153,7 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'userId'    => AttributeType::Number,
+			'email'     => AttributeType::Number,
 			'elementId' => AttributeType::Number,
 			'listId'    => AttributeType::Number
 		);
@@ -163,7 +161,7 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 
 	public function defineSearchableAttributes()
 	{
-		return array('userId');
+		return array('email');
 	}
 
 	public function getDefaultTableAttributes($source = null)
@@ -171,17 +169,16 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'listId';
-		$attributes[] = 'userId';
+		$attributes[] = 'email';
 		$attributes[] = 'elementId';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-
 
 		return $attributes;
 	}
 
 	public function populateElementModel($row)
 	{
-		return SproutLists_UserRecipientModel::populateModel($row);
+		return SproutLists_EmailRecipientModel::populateModel($row);
 	}
 }

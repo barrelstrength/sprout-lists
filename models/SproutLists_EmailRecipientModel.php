@@ -23,4 +23,9 @@ class SproutLists_EmailRecipientModel extends BaseElementModel
 
 		return array_merge($defaults, $attributes);
 	}
+
+	public function __toString()
+	{
+		return $this->email;
+	}
 }

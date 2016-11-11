@@ -129,7 +129,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 		if (isset($criteria['userId']))
 		{
 			// Search by user ID or array of user IDs
-			$userIds = $this->prepareIdsForQuery($criteria['userId']);
+			$userIds = sproutLists()->prepareIdsForQuery($criteria['userId']);
 
 			$query->where(array('and', "listId = $listId", array('in', 'userId', $userIds)));
 		}
@@ -172,7 +172,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 
 		if (isset($criteria['elementId']))
 		{
-			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
 			$query->andWhere(array('in', 'elementId', $elementId));
 		}
 		else
@@ -209,7 +209,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 
 		if(isset($criteria['userId']))
 		{
-			$userId = $this->prepareIdsForQuery($criteria['userId']);
+			$userId = sproutLists()->prepareIdsForQuery($criteria['userId']);
 
 			$query->where(array('and', 'listId = :listId', array('in', 'userId', $userId)), array(':listId' => $listId));
 			$query->group('userId');
@@ -236,7 +236,7 @@ class SproutLists_UserService extends BaseApplicationComponent
 
 		if(isset($criteria['elementId']))
 		{
-			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
 
 			$query->andWhere(array('in', 'elementId', $elementId));
 		}
@@ -250,17 +250,25 @@ class SproutLists_UserService extends BaseApplicationComponent
 		return $count;
 	}
 
-
-	/**
-	 * @param $userId
-	 */
-	public function prepareIdsForQuery($ids)
+	public function getLists()
 	{
-		if (!is_array($ids))
+		$query = craft()->db->createCommand()
+			->select('listId')
+			->from('sproutlists_users')
+			->group('listId');
+
+		$results = $query->queryAll();
+
+		$lists = array();
+
+		if (!empty($results))
 		{
-			return ArrayHelper::stringToArray($ids);
+			foreach ($results as $result)
+			{
+				$lists[] = SproutLists_ListsRecord::model()->findById($result['listId']);
+			}
 		}
 
-		return $ids;
+		return $lists;
 	}
 }

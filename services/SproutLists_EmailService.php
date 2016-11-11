@@ -111,7 +111,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		if (isset($criteria['email']))
 		{
 			// Search by user ID or array of user IDs
-			$emails = $this->prepareIdsForQuery($criteria['email']);
+			$emails = sproutLists()->prepareIdsForQuery($criteria['email']);
 
 			$query->where(array('and', "listId = $listId", array('in', 'email', $emails)));
 		}
@@ -148,7 +148,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		if (isset($criteria['elementId']))
 		{
-			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
 			$query->andWhere(array('in', 'elementId', $elementId));
 		}
 		else
@@ -179,7 +179,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		if(isset($criteria['email']))
 		{
-			$email = $this->prepareIdsForQuery($criteria['email']);
+			$email = sproutLists()->prepareIdsForQuery($criteria['email']);
 
 			$query->where(array('and', 'listId = :listId', array('in', 'email', $email)), array(':listId' => $listId));
 			$query->group('email');
@@ -206,7 +206,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		if(isset($criteria['elementId']))
 		{
-			$elementId = $this->prepareIdsForQuery($criteria['elementId']);
+			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
 
 			$query->andWhere(array('in', 'elementId', $elementId));
 		}
@@ -220,33 +220,25 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return $count;
 	}
 
-	public function prepareIdsForQuery($ids)
+	public function getLists()
 	{
-		if (!is_array($ids))
+		$query = craft()->db->createCommand()
+			->select('listId')
+			->from('sproutlists_emails')
+			->group('listId');
+
+		$results = $query->queryAll();
+
+		$lists = array();
+
+		if (!empty($results))
 		{
-			return ArrayHelper::stringToArray($ids);
+			foreach ($results as $result)
+			{
+				$lists[] = SproutLists_ListsRecord::model()->findById($result['listId']);
+			}
 		}
 
-		return $ids;
-	}
-
-	/**
-	 * Returns camelCased version of original string.
-	 * @param  string $str     String to camel case.
-	 * @param  array  $noStrip Characters to strip (optional).
-	 * @return string          Camel cased string.
-	 */
-	private static function camelCase($str, array $noStrip = [])
-	{
-		// non-alpha and non-numeric characters become spaces
-		$str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);
-		$str = trim($str);
-		
-		// uppercase the first character of each word
-		$str = ucwords($str);
-		$str = str_replace(" ", "", $str);
-		$str = lcfirst($str);
-	   
-		return $str;
+		return $lists;
 	}
 }

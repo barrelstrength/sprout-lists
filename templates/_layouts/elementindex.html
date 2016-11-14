@@ -1,0 +1,12 @@
+{% extends "_layouts/elementindex" %}
+
+{% set listnav = craft.sproutlists.getListsNav() %}
+
+{% set subnav = listnav|merge({
+	lists: {
+			label: "Lists"|t,
+			url: url('sproutlists/lists')
+		}
+}) %}
+
+{% set selectedSubnavItem = craft.request.segment(2) %}

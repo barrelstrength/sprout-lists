@@ -31,6 +31,24 @@ class SproutListsPlugin extends BasePlugin
 		return true;
 	}
 
+	public function registerCpRoutes()
+	{
+		return array(
+			'sproutlists/lists/new' => array(
+				'action' => 'sproutLists/lists/editList'
+			),
+			'sproutlists/lists/edit/(?P<listId>[\d]+)' => array(
+				'action' => 'sproutLists/lists/editList'
+			),
+			'sproutlists/users/new' => array(
+				'action' => 'sproutLists/users/editUserRecipient'
+			),
+			'sproutlists/users/edit/(?P<id>[\d]+)' => array(
+				'action' => 'sproutLists/users/editUserRecipient'
+			),
+		);
+	}
+
 	public function registerSproutListsListType()
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');

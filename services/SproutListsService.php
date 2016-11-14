@@ -110,6 +110,34 @@ class SproutListsService extends BaseApplicationComponent
 		return $ids;
 	}
 
+	public function getAllLists()
+	{
+		$records = SproutLists_ListsRecord::model()->findAll();
+
+		$lists = array();
+
+		if (!empty($records))
+		{
+			$lists = SproutLists_ListsModel::populateModels($records);
+		}
+
+		return $lists;
+	}
+
+	public function getListById($id)
+	{
+		$record = SproutLists_ListsRecord::model()->findById($id);
+
+		$list = new SproutLists_ListsModel;
+
+		if (!empty($record))
+		{
+			$list = SproutLists_ListsModel::populateModel($record);
+		}
+
+		return $list;
+	}
+
 	/**
 	 * Returns camelCased version of original string.
 	 * @param  string $str     String to camel case.

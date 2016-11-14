@@ -137,4 +137,16 @@ class SproutLists_ListsController extends BaseController
 
 		$this->redirectToPostedUrl();
 	}
+
+	public function actionEditList(array $variables = array())
+	{
+		$listId = isset($variables['listId']) ? $variables['listId'] : null;
+
+		$list = sproutLists()->getListById($listId);
+		// Load our template
+		$this->renderTemplate('sproutlists/lists/_edit', array(
+			'listId' => $listId,
+			'list'   => $list
+		));
+	}
 }

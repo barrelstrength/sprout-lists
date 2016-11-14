@@ -1,8 +1,10 @@
-{% extends "_layouts/elementindex" %}
+{% extends "sproutlists/_layouts/elementindex" %}
 
 {% set title = "Sprout User Lists"|t %}
 {% set elementType = 'SproutLists_UserRecipient' %}
 
-{% set subnav = craft.sproutlists.getListsNav() %}
-
-{% set selectedSubnavItem = craft.request.segment(2) %}
+{% set extraPageHeaderHtml %}
+	<div class="buttons">
+		<a class="btn submit add icon" href="{{ url('sproutlists/users/new') }}">{{ "New user list"|t }}</a>
+	</div>
+{% endset %}

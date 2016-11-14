@@ -118,6 +118,11 @@ class SproutListsVariable
 		return $listType->getSubscribers($criteria);
 	}
 
+	public function getAllLists()
+	{
+		return sproutLists()->getAllLists();
+	}
+
 	public function getListsNav()
 	{
 		$navs = array();

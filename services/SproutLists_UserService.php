@@ -200,7 +200,14 @@ class SproutLists_UserService extends BaseApplicationComponent
 	 */
 	public function getListCount($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		if (isset($criteria['id']))
+		{
+			$listId = $criteria['id'];
+		}
+		else
+		{
+			$listId = sproutLists()->getListId($criteria['list']);
+		}
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')

@@ -77,7 +77,7 @@ class SproutListsService extends BaseApplicationComponent
 			->select('id')
 			->from('sproutlists_lists')
 			->where(array(
-				'AND',
+				'OR',
 				'name = :name',
 				'handle = :handle'
 			), array(
@@ -136,6 +136,65 @@ class SproutListsService extends BaseApplicationComponent
 		}
 
 		return $list;
+	}
+
+	public function saveList(SproutLists_ListsModel $model)
+	{
+		$result = false;
+
+		if ($model->id)
+		{
+			$record = SproutLists_ListsRecord::model()->findById($model->id);
+		}
+		else
+		{
+			$record = new SproutLists_ListsRecord();
+		}
+
+		$addressAttributes = $model->getAttributes();
+
+		if (!empty($addressAttributes))
+		{
+			foreach ($addressAttributes as $handle => $value)
+			{
+				$record->setAttribute($handle, $value);
+			}
+		}
+
+		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+		if ($record->validate())
+		{
+			if ($record->save(false))
+			{
+				$model->id = $record->id;
+
+				if ($transaction && $transaction->active)
+				{
+					$transaction->commit();
+				}
+
+				$result = true;
+			}
+		}
+		else
+		{
+			$model->addErrors($record->getErrors());
+		}
+
+		return $result;
+	}
+
+	public function deleteList($id)
+	{
+		$record = SproutLists_ListsRecord::model()->findById($id);
+
+		if ($record != null)
+		{
+			return $record->delete();
+		}
+
+		return false;
 	}
 
 	/**

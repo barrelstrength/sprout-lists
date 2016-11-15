@@ -43,7 +43,7 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 
 	public function getListCount($criteria)
 	{
-		return sproutLists()->listEmail->listCount($criteria);
+		return sproutLists()->listEmail->getListCount($criteria);
 	}
 
 	public function getSubscriberCount($criteria)

@@ -141,12 +141,81 @@ class SproutLists_ListsController extends BaseController
 	public function actionEditList(array $variables = array())
 	{
 		$listId = isset($variables['listId']) ? $variables['listId'] : null;
+		$list   = isset($variables['list']) ? $variables['list'] : null;
 
-		$list = sproutLists()->getListById($listId);
+		$continueEditingUrl = isset($variables['listId']) ? 'sproutlists/lists/edit/' . $variables['listId'] :	null;
+
+		if ($list == null)
+		{
+			$list = sproutLists()->getListById($listId);
+		}
+
 		// Load our template
 		$this->renderTemplate('sproutlists/lists/_edit', array(
 			'listId' => $listId,
-			'list'   => $list
+			'list'   => $list,
+			'continueEditingUrl' => $continueEditingUrl
 		));
+	}
+
+	public function actionSaveList()
+	{
+		$this->requirePostRequest();
+
+		$list = craft()->request->getPost('list');
+
+		$model = new SproutLists_ListsModel;
+
+		if (!empty($list['id']))
+		{
+			$model = sproutLists()->getListById($list['id']);
+		}
+
+		$model->setAttributes($list);
+
+		if ($model->validate())
+		{
+			$result = sproutLists()->saveList($model);
+
+			if ($result !== false)
+			{
+				craft()->userSession->setNotice(Craft::t('List saved.'));
+			}
+
+			$this->redirectToPostedUrl();
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Unable to save list.'));
+
+			craft()->urlManager->setRouteVariables(array(
+				'list' => $model
+			));
+		}
+	}
+
+	public function actionDeleteList()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$listId = craft()->request->getRequiredPost('id');
+
+		if (sproutLists()->deleteList($listId))
+		{
+			craft()->userSession->setNotice(Craft::t('List deleted.'));
+
+			$this->returnJson(array(
+				'success' => true
+			));
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t("Couldn't delete List."));
+
+			$this->returnJson(array(
+				'success' => false
+			));
+		}
 	}
 }

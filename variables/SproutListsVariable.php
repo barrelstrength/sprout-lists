@@ -123,6 +123,11 @@ class SproutListsVariable
 		return sproutLists()->getAllLists();
 	}
 
+	public function getAllListTypes()
+	{
+		return sproutLists()->getAllListTypes();
+	}
+
 	public function getListsNav()
 	{
 		$navs = array();

@@ -2,41 +2,51 @@
 {% import "_includes/forms" as forms %}
 {% set title = "Edit List"|t %}
 
-{% block saveButton %}
-	<div class="btngroup submit first">
-		<input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
-		<div class="btn submit menubtn"></div>
+{% set fullPageForm = true %}
+{% block saveButton %}{% endblock %}
 
+{% set saveShortcutRedirect = continueEditingUrl %}
+
+{% block main %}
+<div class="grid first" data-max-cols="3">
+	<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+		<div class="pane">
+			<input type="hidden" name="action" value="sproutLists/lists/saveList">
+			<input type="hidden" name="redirect" value="sproutlists/lists">
+			<input type="hidden" name="list[id]" value="{{ listId }}">
+
+			{{ forms.textField({
+				label: "List Name"|t,
+				id: 'name',
+				name: 'list[name]',
+				value: (list is defined ? list.name : null),
+				autofocus: true,
+				required: true,
+				first: true,
+				errors: (list is defined ? list.getErrors('name') : null)
+			}) }}
+
+			{{ forms.textField({
+				label: "List Handle"|t,
+				id: 'handle',
+				name: 'list[handle]',
+				value: (list is defined ? list.handle : null),
+				required: true,
+				errors: (list is defined ? list.getErrors('handle') : null)
+			}) }}
+
+			<div class="btngroup submit first">
+				<input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
+			</div>
+		</div>
 	</div>
+
+
+	<div class="item" data-position="right" data-colspan="1">
+		<div class="pane meta">
+
+		</div>
+	</div>
+</div>
+
 {% endblock %}
-
-
-{% set content %}
-
-	<input type="hidden" name="action" value="sproutLists/lists/saveList">
-	<input type="hidden" name="redirect" value="sproutlists/lists">
-	<input type="hidden" name="listId" value="{{ listId }}">
-
-	{{ forms.textField({
-		label: "List Name"|t,
-		id: 'name',
-		name: 'list[name]',
-		value: (list is defined ? list.name : null),
-		autofocus: true,
-		required: true,
-		first: true,
-		errors: (list is defined ? list.getErrors('name') : null)
-	}) }}
-
-	{{ forms.textField({
-		label: "List Handle"|t,
-		id: 'handle',
-		name: 'list[handle]',
-		value: (list is defined ? list.handle : null),
-		required: true,
-		errors: (list is defined ? list.getErrors('handle') : null)
-	}) }}
-
-
-
-{% endset %}

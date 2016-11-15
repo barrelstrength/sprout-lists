@@ -168,9 +168,16 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return $emailModels;
 	}
 
-	public function listCount($criteria)
+	public function getListCount($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		if (isset($criteria['id']))
+		{
+			$listId = $criteria['id'];
+		}
+		else
+		{
+			$listId = sproutLists()->getListId($criteria['list']);
+		}
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
@@ -240,5 +247,66 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 
 		return $lists;
+	}
+
+	public function getRecipientById($id)
+	{
+		$record = SproutLists_EmailRecord::model()->findById($id);
+
+		$list = new SproutLists_EmailModel;
+
+		if (!empty($record))
+		{
+			$list = SproutLists_EmailModel::populateModel($record);
+		}
+
+		return $list;
+	}
+
+	public function saveRecipient(SproutLists_EmailModel $model)
+	{
+		$result = false;
+
+		if ($model->id)
+		{
+			$record = SproutLists_EmailRecord::model()->findById($model->id);
+		}
+		else
+		{
+			$record = new SproutLists_EmailRecord();
+		}
+
+		$addressAttributes = $model->getAttributes();
+
+		if (!empty($addressAttributes))
+		{
+			foreach ($addressAttributes as $handle => $value)
+			{
+				$record->setAttribute($handle, $value);
+			}
+		}
+
+		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+		if ($record->validate())
+		{
+			if ($record->save(false))
+			{
+				$model->id = $record->id;
+
+				if ($transaction && $transaction->active)
+				{
+					$transaction->commit();
+				}
+
+				$result = true;
+			}
+		}
+		else
+		{
+			$model->addErrors($record->getErrors());
+		}
+
+		return $result;
 	}
 }

@@ -2,3 +2,9 @@
 
 {% set title = "Sprout Email Lists"|t %}
 {% set elementType = 'SproutLists_EmailRecipient' %}
+
+{% set extraPageHeaderHtml %}
+	<div class="buttons">
+		<a class="btn submit add icon" href="{{ url('sproutlists/emails/new') }}">{{ "New email list"|t }}</a>
+	</div>
+{% endset %}

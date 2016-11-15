@@ -12,7 +12,7 @@ class SproutLists_EmailRecipientModel extends BaseElementModel
 		$attributes = array(
 			'id'          => AttributeType::Number,
 			'listId'      => AttributeType::Number,
-			'email'       => AttributeType::String,
+			'email'       => array(AttributeType::String, "required" => true),
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
 			'details'     => AttributeType::String,

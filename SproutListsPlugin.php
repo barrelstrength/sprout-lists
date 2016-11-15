@@ -46,6 +46,12 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/users/edit/(?P<id>[\d]+)' => array(
 				'action' => 'sproutLists/users/editUserRecipient'
 			),
+			'sproutlists/emails/new' => array(
+				'action' => 'sproutLists/emails/editEmailRecipient'
+			),
+			'sproutlists/emails/edit/(?P<id>[\d]+)' => array(
+				'action' => 'sproutLists/emails/editEmailRecipient'
+			),
 		);
 	}
 

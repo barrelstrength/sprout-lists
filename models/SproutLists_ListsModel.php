@@ -7,8 +7,8 @@ class SproutLists_ListsModel extends BaseModel
 	{
 		return array(
 			'id'     => AttributeType::Number,
-			'name'   => AttributeType::String,
-			'handle' => AttributeType::String,
+			'name'   => array(AttributeType::String, 'required' => true),
+			'handle' => array(AttributeType::String, 'required' => true),
 		);
 	}
 }

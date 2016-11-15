@@ -16,7 +16,10 @@
 				<thead>
 				<th width="20%">{{ "Name"|t }}</th>
 				<th width="20%">{{ "Handle"|t }}</th>
-				<th width="10%">{{ "Total"|t }}</th>
+
+				{% for listType in craft.sproutLists.getAllListTypes() %}
+					<th width="10%">{{ "Total List"|t }} {{ listType.getName()  }}</th>
+				{% endfor %}
 				<th class="thin"></th>
 				</thead>
 			{% endif %}
@@ -27,7 +30,9 @@
 				<td>
 					<code>{{ list.handle }}</code>
 				</td>
-				<td>Total here</td>
+				{% for listType in craft.sproutLists.getAllListTypes() %}
+					<td>{{ listType.listCount({id: list.id})  }}</td>
+				{% endfor %}
 
 				<td colspan="3" class="thin">
 					<a class="delete icon" title='{{ "Delete"|t }}'></a>
@@ -61,9 +66,8 @@
 
 {% set js %}
 new Craft.AdminTable({
-	tableSelector: '#campaigntypes',
-	noObjectsSelector: '#nocampaigntypes',
-	deleteAction: 'sproutEmail/campaignType/deleteCampaignType'
+	tableSelector: '#lists',
+	deleteAction: 'sproutLists/lists/deleteList'
 });
 {% endset %}
 {% includeJs js %}

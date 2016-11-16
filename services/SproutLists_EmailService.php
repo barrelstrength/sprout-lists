@@ -7,6 +7,11 @@ class SproutLists_EmailService extends BaseApplicationComponent
 	{
 		$record = new SproutLists_EmailRecipientRecord;
 
+		if (!empty($model->id))
+		{
+			$record = SproutLists_EmailRecipientRecord::model()->findById($model->id);
+		}
+
 		$modelAttributes = $model->getAttributes();
 
 		if (!empty($modelAttributes))
@@ -53,8 +58,6 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		{
 			Craft::dd($record->getErrors());
 		}
-
-
 
 		return false;
 	}
@@ -251,62 +254,15 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getRecipientById($id)
 	{
-		$record = SproutLists_EmailRecord::model()->findById($id);
+		$record = SproutLists_EmailRecipientRecord::model()->findById($id);
 
-		$list = new SproutLists_EmailModel;
+		$list = new SproutLists_EmailRecipientModel;
 
 		if (!empty($record))
 		{
-			$list = SproutLists_EmailModel::populateModel($record);
+			$list = SproutLists_EmailRecipientModel::populateModel($record);
 		}
 
 		return $list;
-	}
-
-	public function saveRecipient(SproutLists_EmailModel $model)
-	{
-		$result = false;
-
-		if ($model->id)
-		{
-			$record = SproutLists_EmailRecord::model()->findById($model->id);
-		}
-		else
-		{
-			$record = new SproutLists_EmailRecord();
-		}
-
-		$addressAttributes = $model->getAttributes();
-
-		if (!empty($addressAttributes))
-		{
-			foreach ($addressAttributes as $handle => $value)
-			{
-				$record->setAttribute($handle, $value);
-			}
-		}
-
-		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
-		if ($record->validate())
-		{
-			if ($record->save(false))
-			{
-				$model->id = $record->id;
-
-				if ($transaction && $transaction->active)
-				{
-					$transaction->commit();
-				}
-
-				$result = true;
-			}
-		}
-		else
-		{
-			$model->addErrors($record->getErrors());
-		}
-
-		return $result;
 	}
 }

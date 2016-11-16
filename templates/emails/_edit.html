@@ -2,10 +2,10 @@
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-	{ label: "Recipients"|t, url: url('sproutlists/recipients') }
+	{ label: "Recipients"|t, url: url('sproutlists/emails') }
 ] %}
 
-{% set title = recipient is defined ? 'Recipient' : 'New Recipient' %}
+{% set title = element.id is not null ? 'Recipient' : 'New Recipient' %}
 
 {% set selectedTab    = 'recipients' %}
 {% set selectedListId = craft.request.getParam('recipientListId') %}
@@ -24,8 +24,9 @@
 			<div class="btn submit menubtn"></div>
 			<div class="menu">
 				<ul>
-					<li><a class="formsubmit" data-redirect="sproutlists/recipients/edit/{id}">{{ "Save and continue editing"|t }}</a></li>
-					<li><a class="formsubmit" data-redirect="sproutlists/recipients/new">{{ "Save and add another"|t }}</a></li>
+					<li><a class="formsubmit" data-redirect="sproutlists/emails/edit/{id}">{{ "Save and continue editing"|t
+							}}</a></li>
+					<li><a class="formsubmit" data-redirect="sproutlists/emails/new">{{ "Save and add another"|t }}</a></li>
 				</ul>
 			</div>
 		</div>
@@ -42,7 +43,8 @@
 
 		<input type="hidden" id="redirect" name="redirect" value="sproutlists/emails/">
 
-		{% if element.id is defined %}<input type="hidden" id="id" name="id" value="{{ element.id }}">{% endif %}
+		{% if element.id is not null %}<input type="hidden" id="id" name="recipient[id]" value="{{ element.id }}">{%
+		endif %}
 
 		<section id="default-fields">
 
@@ -88,23 +90,23 @@
 				</div>
 			</div>
 
-			{% set statusInput %}
+			{% if element.id is not null %}
+				{% set statusInput %}
+					<div class="right">
+						<input
+								type="button"
+								class="btn small formsubmit"
+								data-action="sproutLists/emails/deleteRecipient"
+								data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
+								data-redirect="sproutlists/emails"
+								value="{{ 'Delete'|t }}">
+					</div>
+				{% endset %}
 
-				<div class="right">
-					<input
-							type="button"
-							class="btn small formsubmit"
-							data-action="sproutlists/defaultMailer/deleteRecipient"
-							data-confirm="{{ 'Are you sure you want to delete this recipient?'|t }}"
-							data-redirect="sproutlists/recipients"
-							value="{{ 'Delete'|t }}">
-				</div>
-
-			{% endset %}
-
-			{{ forms.field({
-				label: '&nbsp;'
-			}, statusInput) }}
+				{{ forms.field({
+					label: '&nbsp;'
+				}, statusInput) }}
+			{% endif %}
 
 		</div>
 	</div>

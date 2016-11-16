@@ -151,11 +151,11 @@ class SproutListsService extends BaseApplicationComponent
 			$record = new SproutLists_ListsRecord();
 		}
 
-		$addressAttributes = $model->getAttributes();
+		$modelAttributes = $model->getAttributes();
 
-		if (!empty($addressAttributes))
+		if (!empty($modelAttributes))
 		{
-			foreach ($addressAttributes as $handle => $value)
+			foreach ($modelAttributes as $handle => $value)
 			{
 				$record->setAttribute($handle, $value);
 			}
@@ -195,6 +195,63 @@ class SproutListsService extends BaseApplicationComponent
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param null $element
+	 *
+	 * @return \Twig_Markup
+	 */
+	public function getRecipientListsHtml($element = null, $default = array())
+	{
+		$lists   = $this->getAllLists();
+		$options = array();
+
+		if (count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$options[] = array(
+					'label' => sprintf('%s', $list->name),
+					'value' => $list->id
+				);
+			}
+		}
+
+		$values = array();
+
+		if (count($element->getRecipientListIds()))
+		{
+			$values = $element->getRecipientListIds();
+		}
+
+		if (!empty($default))
+		{
+			$values = $default;
+		}
+
+		// @todo - Move template code to the template
+		$checkboxGroup = craft()->templates->renderMacro(
+			'_includes/forms', 'checkboxGroup', array(
+				array(
+					'name'    => 'recipient[recipientLists]',
+					'options' => $options,
+					'values'  => $values
+				)
+			)
+		);
+
+		$html = craft()->templates->renderMacro(
+			'_includes/forms', 'field', array(
+				array(
+					'id'     => 'recipientLists',
+					'errors' => $element->getErrors('recipientLists')
+				),
+				$checkboxGroup
+			)
+		);
+
+		return TemplateHelper::getRaw($html);
 	}
 
 	/**

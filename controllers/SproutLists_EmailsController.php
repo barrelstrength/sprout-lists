@@ -14,14 +14,14 @@ class SproutLists_EmailsController extends BaseController
 
 			if ($id)
 			{
-				$element = SproutLists_EmailRecipientModel::model()->findById($id);
+				$element = sproutLists()->listEmail->getRecipientById($id);
 			}
 		}
 
 		$this->renderTemplate('sproutlists/emails/_edit', array(
 			'id'      => $id,
 			'element' => $element,
-		  'recipientListsHtml' => ''
+		  'recipientListsHtml' => sproutLists()->getRecipientListsHtml($element)
 		));
 	}
 
@@ -37,19 +37,19 @@ class SproutLists_EmailsController extends BaseController
 		{
 			$model = sproutLists()->listEmail->getRecipientById($list['id']);
 		}
-
+		$list['listId'] = 1;
 		$model->setAttributes($list);
 
 		if ($model->validate())
-		{
-			$result = sproutLists()->listEmail->saveRecipient($model);
+		{;
+			$result = sproutLists()->listEmail->subscribe($model);
 
 			if ($result !== false)
 			{
 				craft()->userSession->setNotice(Craft::t('Recipient saved.'));
 			}
 
-			$this->redirectToPostedUrl();
+			$this->redirectToPostedUrl($model);
 		}
 		else
 		{
@@ -58,6 +58,22 @@ class SproutLists_EmailsController extends BaseController
 			craft()->urlManager->setRouteVariables(array(
 				'element' => $model
 			));
+		}
+	}
+
+	public function actionDeleteRecipient()
+	{
+		$this->requirePostRequest();
+		$id = craft()->request->getPost('recipient.id');
+
+		if ($id != null)
+		{
+			$model = sproutLists()->listEmail->getRecipientById($id);
+
+			if (craft()->elements->deleteElementById($id))
+			{
+				$this->redirectToPostedUrl($model);
+			}
 		}
 	}
 }

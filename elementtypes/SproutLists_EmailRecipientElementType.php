@@ -109,6 +109,10 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 	{
 		switch ($attribute)
 		{
+			case "action":
+					return "<a href='emails/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
+				break;
+
 			case "listId":
 				$list = SproutLists_ListsRecord::model()->findById($element->listId);
 
@@ -143,6 +147,7 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 			'id'          => array('label' => Craft::t('Email')),
 			'listId'      => array('label' => Craft::t('List')),
 			'elementId'   => array('label' => Craft::t('Element')),
+			'action'      => array('label' => ''),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
@@ -171,10 +176,23 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 		$attributes[] = 'listId';
 		$attributes[] = 'email';
 		$attributes[] = 'elementId';
+		$attributes[] = 'action';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 
 		return $attributes;
+	}
+
+	public function getAvailableActions($source = null)
+	{
+		$deleteAction = craft()->elements->getAction('SproutLists_EmailDelete');
+
+		$deleteAction->setParams(array(
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
+			'successMessage'      => Craft::t('Emails deleted.'),
+		));
+
+		return array($deleteAction);
 	}
 
 	public function populateElementModel($row)

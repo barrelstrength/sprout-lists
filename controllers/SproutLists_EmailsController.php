@@ -29,19 +29,19 @@ class SproutLists_EmailsController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$list = craft()->request->getPost('recipient');
+		$recipient = craft()->request->getPost('recipient');
 
 		$model = new SproutLists_EmailRecipientModel;
 
-		if (!empty($list['id']))
+		if (!empty($recipient['id']))
 		{
-			$model = sproutLists()->listEmail->getRecipientById($list['id']);
+			$model = sproutLists()->listEmail->getRecipientById($recipient['id']);
 		}
-		$list['listId'] = 1;
-		$model->setAttributes($list);
+
+		$model->setAttributes($recipient);
 
 		if ($model->validate())
-		{;
+		{
 			$result = sproutLists()->listEmail->subscribe($model);
 
 			if ($result !== false)
@@ -72,6 +72,8 @@ class SproutLists_EmailsController extends BaseController
 
 			if (craft()->elements->deleteElementById($id))
 			{
+				SproutLists_ListsRecipientsRecord::model()->deleteAll('recipientId = :recipientId', array(':recipientId' => $id));
+
 				$this->redirectToPostedUrl($model);
 			}
 		}

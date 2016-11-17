@@ -191,7 +191,10 @@ class SproutListsService extends BaseApplicationComponent
 
 		if ($record != null)
 		{
-			return $record->delete();
+			if ($record->delete())
+			{
+				return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
+			}
 		}
 
 		return false;
@@ -252,6 +255,23 @@ class SproutListsService extends BaseApplicationComponent
 		);
 
 		return TemplateHelper::getRaw($html);
+	}
+
+	public function getListsByRecipientId($id)
+	{
+		$lists         = array();
+		$record        = SproutLists_ListsRecipientsRecord::model();
+		$relationships = $record->findAllByAttributes(array('recipientId' => $id));
+
+		if (count($relationships))
+		{
+			foreach ($relationships as $relationship)
+			{
+				$lists[] = sproutLists()->getListById($relationship->listId);
+			}
+		}
+
+		return $lists;
 	}
 
 	/**

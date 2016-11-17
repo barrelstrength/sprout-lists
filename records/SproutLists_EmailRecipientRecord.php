@@ -24,7 +24,6 @@ class SproutLists_EmailRecipientRecord extends BaseRecord
 			'lastName'    => AttributeType::String,
 			'type'        => AttributeType::String,
 			'details'     => AttributeType::String,
-			'elementId'   => AttributeType::Number,
 			'dateCreated' => AttributeType::DateTime,
 			'count'       => AttributeType::Number
 		);
@@ -40,19 +39,11 @@ class SproutLists_EmailRecipientRecord extends BaseRecord
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),
-			'elementObject' => array(
-				static::BELONGS_TO,
-				'ElementRecord',
-				'elementId',
-				'required' => true,
-				'onDelete' => static::CASCADE
-			),
-			'list' => array(
-				static::BELONGS_TO, 
+			'recipientLists' => array(
+				static::MANY_MANY,
 				'SproutLists_ListsRecord',
-				'required' => true, 
-				'onDelete' => static::CASCADE
-			),
+				'sproutlists_lists_recipients(recipientId, listId)'
+			)
 		);
 	}
 }

@@ -73,7 +73,8 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 	{
 		$query->addSelect('emaillists.*')
 			->join('sproutlists_emails emaillists', 'emaillists.id = elements.id')
-			->join('sproutlists_lists lists', 'lists.id = emaillists.listId');
+			->join('sproutlists_lists_recipients listsrecipients', 'listsrecipients.recipientId = emaillists.id')
+			->join('sproutlists_lists lists', 'lists.id = listsrecipients.listId');
 
 		if ($criteria->order)
 		{
@@ -85,10 +86,10 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 			}
 
 			// Sort by user email not by userId
-			if (preg_match('/id (.*)/', $criteria->order))
+/*			if (preg_match('/id (.*)/', $criteria->order))
 			{
 				$criteria->order = str_replace("id", "emaillists.email", $criteria->order);
-			}
+			}*/
 
 			// Trying to order by date creates ambiguity errors
 			// Let's make sure mysql knows what we want to sort by
@@ -113,7 +114,7 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 					return "<a href='emails/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
 				break;
 
-			case "listId":
+/*			case "listId":
 				$list = SproutLists_ListsRecord::model()->findById($element->listId);
 
 				if ($list)
@@ -121,7 +122,7 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 					return $list->name;
 				}
 
-				break;
+				break;*/
 
 			case "elementId":
 					$listElement = craft()->elements->getElementById($element->elementId);
@@ -145,8 +146,6 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 	{
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
-			'listId'      => array('label' => Craft::t('List')),
-			'elementId'   => array('label' => Craft::t('Element')),
 			'action'      => array('label' => ''),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
@@ -159,7 +158,6 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 	{
 		return array(
 			'email'     => AttributeType::Number,
-			'elementId' => AttributeType::Number,
 			'listId'    => AttributeType::Number
 		);
 	}
@@ -173,9 +171,7 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 	{
 		$attributes = array();
 
-		$attributes[] = 'listId';
 		$attributes[] = 'email';
-		$attributes[] = 'elementId';
 		$attributes[] = 'action';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';

@@ -11,15 +11,13 @@ class SproutLists_EmailRecipientModel extends BaseElementModel
 		$defaults = parent::defineAttributes();
 
 		$attributes = array(
-			'id'          => AttributeType::Number,
-			'listId'      => AttributeType::Number,
-			'email'       => array(AttributeType::String, "required" => true),
-			'firstName'   => AttributeType::String,
-			'lastName'    => AttributeType::String,
-			'details'     => AttributeType::String,
-			'elementId'   => AttributeType::Number,
-			'dateCreated' => AttributeType::DateTime,
-			'count'       => AttributeType::Number
+			'id'              => AttributeType::Number,
+			'email'           => array(AttributeType::String, "required" => true),
+			'firstName'       => AttributeType::String,
+			'lastName'        => AttributeType::String,
+			'recipientLists'  => array(AttributeType::Mixed),
+			'details'         => AttributeType::String,
+			'dateCreated'     => AttributeType::DateTime
 		);
 
 		return array_merge($defaults, $attributes);
@@ -38,7 +36,7 @@ class SproutLists_EmailRecipientModel extends BaseElementModel
 		if (is_null($this->recipientListsIds))
 		{
 			$this->recipientListsIds = array();
-			$recipientLists          = sproutLists()->getAllLists();
+			$recipientLists = $this->getRecipientLists();
 
 			if (count($recipientLists))
 			{
@@ -50,5 +48,10 @@ class SproutLists_EmailRecipientModel extends BaseElementModel
 		}
 
 		return $this->recipientListsIds;
+	}
+
+	public function getRecipientLists()
+	{
+		return sproutLists()->getListsByRecipientId($this->id);
 	}
 }

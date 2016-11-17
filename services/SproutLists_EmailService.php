@@ -5,6 +5,26 @@ class SproutLists_EmailService extends BaseApplicationComponent
 {
 	public function subscribe(SproutLists_EmailRecipientModel $model)
 	{
+		if ($this->saveRecipient($model))
+		{
+			$saved = $this->saveRecipientListRelations($model->id, $model->recipientLists);
+			/*if (!empty($listIds))
+			{
+				foreach ($listIds as $listId)
+				{
+					$attributes = array();
+					$attributes['recipientId'] = $model->id;
+					$attributes['listId']      = $listId;
+
+					$record = SproutLists_ListsRecipientsRecord;
+
+				}
+			}*/
+		}
+	}
+
+	public function saveRecipient(SproutLists_EmailRecipientModel $model)
+	{
 		$record = new SproutLists_EmailRecipientRecord;
 
 		if (!empty($model->id))
@@ -60,6 +80,50 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 
 		return false;
+	}
+
+	public function saveRecipientListRelations($recipientId, $recipientListIds = array())
+	{
+		try
+		{
+			SproutLists_ListsRecipientsRecord::model()->deleteAll('recipientId = :recipientId', array(':recipientId' => $recipientId));
+		}
+		catch (Exception $e)
+		{
+			Craft::dd($e->getMessage());
+		}
+
+		if (!empty($recipientListIds))
+		{
+			foreach ($recipientListIds as $listId)
+			{
+				$list = sproutLists()->getListById($listId);
+
+				if ($list)
+				{
+					$relation = new SproutLists_ListsRecipientsRecord();
+
+					$relation->recipientId     = $recipientId;
+					$relation->listId = $list->id;
+
+					if (!$relation->save(false))
+					{
+						throw new Exception(print_r($relation->getErrors(), true));
+					}
+				}
+				else
+				{
+					throw new Exception(
+						Craft::t(
+							'The recipient list with id {listId} does not exists.',
+							array('listId' => $listId)
+						)
+					);
+				}
+			}
+		}
+
+		return true;
 	}
 
 	public function unsubscribe(SproutLists_EmailRecipientModel $model)
@@ -173,29 +237,35 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getListCount($criteria)
 	{
-		if (isset($criteria['id']))
+		$records = SproutLists_EmailRecipientRecord::model()->with('recipientLists')->findAll();
+
+		$count = 0;
+		if ($records)
 		{
-			$listId = $criteria['id'];
+			$ids = array();
+
+			foreach ($records as $record)
+			{
+				$ids[] = $record->id;
+			}
+
+			if (isset($criteria['id']))
+			{
+				$listId = $criteria['id'];
+			}
+			else
+			{
+				$listId = sproutLists()->getListId($criteria['list']);
+			}
+
+			$query = craft()->db->createCommand()
+				->select('count(listId) as count')
+				->where(array('in', 'recipientId', $ids))
+				->andWhere(array('and', "listId = :listId"), array(':listId' => $listId) )
+				->from('sproutlists_lists_recipients');
+
+			$count = $query->queryScalar();
 		}
-		else
-		{
-			$listId = sproutLists()->getListId($criteria['list']);
-		}
-
-		$query = craft()->db->createCommand()
-			->select('count(listId) as count')
-			->from('sproutlists_emails')
-			->where(array('and', "listId = :listId"), array(':listId' => $listId) );
-
-		if(isset($criteria['email']))
-		{
-			$email = sproutLists()->prepareIdsForQuery($criteria['email']);
-
-			$query->where(array('and', 'listId = :listId', array('in', 'email', $email)), array(':listId' => $listId));
-			$query->group('email');
-		}
-
-		$count = $query->queryScalar();
 
 		return $count;
 	}
@@ -232,20 +302,31 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getLists()
 	{
-		$query = craft()->db->createCommand()
-			->select('listId')
-			->from('sproutlists_emails')
-			->group('listId');
-
-		$results = $query->queryAll();
-
+		$records = SproutLists_EmailRecipientRecord::model()->with('recipientLists')->findAll();
+		$ids = array();
 		$lists = array();
 
-		if (!empty($results))
+		if ($records)
 		{
-			foreach ($results as $result)
+			foreach ($records as $record)
 			{
-				$lists[] = SproutLists_ListsRecord::model()->findById($result['listId']);
+				$ids[] = $record->id;
+			}
+
+			$query = craft()->db->createCommand()
+				->select('listId')
+				->where(array('in', 'recipientId', $ids))
+				->from('sproutlists_lists_recipients')
+				->group('listId');
+
+			$results = $query->queryAll();
+
+			if (!empty($results))
+			{
+				foreach ($results as $result)
+				{
+					$lists[] = sproutLists()->getListById($result['listId']);
+				}
 			}
 		}
 

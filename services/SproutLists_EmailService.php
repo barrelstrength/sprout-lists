@@ -3,23 +3,16 @@ namespace Craft;
 
 class SproutLists_EmailService extends BaseApplicationComponent
 {
-	public function subscribe(SproutLists_EmailRecipientModel $model)
+	public function subscribe(SproutLists_EmailRecipientModel $model, $subscriptionModel)
 	{
 		if ($this->saveRecipient($model))
 		{
-			$saved = $this->saveRecipientListRelations($model->id, $model->recipientLists);
-			/*if (!empty($listIds))
+			$listRecords = $this->saveRecipientListRelations($model);
+
+			if (!empty($listRecords))
 			{
-				foreach ($listIds as $listId)
-				{
-					$attributes = array();
-					$attributes['recipientId'] = $model->id;
-					$attributes['listId']      = $listId;
-
-					$record = SproutLists_ListsRecipientsRecord;
-
-				}
-			}*/
+				$this->saveListsElement($listRecords, $subscriptionModel);
+			}
 		}
 	}
 
@@ -82,8 +75,10 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		return false;
 	}
 
-	public function saveRecipientListRelations($recipientId, $recipientListIds = array())
+	public function saveRecipientListRelations($model)
 	{
+		$recipientId      = $model->id;
+		$recipientListIds = $model->recipientLists;
 		try
 		{
 			SproutLists_ListsRecipientsRecord::model()->deleteAll('recipientId = :recipientId', array(':recipientId' => $recipientId));
@@ -92,6 +87,8 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		{
 			Craft::dd($e->getMessage());
 		}
+
+		$records = array();
 
 		if (!empty($recipientListIds))
 		{
@@ -106,7 +103,11 @@ class SproutLists_EmailService extends BaseApplicationComponent
 					$relation->recipientId     = $recipientId;
 					$relation->listId = $list->id;
 
-					if (!$relation->save(false))
+					$result = $relation->save(false);
+
+					$records[] = $relation->id;
+
+					if (!$result)
 					{
 						throw new Exception(print_r($relation->getErrors(), true));
 					}
@@ -123,7 +124,24 @@ class SproutLists_EmailService extends BaseApplicationComponent
 			}
 		}
 
-		return true;
+		return $records;
+	}
+
+	public function saveListsElement($listRecordIds, $subscriptionModel)
+	{
+		if (!empty($listRecordIds))
+		{
+			foreach ($listRecordIds as $listRecordId)
+			{
+				$record = new SproutLists_ListsElementsRelationsRecord;
+
+				$record->elementId = $subscriptionModel->elementId;
+				$record->type      = $subscriptionModel->type;
+				$record->listId = $listRecordId;
+
+				$result = $record->save(false);
+			}
+		}
 	}
 
 	public function unsubscribe(SproutLists_EmailRecipientModel $model)
@@ -147,6 +165,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function isSubscribed($criteria)
 	{
+		return false; // xxtempxx
 		$query = craft()->db->createCommand()
 			->select('email, elementId')
 			->from('sproutlists_emails')

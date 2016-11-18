@@ -42,11 +42,14 @@ class SproutLists_EmailsController extends BaseController
 
 		if ($model->validate())
 		{
-			$result = sproutLists()->listEmail->subscribe($model);
-
-			if ($result !== false)
+			if (sproutLists()->listEmail->saveRecipient($model))
 			{
-				craft()->userSession->setNotice(Craft::t('Recipient saved.'));
+				$result = sproutLists()->listEmail->saveRecipientListRelations($model);
+
+				if ($result !== false)
+				{
+					craft()->userSession->setNotice(Craft::t('Recipient saved.'));
+				}
 			}
 
 			$this->redirectToPostedUrl($model);

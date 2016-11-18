@@ -34,12 +34,12 @@ class SproutLists_ListsController extends BaseController
 			$type = craft()->request->getPost('type');
 		}
 
+		$subscription['type'] = $type;
+
 		$listType = sproutLists()->getListType($type);
 
 		if (!$listType->subscribe($subscription))
 		{
-			// Save element type for emails
-			$listType->afterSubscribe($subscription);
 
 			if (craft()->request->isAjaxRequest())
 			{

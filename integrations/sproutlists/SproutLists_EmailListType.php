@@ -6,18 +6,26 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 {
 	public function subscribe($subscription)
 	{
-		$listId = sproutLists()->getListId($subscription['list']);
+		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
-		$subscription['listId'] = $listId;
+		$listId = sproutLists()->getListId($subscriptionModel->list);
 
-		$model = SproutLists_EmailRecipientModel::populateModel($subscription);
+		$elementId = $subscriptionModel->elementId;
+		$type      = $subscriptionModel->type;
 
-		return sproutLists()->listEmail->subscribe($model);
+		$attributes = array(
+			'email' => $subscriptionModel->email,
+			'recipientLists' => array($listId)
+		);
+
+		$model = SproutLists_EmailRecipientModel::populateModel($attributes);
+
+		return sproutLists()->listEmail->subscribe($model, $subscriptionModel);
 	}
 
 	public function unsubscribe($subscription)
 	{
-		$listId = sproutLists()->getListId($subscription['list']);
+		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
 		$subscription['listId'] = $listId;
 

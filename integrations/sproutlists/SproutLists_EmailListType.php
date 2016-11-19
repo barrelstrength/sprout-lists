@@ -18,7 +18,26 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 			'recipientLists' => array($listId)
 		);
 
-		$model = SproutLists_EmailRecipientModel::populateModel($attributes);
+		if ($subscriptionModel->email != null)
+		{
+			$recipientAttributes['email'] = $subscriptionModel->email;
+		}
+
+		if ($subscriptionModel->userId != null)
+		{
+			$recipientAttributes['userId'] = $subscriptionModel->userId;
+		}
+
+		$model = sproutLists()->listEmail->getRecipient($recipientAttributes);
+
+		if ($model->id == null)
+		{
+			$model = SproutLists_EmailRecipientModel::populateModel($attributes);
+		}
+		else
+		{
+			$model->setAttribute('recipientLists', $attributes['recipientLists']);
+		}
 
 		return sproutLists()->listEmail->subscribe($model, $subscriptionModel);
 	}
@@ -27,16 +46,14 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 	{
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
-		$subscription['listId'] = $listId;
-
-		$model = SproutLists_EmailRecipientModel::populateModel($subscription);
-
-		return sproutLists()->listEmail->unsubscribe($model);
+		return sproutLists()->listEmail->unsubscribe($subscriptionModel);
 	}
 
 	public function isSubscribed($criteria)
 	{
-		return sproutLists()->listEmail->isSubscribed($criteria);
+
+		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
+		return sproutLists()->listEmail->isSubscribed($subscriptionModel);
 	}
 
 	public function getSubscriptions($criteria)

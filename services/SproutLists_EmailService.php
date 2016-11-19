@@ -7,11 +7,22 @@ class SproutLists_EmailService extends BaseApplicationComponent
 	{
 		if ($this->saveRecipient($model))
 		{
-			$listRecords = $this->saveRecipientListRelations($model);
+			$listRecord = $this->getListRecipient($subscriptionModel);
 
-			if (!empty($listRecords))
+			$listRecordIds = array();
+
+			if ($listRecord == null)
 			{
-				$this->saveListsElement($listRecords, $subscriptionModel);
+				$listRecordIds = $this->saveRecipientListRelations($model);
+			}
+			else
+			{
+				$listRecordIds[] = $listRecord->id;
+			}
+
+			if (!empty($listRecordIds))
+			{
+				$this->saveListsElement($listRecordIds, $subscriptionModel);
 			}
 		}
 	}
@@ -79,6 +90,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 	{
 		$recipientId      = $model->id;
 		$recipientListIds = $model->recipientLists;
+
 		try
 		{
 			SproutLists_ListsRecipientsRecord::model()->deleteAll('recipientId = :recipientId', array(':recipientId' => $recipientId));
@@ -144,9 +156,71 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 	}
 
-	public function unsubscribe(SproutLists_EmailRecipientModel $model)
+	public function getListRecipient($subscriptionModel)
 	{
-		$listId = $model->listId;
+		$listRecipient = null;
+
+		$listId = sproutLists()->getListId($subscriptionModel->list);
+
+		$recipientAttributes = array();
+
+		if ($subscriptionModel->email != null)
+		{
+			$recipientAttributes['email'] = $subscriptionModel->email;
+		}
+
+		if ($subscriptionModel->userId != null)
+		{
+			$recipientAttributes['userId'] = $subscriptionModel->userId;
+		}
+
+		$recipient = $this->getRecipient($recipientAttributes);
+
+		if ($recipient->id != null)
+		{
+			$recipientAttributes = array(
+				'listId'      => $listId,
+				'recipientId' => $recipient->id
+			);
+
+			$listRecipient = SproutLists_ListsRecipientsRecord::model()->findByAttributes($recipientAttributes);
+		}
+
+		return $listRecipient;
+	}
+
+	public function getListElement($subscriptionModel)
+	{
+		$listRecipient = $this->getListRecipient($subscriptionModel);
+
+		if ($listRecipient != null)
+		{
+			$listElementAttributes = array(
+					'listId'    => $listRecipient->id,
+					'elementId' => $subscriptionModel->elementId
+			);
+
+			$listRecipient = SproutLists_ListsElementsRelationsRecord::model()->findByAttributes($listElementAttributes);
+		}
+
+		return $listRecipient;
+	}
+
+	public function unsubscribe($subscriptionModel)
+	{
+		$listElement = $this->getListElement($subscriptionModel);
+
+		if ($listElement != null)
+		{
+			$listElement->delete();
+		}
+/*
+		Craft::dd($recipient);
+
+		$attributes = array(
+			'listId'    => $listId,
+			'elementId' => $subscriptionModel->elementId
+		)
 
 		$result = craft()->db->createCommand()
 			->delete('sproutlists_emails', array(
@@ -160,29 +234,14 @@ class SproutLists_EmailService extends BaseApplicationComponent
 			return true;
 		}
 
-		return false;
+		return false;*/
 	}
 
-	public function isSubscribed($criteria)
+	public function isSubscribed($subscriptionModel)
 	{
-		return false; // xxtempxx
-		$query = craft()->db->createCommand()
-			->select('email, elementId')
-			->from('sproutlists_emails')
-			->where(array(
-				'AND',
-				'listId = :listId',
-				'email = :email',
-				'elementId = :elementId',
-			), array(
-				':listId' => sproutLists()->getListId($criteria['list']),
-				':email' => $criteria['email'],
-				':elementId' => $criteria['elementId'],
-			));
+		$listElement = $this->getListElement($subscriptionModel);
 
-		$isSubscribed = $query->queryScalar();
-
-		return ($isSubscribed) ? true : false;
+		return ($listElement != null) ? true : false; // xxtempxx
 	}
 
 	public function getSubscriptions($criteria)
@@ -350,6 +409,20 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 
 		return $lists;
+	}
+
+	public function getRecipient(array $attributes)
+	{
+		$record = SproutLists_EmailRecipientRecord::model()->findByAttributes($attributes);
+
+		$list = new SproutLists_EmailRecipientModel;
+
+		if (!empty($record))
+		{
+			$list = SproutLists_EmailRecipientModel::populateModel($record);
+		}
+
+		return $list;
 	}
 
 	public function getRecipientById($id)

@@ -9,6 +9,7 @@ class SproutLists_SubscriptionModel extends BaseModel
 			'elementId' => AttributeType::Number,
 			'type'      => AttributeType::String,
 			'email'     => AttributeType::String,
+			'userId'    => AttributeType::Number,
 			'list'      => AttributeType::Mixed
 		);
 	}

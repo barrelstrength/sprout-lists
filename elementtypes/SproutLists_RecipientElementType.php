@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailRecipientElementType extends BaseElementType
+class SproutLists_RecipientElementType extends BaseElementType
 {
 	/**
 	 * @return string
@@ -71,9 +71,9 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
-		$query->addSelect('emaillists.*')
-			->join('sproutlists_emails emaillists', 'emaillists.id = elements.id')
-			->join('sproutlists_lists_recipients listsrecipients', 'listsrecipients.recipientId = emaillists.id')
+		$query->addSelect('recipients.*')
+			->join('sproutlists_recipients recipients', 'recipients.id = elements.id')
+			->join('sproutlists_lists_recipients listsrecipients', 'listsrecipients.recipientId = recipients.id')
 			->join('sproutlists_lists lists', 'lists.id = listsrecipients.listId');
 
 		if ($criteria->order)
@@ -95,8 +95,8 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
 			{
-				$criteria->order = str_replace('dateCreated', 'emaillists.dateCreated', $criteria->order);
-				$criteria->order = str_replace('dateUpdated', 'emaillists.dateUpdated', $criteria->order);
+				$criteria->order = str_replace('dateCreated', 'recipients.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'recipients.dateUpdated', $criteria->order);
 			}
 		}
 
@@ -181,7 +181,7 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutLists_EmailDelete');
+		$deleteAction = craft()->elements->getAction('SproutLists_RecipientsDelete');
 
 		$deleteAction->setParams(array(
 			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
@@ -193,6 +193,6 @@ class SproutLists_EmailRecipientElementType extends BaseElementType
 
 	public function populateElementModel($row)
 	{
-		return SproutLists_EmailRecipientModel::populateModel($row);
+		return SproutLists_RecipientModel::populateModel($row);
 	}
 }

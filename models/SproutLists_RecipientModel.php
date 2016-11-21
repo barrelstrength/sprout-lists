@@ -1,9 +1,9 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailRecipientModel extends BaseElementModel
+class SproutLists_RecipientModel extends BaseElementModel
 {
-	protected $elementType = 'SproutLists_EmailRecipient';
+	protected $elementType = 'SproutLists_Recipient';
 	protected $recipientListsIds;
 
 	public function defineAttributes()

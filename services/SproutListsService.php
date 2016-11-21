@@ -19,7 +19,7 @@ class SproutListsService extends BaseApplicationComponent
 		$this->getAllListTypes();
 
 		$this->listUser  = Craft::app()->getComponent('sproutLists_user');
-		$this->listEmail = Craft::app()->getComponent('sproutLists_email');
+		$this->listEmail = Craft::app()->getComponent('sproutlists_recipients');
 	}
 
 	public function getAllListTypes()

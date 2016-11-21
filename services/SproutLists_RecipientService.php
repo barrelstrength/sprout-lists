@@ -1,9 +1,9 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailService extends BaseApplicationComponent
+class SproutLists_RecipientService extends BaseApplicationComponent
 {
-	public function subscribe(SproutLists_EmailRecipientModel $model, $subscriptionModel)
+	public function subscribe(SproutLists_RecipientModel $model, $subscriptionModel)
 	{
 		if ($this->saveRecipient($model))
 		{
@@ -27,13 +27,13 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		}
 	}
 
-	public function saveRecipient(SproutLists_EmailRecipientModel $model)
+	public function saveRecipient(SproutLists_RecipientModel $model)
 	{
-		$record = new SproutLists_EmailRecipientRecord;
+		$record = new SproutLists_RecipientRecord;
 
 		if (!empty($model->id))
 		{
-			$record = SproutLists_EmailRecipientRecord::model()->findById($model->id);
+			$record = SproutLists_RecipientRecord::model()->findById($model->id);
 		}
 
 		$modelAttributes = $model->getAttributes();
@@ -214,27 +214,6 @@ class SproutLists_EmailService extends BaseApplicationComponent
 		{
 			$listElement->delete();
 		}
-/*
-		Craft::dd($recipient);
-
-		$attributes = array(
-			'listId'    => $listId,
-			'elementId' => $subscriptionModel->elementId
-		)
-
-		$result = craft()->db->createCommand()
-			->delete('sproutlists_emails', array(
-				'listId'    => $listId,
-				'email'     => $model->email,
-				'elementId' => $model->elementId,
-			));
-
-		if($result)
-		{
-			return true;
-		}
-
-		return false;*/
 	}
 
 	public function isSubscribed($subscriptionModel)
@@ -250,7 +229,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('email, elementId, dateCreated, COUNT(elementId) AS count')
-			->from('sproutlists_emails')
+			->from('sproutlists_recipients')
 			->group('elementId');
 
 		if (isset($criteria['email']))
@@ -277,7 +256,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$emails = $query->queryAll();
 
-		$emailModels = SproutLists_EmailRecipientModel::populateModels($emails, 'elementId');
+		$emailModels = SproutLists_RecipientModel::populateModels($emails, 'elementId');
 
 		return $emailModels;
 	}
@@ -288,7 +267,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('email')
-			->from('sproutlists_emails')
+			->from('sproutlists_recipients')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if (isset($criteria['elementId']))
@@ -308,14 +287,14 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$emails = $query->queryAll();
 
-		$emailModels = SproutLists_EmailRecipientModel::populateModels($emails);
+		$emailModels = SproutLists_RecipientModel::populateModels($emails);
 
 		return $emailModels;
 	}
 
 	public function getListCount($criteria)
 	{
-		$records = SproutLists_EmailRecipientRecord::model()->with('recipientLists')->findAll();
+		$records = SproutLists_RecipientRecord::model()->with('recipientLists')->findAll();
 
 		$count = 0;
 		if ($records)
@@ -359,7 +338,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 		$query = craft()->db->createCommand()
 			->select('count(listId) as count')
-			->from('sproutlists_emails')
+			->from('sproutlists_recipients')
 			->where(array('listId = :listId'), array(':listId' => $listId));
 
 		if(isset($criteria['elementId']))
@@ -380,7 +359,7 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getLists()
 	{
-		$records = SproutLists_EmailRecipientRecord::model()->with('recipientLists')->findAll();
+		$records = SproutLists_RecipientRecord::model()->with('recipientLists')->findAll();
 		$ids = array();
 		$lists = array();
 
@@ -413,13 +392,13 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getRecipient(array $attributes)
 	{
-		$record = SproutLists_EmailRecipientRecord::model()->findByAttributes($attributes);
+		$record = SproutLists_RecipientRecord::model()->findByAttributes($attributes);
 
-		$list = new SproutLists_EmailRecipientModel;
+		$list = new SproutLists_RecipientModel;
 
 		if (!empty($record))
 		{
-			$list = SproutLists_EmailRecipientModel::populateModel($record);
+			$list = SproutLists_RecipientModel::populateModel($record);
 		}
 
 		return $list;
@@ -427,13 +406,13 @@ class SproutLists_EmailService extends BaseApplicationComponent
 
 	public function getRecipientById($id)
 	{
-		$record = SproutLists_EmailRecipientRecord::model()->findById($id);
+		$record = SproutLists_RecipientRecord::model()->findById($id);
 
-		$list = new SproutLists_EmailRecipientModel;
+		$list = new SproutLists_RecipientModel;
 
 		if (!empty($record))
 		{
-			$list = SproutLists_EmailRecipientModel::populateModel($record);
+			$list = SproutLists_RecipientModel::populateModel($record);
 		}
 
 		return $list;

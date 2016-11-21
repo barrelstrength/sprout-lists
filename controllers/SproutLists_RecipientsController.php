@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailsController extends BaseController
+class SproutLists_RecipientsController extends BaseController
 {
 	public function actionEditEmailRecipient(array $variables = array())
 	{
@@ -10,7 +10,7 @@ class SproutLists_EmailsController extends BaseController
 
 		if ($element == null)
 		{
-			$element = new SproutLists_EmailRecipientModel;
+			$element = new SproutLists_RecipientModel;
 
 			if ($id)
 			{
@@ -18,7 +18,7 @@ class SproutLists_EmailsController extends BaseController
 			}
 		}
 
-		$this->renderTemplate('sproutlists/emails/_edit', array(
+		$this->renderTemplate('sproutlists/recipients/_edit', array(
 			'id'      => $id,
 			'element' => $element,
 		  'recipientListsHtml' => sproutLists()->getRecipientListsHtml($element)
@@ -31,7 +31,7 @@ class SproutLists_EmailsController extends BaseController
 
 		$recipient = craft()->request->getPost('recipient');
 
-		$model = new SproutLists_EmailRecipientModel;
+		$model = new SproutLists_RecipientModel;
 
 		if (!empty($recipient['id']))
 		{

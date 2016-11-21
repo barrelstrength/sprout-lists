@@ -46,11 +46,11 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/users/edit/(?P<id>[\d]+)' => array(
 				'action' => 'sproutLists/users/editUserRecipient'
 			),
-			'sproutlists/emails/new' => array(
-				'action' => 'sproutLists/emails/editEmailRecipient'
+			'sproutlists/recipients/new' => array(
+				'action' => 'sproutLists/recipients/editEmailRecipient'
 			),
-			'sproutlists/emails/edit/(?P<id>[\d]+)' => array(
-				'action' => 'sproutLists/emails/editEmailRecipient'
+			'sproutlists/recipients/edit/(?P<id>[\d]+)' => array(
+				'action' => 'sproutLists/recipients/editEmailRecipient'
 			),
 		);
 	}
@@ -59,11 +59,11 @@ class SproutListsPlugin extends BasePlugin
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
-		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_EmailListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_RecipientListType');
 
 		return array(
 			//new SproutLists_UserListType(),
-			new SproutLists_EmailListType()
+			new SproutLists_RecipientListType()
 		);
 	}
 

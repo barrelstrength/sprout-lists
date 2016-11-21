@@ -29,7 +29,7 @@ class SproutLists_ListsRecord extends BaseRecord
 		return array(
 			'emailRecipients' => array(
 				static::MANY_MANY,
-				'SproutLists_EmailRecipientRecord',
+				'SproutLists_RecipientRecord',
 				'sproutlists_lists_recipients(listId, recipientId)'
 			)
 		);

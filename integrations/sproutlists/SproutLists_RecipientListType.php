@@ -2,7 +2,7 @@
 
 namespace Craft;
 
-class SproutLists_EmailListType extends SproutListsBaseListType
+class SproutLists_RecipientListType extends SproutListsBaseListType
 {
 	public function subscribe($subscription)
 	{
@@ -32,7 +32,7 @@ class SproutLists_EmailListType extends SproutListsBaseListType
 
 		if ($model->id == null)
 		{
-			$model = SproutLists_EmailRecipientModel::populateModel($attributes);
+			$model = SproutLists_RecipientRecipientModel::populateModel($attributes);
 		}
 		else
 		{

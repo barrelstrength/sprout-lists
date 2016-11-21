@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_EmailRecipientRecord extends BaseRecord
+class SproutLists_RecipientRecord extends BaseRecord
 {	
 	/**
 	 * Return table name corresponding to this record
@@ -9,7 +9,7 @@ class SproutLists_EmailRecipientRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_emails';
+		return 'sproutlists_reipients';
 	}
 
 	/**

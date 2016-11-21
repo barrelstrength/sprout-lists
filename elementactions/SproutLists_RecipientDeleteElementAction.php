@@ -6,7 +6,7 @@ namespace Craft;
  *
  * @package Craft
  */
-class SproutLists_EmailDeleteElementAction extends DeleteElementAction
+class SproutLists_RecipientDeleteElementAction extends DeleteElementAction
 {
 
 	/**

@@ -8,7 +8,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Email Lists');
+		return Craft::t('Sprout List Recipients');
 	}
 
 	/**
@@ -50,7 +50,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->listEmail->getLists();
+		$lists = sproutLists()->listRecipient->getLists();
 
 		if (!empty($lists))
 		{
@@ -85,12 +85,6 @@ class SproutLists_RecipientElementType extends BaseElementType
 				$criteria->order = str_replace("listId", "lists.name", $criteria->order);
 			}
 
-			// Sort by user email not by userId
-/*			if (preg_match('/id (.*)/', $criteria->order))
-			{
-				$criteria->order = str_replace("id", "emaillists.email", $criteria->order);
-			}*/
-
 			// Trying to order by date creates ambiguity errors
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
@@ -111,7 +105,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "action":
-					return "<a href='emails/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
+					return "<a href='recipients/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
 				break;
 
 /*			case "listId":
@@ -181,11 +175,11 @@ class SproutLists_RecipientElementType extends BaseElementType
 
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutLists_RecipientsDelete');
+		$deleteAction = craft()->elements->getAction('SproutLists_RecipientDelete');
 
 		$deleteAction->setParams(array(
-			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected emails?'),
-			'successMessage'      => Craft::t('Emails deleted.'),
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected recipients?'),
+			'successMessage'      => Craft::t('Recipients deleted.'),
 		));
 
 		return array($deleteAction);

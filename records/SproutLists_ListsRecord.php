@@ -27,7 +27,7 @@ class SproutLists_ListsRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'emailRecipients' => array(
+			'recipients' => array(
 				static::MANY_MANY,
 				'SproutLists_RecipientRecord',
 				'sproutlists_lists_recipients(listId, recipientId)'

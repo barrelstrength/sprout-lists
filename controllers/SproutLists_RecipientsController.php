@@ -3,7 +3,7 @@ namespace Craft;
 
 class SproutLists_RecipientsController extends BaseController
 {
-	public function actionEditEmailRecipient(array $variables = array())
+	public function actionEditRecipient(array $variables = array())
 	{
 		$id = isset($variables['id']) ? $variables['id'] : null;
 		$element = (isset($variables['element'])) ? $variables['element'] : null;
@@ -14,7 +14,7 @@ class SproutLists_RecipientsController extends BaseController
 
 			if ($id)
 			{
-				$element = sproutLists()->listEmail->getRecipientById($id);
+				$element = sproutLists()->listRecipient->getRecipientById($id);
 			}
 		}
 
@@ -35,16 +35,16 @@ class SproutLists_RecipientsController extends BaseController
 
 		if (!empty($recipient['id']))
 		{
-			$model = sproutLists()->listEmail->getRecipientById($recipient['id']);
+			$model = sproutLists()->listRecipient->getRecipientById($recipient['id']);
 		}
 
 		$model->setAttributes($recipient);
 
 		if ($model->validate())
 		{
-			if (sproutLists()->listEmail->saveRecipient($model))
+			if (sproutLists()->listRecipient->saveRecipient($model))
 			{
-				$result = sproutLists()->listEmail->saveRecipientListRelations($model);
+				$result = sproutLists()->listRecipient->saveRecipientListRelations($model);
 
 				if ($result !== false)
 				{
@@ -71,7 +71,7 @@ class SproutLists_RecipientsController extends BaseController
 
 		if ($id != null)
 		{
-			$model = sproutLists()->listEmail->getRecipientById($id);
+			$model = sproutLists()->listRecipient->getRecipientById($id);
 
 			if (craft()->elements->deleteElementById($id))
 			{

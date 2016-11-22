@@ -85,7 +85,6 @@ class SproutLists_UserRecipientElementType extends BaseElementType
 				$criteria->order = str_replace("listId", "lists.name", $criteria->order);
 			}
 
-			// Sort by user email not by userId
 			if (preg_match('/id (.*)/', $criteria->order))
 			{
 				$criteria->order = str_replace("id", "users.email", $criteria->order);

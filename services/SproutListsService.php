@@ -7,7 +7,7 @@ class SproutListsService extends BaseApplicationComponent
 	protected $listTypes = array();
 
 	public $listUser;
-	public $listEmail;
+	public $listRecipient;
 
 	/**
 	 * @property SproutLists_UserService $listUser
@@ -18,8 +18,7 @@ class SproutListsService extends BaseApplicationComponent
 
 		$this->getAllListTypes();
 
-		$this->listUser  = Craft::app()->getComponent('sproutLists_user');
-		$this->listEmail = Craft::app()->getComponent('sproutlists_recipients');
+		$this->listRecipient = Craft::app()->getComponent('sproutLists_recipient');
 	}
 
 	public function getAllListTypes()
@@ -110,7 +109,7 @@ class SproutListsService extends BaseApplicationComponent
 		return $ids;
 	}
 
-	public function getAllLists()
+	public function getLists()
 	{
 		$records = SproutLists_ListsRecord::model()->findAll();
 
@@ -193,7 +192,14 @@ class SproutListsService extends BaseApplicationComponent
 		{
 			if ($record->delete())
 			{
-				return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
+				$lists = SproutLists_ListsRecipientsRecord::model()->findByAttributes(array('listId' => $id));
+
+				if ($lists != null)
+				{
+					return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
+				}
+				return true;
+				//return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
 			}
 		}
 
@@ -207,7 +213,7 @@ class SproutListsService extends BaseApplicationComponent
 	 */
 	public function getRecipientListsHtml($element = null, $default = array())
 	{
-		$lists   = $this->getAllLists();
+		$lists   = $this->getLists();
 		$options = array();
 
 		if (count($lists))

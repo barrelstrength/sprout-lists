@@ -147,9 +147,9 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			{
 				$record = new SproutLists_ListsElementsRelationsRecord;
 
-				$record->elementId = $subscriptionModel->elementId;
-				$record->type      = $subscriptionModel->type;
-				$record->listId = $listRecordId;
+				$record->elementId       = $subscriptionModel->elementId;
+				$record->type            = $subscriptionModel->type;
+				$record->listRecipientId = $listRecordId;
 
 				$result = $record->save(false);
 			}
@@ -196,7 +196,7 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 		if ($listRecipient != null)
 		{
 			$listElementAttributes = array(
-					'listId'    => $listRecipient->id,
+					'listRecipientId'    => $listRecipient->id,
 					'elementId' => $subscriptionModel->elementId
 			);
 
@@ -223,25 +223,38 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 		return ($listElement != null) ? true : false; // xxtempxx
 	}
 
-	public function getSubscriptions($criteria)
+	public function getQuerySubscriptions($criteria)
 	{
 		$listId = sproutLists()->getListId($criteria['list']);
 
 		$query = craft()->db->createCommand()
-			->select('email, elementId, dateCreated, COUNT(elementId) AS count')
-			->from('sproutlists_recipients')
-			->group('elementId');
+			->select('lists.*, listrecipients.*, recipients.*, listelements.*')
+			->from('sproutlists_lists lists')
+			->join('sproutlists_lists_recipients listrecipients', 'lists.id = listrecipients.listId')
+			->join('sproutlists_recipients recipients', 'recipients.id = listrecipients.recipientId')
+			->join('sproutlists_lists_recpients_elements listelements', 'listelements.listRecipientId = listrecipients.id');
+
+		if (isset($criteria['list']))
+		{
+			$query->where(array('and', 'lists.id = :listId'), array(':listId' => $listId));
+		}
+
+		if (isset($criteria['userId']))
+		{
+			$query->where(array('and', 'recipients.userId = :userId'), array(':userId' => $criteria['userId']));
+		}
 
 		if (isset($criteria['email']))
 		{
 			// Search by user ID or array of user IDs
 			$emails = sproutLists()->prepareIdsForQuery($criteria['email']);
 
-			$query->where(array('and', "listId = $listId", array('in', 'email', $emails)));
+			$query->andWhere(array('and', array('in', 'recipients.email', $emails)));
 		}
-		else
+
+		if (isset($criteria['elementId']))
 		{
-			$query->where(array('listId = :listId'), array(':listId' => $listId));
+			$query->andWhere(array('and', 'listelements.elementId = :elementId'), array(':elementId' => $criteria['elementId']));
 		}
 
 		if (isset($criteria['order']))
@@ -254,42 +267,31 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			$query->limit($criteria['limit']);
 		}
 
-		$emails = $query->queryAll();
+		return $query;
+	}
 
-		$emailModels = SproutLists_RecipientModel::populateModels($emails, 'elementId');
+	public function getSubscriptions($criteria)
+	{
+		$results = $this->getQuerySubscriptions($criteria)->queryAll();
 
-		return $emailModels;
+		return $results;
 	}
 
 	public function getSubscribers($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
+		return $this->getSubscriptions($criteria);
+	}
 
-		$query = craft()->db->createCommand()
-			->select('email')
-			->from('sproutlists_recipients')
-			->where(array('listId = :listId'), array(':listId' => $listId));
+	public function getSubscriberCount($criteria)
+	{
+		$results = $this->getQuerySubscriptions($criteria)->queryAll();
 
-		if (isset($criteria['elementId']))
+		if (!empty($results))
 		{
-			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
-			$query->andWhere(array('in', 'elementId', $elementId));
-		}
-		else
-		{
-			$query->group('email');
+			return count($results);
 		}
 
-		if (isset($criteria['limit']))
-		{
-			$query->limit($criteria['limit']);
-		}
-
-		$emails = $query->queryAll();
-
-		$emailModels = SproutLists_RecipientModel::populateModels($emails);
-
-		return $emailModels;
+		return 0;
 	}
 
 	public function getListCount($criteria)
@@ -323,36 +325,6 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 
 			$count = $query->queryScalar();
 		}
-
-		return $count;
-	}
-
-	/**
-	 * Get total count of subscribers to an element.
-	 * @param  Int $elementId    Id of Element.
-	 * @return Int            	 Subscription count.
-	 */
-	public function getSubscriberCount($criteria)
-	{
-		$listId = sproutLists()->getListId($criteria['list']);
-
-		$query = craft()->db->createCommand()
-			->select('count(listId) as count')
-			->from('sproutlists_recipients')
-			->where(array('listId = :listId'), array(':listId' => $listId));
-
-		if(isset($criteria['elementId']))
-		{
-			$elementId = sproutLists()->prepareIdsForQuery($criteria['elementId']);
-
-			$query->andWhere(array('in', 'elementId', $elementId));
-		}
-		else
-		{
-			$query->group('email');
-		}
-
-		$count = $query->queryScalar();
 
 		return $count;
 	}

@@ -1,11 +1,6 @@
 <?php
 namespace Craft;
 
-/**
- * Class SproutEmail_NotificationEmailDeleteElementAction
- *
- * @package Craft
- */
 class SproutLists_RecipientDeleteElementAction extends DeleteElementAction
 {
 

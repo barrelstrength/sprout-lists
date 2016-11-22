@@ -27,7 +27,7 @@ class SproutLists_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (craft()->request->getPost('type') != null)
 		{
@@ -95,7 +95,7 @@ class SproutLists_ListsController extends BaseController
 		$subscription['elementId'] = craft()->request->getRequiredPost('elementId');
 		$subscription['list'] = craft()->request->getRequiredPost('list');
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (craft()->request->getPost('type') != null)
 		{

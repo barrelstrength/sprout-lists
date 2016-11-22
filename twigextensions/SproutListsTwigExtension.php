@@ -21,8 +21,8 @@ class SproutListsTwigExtension extends \Twig_Extension
   public function getFilters()
   {
     return array(
-      'listIds' => new \Twig_Filter_Method($this, 'listIds'),
-      'subscriberIds' => new \Twig_Filter_Method($this, 'subscriberIds'),
+      'subscriberIds'   => new \Twig_Filter_Method($this, 'subscriberIds'),
+      'subscriptionIds' => new \Twig_Filter_Method($this, 'subscriptionIds'),
     );
   }
 
@@ -45,6 +45,17 @@ class SproutListsTwigExtension extends \Twig_Extension
 	public function subscriberIds($subscriptions)
 	{
 		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'userId');
+
+		$subscriptionIds = array_values(array_unique($subscriptionIds));
+
+		return StringHelper::arrayToString($subscriptionIds);
+	}
+
+	public function subscriptionIds($subscriptions)
+	{
+		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'elementId');
+		$subscriptionIds = array_values(array_unique($subscriptionIds));
+
 		return StringHelper::arrayToString($subscriptionIds);
 	}
 

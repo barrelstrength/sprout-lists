@@ -9,7 +9,7 @@ class SproutLists_RecipientRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_reipients';
+		return 'sproutlists_recipients';
 	}
 
 	/**
@@ -22,6 +22,7 @@ class SproutLists_RecipientRecord extends BaseRecord
 			'email'       => AttributeType::String,
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
+			'userId'      => AttributeType::Number,
 			'type'        => AttributeType::String,
 			'details'     => AttributeType::String,
 			'dateCreated' => AttributeType::DateTime,

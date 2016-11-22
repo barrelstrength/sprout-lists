@@ -24,7 +24,7 @@ class SproutListsVariable
 			throw new Exception(Craft::t('Missing arguments. list, userId, and elementId are all required.'));
 		}
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (isset($criteria['type']))
 		{
@@ -46,7 +46,7 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (isset($criteria['type']))
 		{
@@ -65,7 +65,7 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (isset($criteria['type']))
 		{
@@ -87,7 +87,7 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (isset($criteria['type']))
 		{
@@ -106,7 +106,7 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		$type = 'user';
+		$type = 'recipient';
 
 		if (isset($criteria['type']))
 		{
@@ -118,9 +118,9 @@ class SproutListsVariable
 		return $listType->getSubscribers($criteria);
 	}
 
-	public function getAllLists()
+	public function getLists()
 	{
-		return sproutLists()->getAllLists();
+		return sproutLists()->getLists();
 	}
 
 	public function getAllListTypes()

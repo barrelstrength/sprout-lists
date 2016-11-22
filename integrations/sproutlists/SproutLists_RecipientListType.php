@@ -26,53 +26,55 @@ class SproutLists_RecipientListType extends SproutListsBaseListType
 		if ($subscriptionModel->userId != null)
 		{
 			$recipientAttributes['userId'] = $subscriptionModel->userId;
+
+			$attributes['userId'] = $subscriptionModel->userId;
 		}
 
-		$model = sproutLists()->listEmail->getRecipient($recipientAttributes);
+		$model = sproutLists()->listRecipient->getRecipient($recipientAttributes);
 
 		if ($model->id == null)
 		{
-			$model = SproutLists_RecipientRecipientModel::populateModel($attributes);
+			$model = SproutLists_RecipientModel::populateModel($attributes);
 		}
 		else
 		{
 			$model->setAttribute('recipientLists', $attributes['recipientLists']);
 		}
 
-		return sproutLists()->listEmail->subscribe($model, $subscriptionModel);
+		return sproutLists()->listRecipient->subscribe($model, $subscriptionModel);
 	}
 
 	public function unsubscribe($subscription)
 	{
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
-		return sproutLists()->listEmail->unsubscribe($subscriptionModel);
+		return sproutLists()->listRecipient->unsubscribe($subscriptionModel);
 	}
 
 	public function isSubscribed($criteria)
 	{
 
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
-		return sproutLists()->listEmail->isSubscribed($subscriptionModel);
+		return sproutLists()->listRecipient->isSubscribed($subscriptionModel);
 	}
 
 	public function getSubscriptions($criteria)
 	{
-		return sproutLists()->listEmail->getSubscriptions($criteria);
+		return sproutLists()->listRecipient->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
 	{
-		return sproutLists()->listEmail->getSubscribers($criteria);
+		return sproutLists()->listRecipient->getSubscribers($criteria);
 	}
 
 	public function getListCount($criteria)
 	{
-		return sproutLists()->listEmail->getListCount($criteria);
+		return sproutLists()->listRecipient->getListCount($criteria);
 	}
 
 	public function getSubscriberCount($criteria)
 	{
-		return sproutLists()->listEmail->getSubscriberCount($criteria);
+		return sproutLists()->listRecipient->getSubscriberCount($criteria);
 	}
 }

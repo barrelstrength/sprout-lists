@@ -47,10 +47,10 @@ class SproutListsPlugin extends BasePlugin
 				'action' => 'sproutLists/users/editUserRecipient'
 			),
 			'sproutlists/recipients/new' => array(
-				'action' => 'sproutLists/recipients/editEmailRecipient'
+				'action' => 'sproutLists/recipients/editRecipient'
 			),
 			'sproutlists/recipients/edit/(?P<id>[\d]+)' => array(
-				'action' => 'sproutLists/recipients/editEmailRecipient'
+				'action' => 'sproutLists/recipients/editRecipient'
 			),
 		);
 	}

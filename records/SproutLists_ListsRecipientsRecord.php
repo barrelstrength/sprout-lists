@@ -1,14 +1,6 @@
 <?php
 namespace Craft;
 
-/**
- * Class SproutEmail_DefaultMailerRecipientListRecipientRecord
- *
- * @package Craft
- *
- * @property int $recipientId
- * @property int $recipientListId
- */
 class SproutLists_ListsRecipientsRecord extends BaseRecord
 {
 	public function getTableName()

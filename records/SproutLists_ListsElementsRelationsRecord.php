@@ -8,7 +8,7 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_lists_elements';
+		return 'sproutlists_lists_recpients_elements';
 	}
 
 	/**
@@ -17,8 +17,8 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'type'     => AttributeType::String,
-			'listId'   => AttributeType::String,
+			'type'              => AttributeType::String,
+			'listRecipientId'   => AttributeType::Number
 		);
 	}
 

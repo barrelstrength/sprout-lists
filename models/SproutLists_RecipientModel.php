@@ -12,7 +12,7 @@ class SproutLists_RecipientModel extends BaseElementModel
 
 		$attributes = array(
 			'id'              => AttributeType::Number,
-			'email'           => array(AttributeType::String, "required" => true),
+			'email'           => array(AttributeType::String),
 			'userId'          => array(AttributeType::Number),
 			'firstName'       => AttributeType::String,
 			'lastName'        => AttributeType::String,
@@ -26,7 +26,17 @@ class SproutLists_RecipientModel extends BaseElementModel
 
 	public function __toString()
 	{
-		return $this->email;
+		if ($this->email != null)
+		{
+			return $this->email;
+		}
+
+		if ($this->userId != null)
+		{
+			$user = craft()->users->getUserById($this->userId);
+
+			return $user->email;
+		}
 	}
 
 	/**

@@ -9,9 +9,7 @@ class SproutListsService extends BaseApplicationComponent
 	public $listUser;
 	public $listRecipient;
 
-	/**
-	 * @property SproutLists_UserService $listUser
-	 */
+
 	public function init()
 	{
 		parent::init();

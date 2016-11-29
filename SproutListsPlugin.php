@@ -31,6 +31,15 @@ class SproutListsPlugin extends BasePlugin
 		return true;
 	}
 
+	public function init()
+	{
+		parent::init();
+		if (craft()->request->isCpRequest())
+		{
+			craft()->templates->includeJsResource('sproutlists/js/SproutListsIndex.js');
+		}
+	}
+
 	public function registerCpRoutes()
 	{
 		return array(
@@ -40,6 +49,7 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/lists/edit/(?P<listId>[\d]+)' => array(
 				'action' => 'sproutLists/lists/editList'
 			),
+			'sproutlists/recipients/(?P<listHandle>{handle})' => 'sproutlists/recipients',
 			'sproutlists/recipients/new' => array(
 				'action' => 'sproutLists/recipients/editRecipient'
 			),

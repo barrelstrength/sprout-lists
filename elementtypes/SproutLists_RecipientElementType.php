@@ -56,11 +56,11 @@ class SproutLists_RecipientElementType extends BaseElementType
 		{
 			foreach ($lists as $list)
 			{
-				$key = 'listId:' . $list->id;
+				$key = 'lists:' . $list->id;
 
 				$sources[$key] = array(
 					'label'    => $list->name,
-					'data'     => array('listId' => $list->id),
+					'data'     => array('handle' => $list->handle),
 					'criteria' => array('listId' => $list->id)
 				);
 			}
@@ -108,16 +108,6 @@ class SproutLists_RecipientElementType extends BaseElementType
 					return "<a href='recipients/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
 				break;
 
-/*			case "listId":
-				$list = SproutLists_ListsRecord::model()->findById($element->listId);
-
-				if ($list)
-				{
-					return $list->name;
-				}
-
-				break;*/
-
 			case "elementId":
 					$listElement = craft()->elements->getElementById($element->elementId);
 
@@ -140,6 +130,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 	{
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
+			'userId'      => array('label' => Craft::t('User ID')),
 			'action'      => array('label' => ''),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
@@ -165,7 +156,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 	{
 		$attributes = array();
 
-		$attributes[] = 'email';
+		$attributes[] = 'userId';
 		$attributes[] = 'action';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';

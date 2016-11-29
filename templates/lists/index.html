@@ -16,6 +16,7 @@
 				<thead>
 				<th width="20%">{{ "Name"|t }}</th>
 				<th width="20%">{{ "Handle"|t }}</th>
+				<th width="20%">{{ "View"|t }}</th>
 
 				{% for listType in craft.sproutLists.getAllListTypes() %}
 					<th width="10%">{{ "Total List"|t }} {{ listType.getName()  }}</th>
@@ -25,10 +26,13 @@
 			{% endif %}
 			<tr data-id="{{ list.id }}" data-name="{{ list.name }}">
 				<td>
-					<a href="{{ url('sproutlists/lists/edit/' ~ list.id ) }}">{{ list.name }}</a>
+					<a href="{{ url('sproutlists/recipients/edit/' ~ list.id ) }}">{{ list.name }}</a>
 				</td>
 				<td>
 					<code>{{ list.handle }}</code>
+				</td>
+				<td>
+					<code><a href="{{ url('sproutlists/recipients/' ~ list.handle ) }}">{{ "View"|t }}</a></code>
 				</td>
 				{% for listType in craft.sproutLists.getAllListTypes() %}
 					<td>{{ listType.listCount({id: list.id})  }}</td>

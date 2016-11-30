@@ -209,7 +209,7 @@ class SproutListsService extends BaseApplicationComponent
 	 *
 	 * @return \Twig_Markup
 	 */
-	public function getRecipientListsHtml($element = null, $default = array())
+	public function getRecipientListsHtml($values = array(), $default = array())
 	{
 		$lists   = $this->getLists();
 		$options = array();
@@ -223,13 +223,6 @@ class SproutListsService extends BaseApplicationComponent
 					'value' => $list->id
 				);
 			}
-		}
-
-		$values = array();
-
-		if (count($element->getRecipientListIds()))
-		{
-			$values = $element->getRecipientListIds();
 		}
 
 		if (!empty($default))
@@ -251,8 +244,7 @@ class SproutListsService extends BaseApplicationComponent
 		$html = craft()->templates->renderMacro(
 			'_includes/forms', 'field', array(
 				array(
-					'id'     => 'recipientLists',
-					'errors' => $element->getErrors('recipientLists')
+					'id'     => 'recipientLists'
 				),
 				$checkboxGroup
 			)

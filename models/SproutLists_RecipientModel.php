@@ -77,6 +77,13 @@ class SproutLists_RecipientModel extends BaseElementModel
 			$element = sproutLists()->listRecipient->getRecipientById($id);
 		}
 
-		return sproutLists()->getRecipientListsHtml($element);
+		$values = array();
+
+		if (count($element->getRecipientListIds()))
+		{
+			$values = $element->getRecipientListIds();
+		}
+
+		return sproutLists()->getRecipientListsHtml($values);
 	}
 }

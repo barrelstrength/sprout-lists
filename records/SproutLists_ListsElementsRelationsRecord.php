@@ -18,7 +18,7 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	{
 		return array(
 			'type'              => AttributeType::String,
-			'listRecipientId'   => AttributeType::Number
+			'listId'   => AttributeType::Number
 		);
 	}
 

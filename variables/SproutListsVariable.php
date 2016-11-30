@@ -128,6 +128,11 @@ class SproutListsVariable
 		return sproutLists()->getAllListTypes();
 	}
 
+	public function getRecipientListsHtml($values = array())
+	{
+		return sproutLists()->getRecipientListsHtml($values);
+	}
+
 	public function getListsNav()
 	{
 		$navs = array();

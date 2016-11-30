@@ -15,14 +15,12 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			{
 				$listRecordIds = $this->saveRecipientListRelations($model);
 			}
-			else
-			{
-				$listRecordIds[] = $listRecord->id;
-			}
 
-			if (!empty($listRecordIds))
+			if (!empty($model->recipientLists))
 			{
-				$this->saveListsElement($listRecordIds, $subscriptionModel);
+				$recipientListIds = $model->recipientLists;
+
+				$this->saveListsElement($recipientListIds, $subscriptionModel);
 			}
 		}
 	}
@@ -147,9 +145,9 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			{
 				$record = new SproutLists_ListsElementsRelationsRecord;
 
-				$record->elementId       = $subscriptionModel->elementId;
-				$record->type            = $subscriptionModel->type;
-				$record->listRecipientId = $listRecordId;
+				$record->elementId = $subscriptionModel->elementId;
+				$record->type      = $subscriptionModel->type;
+				$record->listId     = $listRecordId;
 
 				$result = $record->save(false);
 			}
@@ -191,12 +189,12 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 
 	public function getListElement($subscriptionModel)
 	{
-		$listRecipient = $this->getListRecipient($subscriptionModel);
+		$listId = sproutLists()->getListId($subscriptionModel->list);
 
-		if ($listRecipient != null)
+		if ($listId != null)
 		{
 			$listElementAttributes = array(
-					'listRecipientId'    => $listRecipient->id,
+					'listId'    => $listId,
 					'elementId' => $subscriptionModel->elementId
 			);
 
@@ -232,7 +230,7 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			->from('sproutlists_lists lists')
 			->join('sproutlists_lists_recipients listrecipients', 'lists.id = listrecipients.listId')
 			->join('sproutlists_recipients recipients', 'recipients.id = listrecipients.recipientId')
-			->join('sproutlists_lists_recpients_elements listelements', 'listelements.listRecipientId = listrecipients.id');
+			->join('sproutlists_lists_recpients_elements listelements', 'listelements.listId = lists.id');
 
 		if (isset($criteria['list']))
 		{

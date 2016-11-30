@@ -1,6 +1,6 @@
 {% extends "_layouts/elementindex" %}
 
-{% set listnav = craft.sproutlists.getListsNav() %}
+{% set listnav = {} %}
 
 {% set subnav = listnav|merge({
 	lists: {

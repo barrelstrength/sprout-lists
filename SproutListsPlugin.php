@@ -49,10 +49,10 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/lists/edit/(?P<listId>[\d]+)' => array(
 				'action' => 'sproutLists/lists/editList'
 			),
-			'sproutlists/recipients/(?P<listHandle>{handle})' => 'sproutlists/recipients',
 			'sproutlists/recipients/new' => array(
 				'action' => 'sproutLists/recipients/editRecipient'
 			),
+			'sproutlists/recipients/(?P<listHandle>{handle})' => 'sproutlists/recipients',
 			'sproutlists/recipients/edit/(?P<id>[\d]+)' => array(
 				'action' => 'sproutLists/recipients/editRecipient'
 			),

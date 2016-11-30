@@ -20,8 +20,7 @@ class SproutLists_RecipientsController extends BaseController
 
 		$this->renderTemplate('sproutlists/recipients/_edit', array(
 			'id'      => $id,
-			'element' => $element,
-		  'recipientListsHtml' => sproutLists()->getRecipientListsHtml($element)
+			'element' => $element
 		));
 	}
 

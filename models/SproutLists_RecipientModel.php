@@ -65,4 +65,18 @@ class SproutLists_RecipientModel extends BaseElementModel
 	{
 		return sproutLists()->getListsByRecipientId($this->id);
 	}
+
+	public function getRecipientListsHtml()
+	{
+		$id = isset($this->id) ? $this->id : null;
+
+		$element = new SproutLists_RecipientModel;
+
+		if ($id != null)
+		{
+			$element = sproutLists()->listRecipient->getRecipientById($id);
+		}
+
+		return sproutLists()->getRecipientListsHtml($element);
+	}
 }

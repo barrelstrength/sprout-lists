@@ -105,7 +105,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "action":
-					return "<a href='edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
+					return "<a href='recipients/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
 				break;
 
 			case "elementId":

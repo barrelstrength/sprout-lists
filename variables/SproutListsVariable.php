@@ -128,9 +128,9 @@ class SproutListsVariable
 		return sproutLists()->getAllListTypes();
 	}
 
-	public function getRecipientListsHtml($values = array())
+	public function getListsHtml($elementId = null)
 	{
-		return sproutLists()->getRecipientListsHtml($values);
+		return sproutLists()->getListsHtml($elementId);
 	}
 
 	public function getListsNav()

@@ -28,7 +28,7 @@ class SproutLists_RecipientsController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$recipient = craft()->request->getPost('recipient');
+		$recipient = craft()->request->getPost('sproutlists');
 
 		$model = new SproutLists_RecipientModel;
 

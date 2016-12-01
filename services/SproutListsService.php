@@ -197,11 +197,35 @@ class SproutListsService extends BaseApplicationComponent
 					return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
 				}
 				return true;
-				//return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
 			}
 		}
 
 		return false;
+	}
+
+	public function getListsHtml($elementId = null, $type = 'email')
+	{
+		$values = array();
+
+		if ($elementId != null)
+		{
+			$listElementAttributes = array(
+				'elementId' => $elementId,
+				'type'      => $type
+			);
+
+			$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($listElementAttributes);
+
+			if ($listRecipients != null)
+			{
+				foreach ($listRecipients as $listRecipient)
+				{
+					$values[] = $listRecipient->listId;
+				}
+			}
+		}
+
+		return $this->getRecipientListsHtml($values);
 	}
 
 	/**
@@ -234,7 +258,7 @@ class SproutListsService extends BaseApplicationComponent
 		$checkboxGroup = craft()->templates->renderMacro(
 			'_includes/forms', 'checkboxGroup', array(
 				array(
-					'name'    => 'recipient[recipientLists]',
+					'name'    => 'sproutlists[recipientLists]',
 					'options' => $options,
 					'values'  => $values
 				)
@@ -268,6 +292,69 @@ class SproutListsService extends BaseApplicationComponent
 		}
 
 		return $lists;
+	}
+
+	public function addSyncElement(array $recipientLists, $elementId, $type = 'email')
+	{
+		$subscription = array(
+			'elementId' => $elementId,
+			'type'      => $type
+		);
+
+		$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+
+		if ($listRecipients != null)
+		{
+			SproutLists_ListsElementsRelationsRecord::model()->deleteAllByAttributes($subscription);
+		}
+
+		return $this->addListsElement($recipientLists, $elementId, $type);
+	}
+
+	public function addListsElement(array $recipientLists, $elementId, $type = 'email')
+	{
+		$subscription = array(
+			'elementId' => $elementId,
+			'type'      => $type
+		);
+
+		$listRecordIds = $recipientLists['recipientLists'];
+
+		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
+
+		return $this->saveListsElement($listRecordIds, $subscriptionModel);
+	}
+
+	public function saveListsElement($listRecordIds, $subscriptionModel)
+	{
+		$result = false;
+
+		if (!empty($listRecordIds))
+		{
+			foreach ($listRecordIds as $listRecordId)
+			{
+				$record = new SproutLists_ListsElementsRelationsRecord;
+
+				$subscription = array(
+					'elementId' => $subscriptionModel->elementId,
+					'type'      => $subscriptionModel->type,
+					'listId'    => $listRecordId
+				);
+
+				$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+
+				// to avoid duplication
+				if ($listRecipients != null) return;
+
+				$record->elementId = $subscriptionModel->elementId;
+				$record->type      = $subscriptionModel->type;
+				$record->listId     = $listRecordId;
+
+				$result = $record->save(false);
+			}
+		}
+
+		return $result;
 	}
 
 	/**

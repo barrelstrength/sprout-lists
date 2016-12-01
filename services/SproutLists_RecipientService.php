@@ -20,7 +20,7 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			{
 				$recipientListIds = $model->recipientLists;
 
-				$this->saveListsElement($recipientListIds, $subscriptionModel);
+				sproutLists()->saveListsElement($recipientListIds, $subscriptionModel);
 			}
 		}
 	}
@@ -135,23 +135,6 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 		}
 
 		return $records;
-	}
-
-	public function saveListsElement($listRecordIds, $subscriptionModel)
-	{
-		if (!empty($listRecordIds))
-		{
-			foreach ($listRecordIds as $listRecordId)
-			{
-				$record = new SproutLists_ListsElementsRelationsRecord;
-
-				$record->elementId = $subscriptionModel->elementId;
-				$record->type      = $subscriptionModel->type;
-				$record->listId     = $listRecordId;
-
-				$result = $record->save(false);
-			}
-		}
 	}
 
 	public function getListRecipient($subscriptionModel)

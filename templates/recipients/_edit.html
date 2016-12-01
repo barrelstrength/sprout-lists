@@ -43,14 +43,14 @@
 
 		<input type="hidden" id="redirect" name="redirect" value="sproutlists/recipients/">
 
-		{% if element.id is not null %}<input type="hidden" id="id" name="recipient[id]" value="{{ element.id }}">{%
+		{% if element.id is not null %}<input type="hidden" id="id" name="sproutlists[id]" value="{{ element.id }}">{%
 		endif %}
 
 		<section id="default-fields">
 
 			{{ forms.textField({
 				id: 'email',
-				name: 'recipient[email]',
+				name: 'sproutlists[email]',
 				label: "Email"|t,
 				required: true,
 				autofocus: true,
@@ -60,7 +60,7 @@
 
 			{{ forms.textField({
 				id: 'firstName',
-				name: 'recipient[firstName]',
+				name: 'sproutlists[firstName]',
 				label: "First Name"|t,
 				value: element is defined ? element.firstName : null,
 				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
@@ -68,7 +68,7 @@
 
 			{{ forms.textField({
 				id: 'lastName',
-				name: 'recipient[lastName]',
+				name: 'sproutlists[lastName]',
 				label: "Last Name"|t,
 				value: element is defined ? element.lastName : null,
 				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null

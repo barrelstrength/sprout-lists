@@ -238,6 +238,11 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 			$query->andWhere(array('and', 'listelements.elementId = :elementId'), array(':elementId' => $criteria['elementId']));
 		}
 
+		if (isset($criteria['elementIds']))
+		{
+			$query->andWhere(array('and', array('in', 'listelements.elementId', $criteria['elementIds'])));
+		}
+
 		if (isset($criteria['order']))
 		{
 			$query->order($criteria['order']);

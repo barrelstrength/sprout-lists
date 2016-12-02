@@ -357,6 +357,58 @@ class SproutListsService extends BaseApplicationComponent
 		return $result;
 	}
 
+	public function getAllRecipientsByElementIds($elementIds)
+	{
+		$subscription = array(
+			'elementId' => $elementIds,
+		);
+
+		$lists = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+
+		$listIds = array();
+
+		if ($lists != null)
+		{
+			foreach ($lists as $list)
+			{
+				$listIds[] = $list->listId;
+			}
+		}
+
+		return $this->getAllRecipientsByListIds($listIds);
+	}
+
+	public function getAllRecipientsByListIds(array $listIds)
+	{
+		$attributes = array(
+			'id' => $listIds
+		);
+
+		$records = SproutLists_ListsRecord::model()->findAllByAttributes($attributes);
+
+		$recipientLists = array();
+
+		if (!empty($records))
+		{
+			foreach ($records as $record)
+			{
+				$recipientLists = array_merge($recipientLists, $record->recipients);
+			}
+		}
+
+		$recipients = array();
+
+		if (!empty($recipientLists))
+		{
+			foreach ($recipientLists as $recipientList)
+			{
+				$recipients[] = $recipientList;
+			}
+		}
+
+		return $recipients;
+	}
+
 	/**
 	 * Returns camelCased version of original string.
 	 * @param  string $str     String to camel case.

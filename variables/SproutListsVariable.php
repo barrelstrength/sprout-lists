@@ -80,13 +80,8 @@ class SproutListsVariable
 	// Subscriptions
 	// =========================================================================
 
-	public function getSubscriptions($criteria)
+	public function getSubscriptions($criteria = array())
 	{
-		if (!isset($criteria['list']))
-		{
-			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
-		}
-
 		$type = 'recipient';
 
 		if (isset($criteria['type']))
@@ -152,5 +147,15 @@ class SproutListsVariable
 		}
 
 		return $navs;
+	}
+
+	public function getListElements()
+	{
+		return sproutLists()->getListElements();
+	}
+
+	public function getElementTitle($elementId)
+	{
+		return sproutLists()->getElementTitle($elementId);
 	}
 }

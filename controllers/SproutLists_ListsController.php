@@ -218,4 +218,31 @@ class SproutLists_ListsController extends BaseController
 			));
 		}
 	}
+
+	public function actionDeleteListElement()
+	{
+		$this->requirePostRequest();
+		$this->requireAjaxRequest();
+
+		$id = craft()->request->getRequiredPost('id');
+
+		$record = SproutLists_ListsElementsRelationsRecord::model()->findById($id);
+
+		if ($record->delete())
+		{
+			craft()->userSession->setNotice(Craft::t('Unsubscribed subscription.'));
+
+			$this->returnJson(array(
+				'success' => true
+			));
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t("Couldn't delete List."));
+
+			$this->returnJson(array(
+				'success' => false
+			));
+		}
+	}
 }

@@ -206,8 +206,6 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 
 	public function getQuerySubscriptions($criteria)
 	{
-		$listId = sproutLists()->getListId($criteria['list']);
-
 		$query = craft()->db->createCommand()
 			->select('lists.*, listrecipients.*, recipients.*, listelements.*')
 			->from('sproutlists_lists lists')
@@ -217,6 +215,8 @@ class SproutLists_RecipientService extends BaseApplicationComponent
 
 		if (isset($criteria['list']))
 		{
+			$listId = sproutLists()->getListId($criteria['list']);
+
 			$query->where(array('and', 'lists.id = :listId'), array(':listId' => $listId));
 		}
 

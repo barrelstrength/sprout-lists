@@ -1,0 +1,51 @@
+{% extends "sproutlists/_layouts/base" %}
+
+{% set title = "Subscriptions"|t %}
+
+{% set subscriptions = craft.sproutLists.getListElements() %}
+
+{% set content %}
+
+	{% if subscriptions|length %}
+
+		{% for subscription in subscriptions %}
+			{% if loop.first %}
+        <table id="subscriptions" class="data fullwidth">
+          <thead>
+            <th width="20%">{{ "List"|t }}</th>
+            <th width="20%">{{ "Element"|t }}</th>
+            <th width="20%">{{ "Type"|t }}</th>
+            <th width="20%">{{ "Unsubscribe"|t }}</th>
+          </thead>
+      {% endif %}
+      <tr data-id="{{ subscription.id }}" data-name="{{ subscription.list.name }}">
+        <td>
+	        {{ subscription.list.name }}
+         {# <a href="{{ url('sproutlists/recipients/edit/' ~ subscription.listId ) }}">{{ subscription.name }}</a>#}
+        </td>
+        <td>
+         {{ craft.sproutLists.getElementTitle(subscription.elementId) }}
+        </td>
+
+        <td>
+          {{ subscription.type }}
+        </td>
+        <td>
+          <a class="delete icon" title='{{ "Unsubscribe"|t }}'></a>
+        </td>
+      </tr>
+
+			{% if loop.last %}
+        </table>
+			{% endif %}
+    {% endfor %}
+  {% endif %}
+{% endset %}
+
+{% set js %}
+  new Craft.AdminTable({
+    tableSelector: '#subscriptions',
+    deleteAction: 'sproutLists/lists/deleteListElement'
+  });
+{% endset %}
+{% includeJs js %}

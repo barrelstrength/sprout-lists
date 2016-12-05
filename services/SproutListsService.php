@@ -409,6 +409,39 @@ class SproutListsService extends BaseApplicationComponent
 		return $recipients;
 	}
 
+	public function getElementTitle($elementId)
+	{
+		$result = '';
+
+		$element = craft()->elements->getElementById($elementId);
+
+		if ($element != null)
+		{
+			$result = $element->id;
+
+			if ($element->title != null)
+			{
+				$result = $element->id . " : " . $element->title;
+			}
+		}
+
+		return $result;
+	}
+
+	public function getListElements()
+	{
+		$results = array();
+
+		$elements = SproutLists_ListsElementsRelationsRecord::model()->findAll();
+
+		if ($elements != null)
+		{
+			$results = $elements;
+		}
+
+		return $results;
+	}
+
 	/**
 	 * Returns camelCased version of original string.
 	 * @param  string $str     String to camel case.

@@ -103,25 +103,31 @@ class SproutLists_SubscriberElementType extends BaseElementType
 	{
 		switch ($attribute)
 		{
-			case "action":
-				return "<a href='" . UrlHelper::getUrl('sproutlists/subscribers/edit/' . $element->id) . "'>" . Craft::t("Edit") . "</a>";
-				break;
+			case "userId":
 
-			case "elementId":
-				$listElement = craft()->elements->getElementById($element->elementId);
-
-				if (!empty($listElement) && !empty($listElement->title))
+				if ($element->userId)
 				{
-					return $listElement->title;
+					return "<a href='" . UrlHelper::getCpUrl('users/' . $element->userId) . "'>" . Craft::t('Edit User') . "</a>";
 				}
 
-				return $element->elementId;
 				break;
 
+			//case "elementId":
+			//
+			//	$listElement = craft()->elements->getElementById($element->elementId);
+			//
+			//	if (!empty($listElement) && !empty($listElement->title))
+			//	{
+			//		return $listElement->title;
+			//	}
+			//
+			//	return $element->elementId;
+			//
+			//	break;
+
 			default:
-			{
 				return parent::getTableAttributeHtml($element, $attribute);
-			}
+				break;
 		}
 	}
 
@@ -129,9 +135,8 @@ class SproutLists_SubscriberElementType extends BaseElementType
 	{
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
-			'userId'      => array('label' => Craft::t('User ID')),
+			'userId'      => array('label' => Craft::t('User Account')),
 			'name'        => array('label' => Craft::t('List Name')),
-			'action'      => array('label' => ''),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
@@ -158,7 +163,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 
 		$attributes[] = 'userId';
 		$attributes[] = 'name';
-		$attributes[] = 'action';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 

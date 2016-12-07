@@ -7,27 +7,6 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 	protected $subscriberListsIds;
 
-	public function defineAttributes()
-	{
-		$defaults = parent::defineAttributes();
-
-		$attributes = array(
-			'id'             => AttributeType::Number,
-			'email'          => array(AttributeType::String),
-			'userId'         => array(AttributeType::Number),
-			'firstName'      => AttributeType::String,
-			'lastName'       => AttributeType::String,
-			'subscriberLists' => array(AttributeType::Mixed),
-			'details'        => AttributeType::String,
-			'dateCreated'    => AttributeType::DateTime,
-
-			// List Name
-			'name'           => AttributeType::String
-		);
-
-		return array_merge($defaults, $attributes);
-	}
-
 	public function __toString()
 	{
 		if ($this->email != null)
@@ -41,6 +20,35 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 			return $user->email;
 		}
+	}
+
+	public function defineAttributes()
+	{
+		$defaults = parent::defineAttributes();
+
+		$attributes = array(
+			'id'              => AttributeType::Number,
+			'email'           => array(AttributeType::String),
+			'userId'          => array(AttributeType::Number),
+			'firstName'       => AttributeType::String,
+			'lastName'        => AttributeType::String,
+			'subscriberLists' => array(AttributeType::Mixed),
+			'details'         => AttributeType::String,
+			'dateCreated'     => AttributeType::DateTime,
+
+			// List Name
+			'name'            => AttributeType::String
+		);
+
+		return array_merge($defaults, $attributes);
+	}
+
+	/**
+	 * @return false|string
+	 */
+	public function getCpEditUrl()
+	{
+		return UrlHelper::getCpUrl('sproutlists/subscribers/edit/' . $this->id);
 	}
 
 	/**

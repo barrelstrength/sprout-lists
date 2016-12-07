@@ -6,9 +6,7 @@ class SproutListsService extends BaseApplicationComponent
 {
 	protected $listTypes = array();
 
-	public $listUser;
-	public $listRecipient;
-
+	public $subscribers;
 
 	public function init()
 	{
@@ -16,7 +14,7 @@ class SproutListsService extends BaseApplicationComponent
 
 		$this->getAllListTypes();
 
-		$this->listRecipient = Craft::app()->getComponent('sproutLists_recipient');
+		$this->subscribers = Craft::app()->getComponent('sproutLists_subscriber');
 	}
 
 	public function getAllListTypes()
@@ -57,7 +55,6 @@ class SproutListsService extends BaseApplicationComponent
 
 		return new $namespace;
 	}
-
 
 	/**
 	 * Retrieve id of "list" from lists table.
@@ -190,11 +187,11 @@ class SproutListsService extends BaseApplicationComponent
 		{
 			if ($record->delete())
 			{
-				$lists = SproutLists_ListsRecipientsRecord::model()->findByAttributes(array('listId' => $id));
+				$lists = SproutLists_ListsSubscribersRecord::model()->findByAttributes(array('listId' => $id));
 
 				if ($lists != null)
 				{
-					return SproutLists_ListsRecipientsRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
+					return SproutLists_ListsSubscribersRecord::model()->deleteAll('listId = :listId', array(':listId' => $id));
 				}
 				return true;
 			}
@@ -214,18 +211,18 @@ class SproutListsService extends BaseApplicationComponent
 				'type'      => $type
 			);
 
-			$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($listElementAttributes);
+			$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($listElementAttributes);
 
-			if ($listRecipients != null)
+			if ($listSubscribers != null)
 			{
-				foreach ($listRecipients as $listRecipient)
+				foreach ($listSubscribers as $listSubscriber)
 				{
-					$values[] = $listRecipient->listId;
+					$values[] = $listSubscriber->listId;
 				}
 			}
 		}
 
-		return $this->getRecipientListsHtml($values);
+		return $this->getSubscriberListsHtml($values);
 	}
 
 	/**
@@ -233,7 +230,7 @@ class SproutListsService extends BaseApplicationComponent
 	 *
 	 * @return \Twig_Markup
 	 */
-	public function getRecipientListsHtml($values = array(), $default = array())
+	public function getSubscriberListsHtml($values = array(), $default = array())
 	{
 		$lists   = $this->getLists();
 		$options = array();
@@ -258,7 +255,7 @@ class SproutListsService extends BaseApplicationComponent
 		$checkboxGroup = craft()->templates->renderMacro(
 			'_includes/forms', 'checkboxGroup', array(
 				array(
-					'name'    => 'sproutlists[recipientLists]',
+					'name'    => 'sproutlists[subscriberLists]',
 					'options' => $options,
 					'values'  => $values
 				)
@@ -268,7 +265,7 @@ class SproutListsService extends BaseApplicationComponent
 		$html = craft()->templates->renderMacro(
 			'_includes/forms', 'field', array(
 				array(
-					'id'     => 'recipientLists'
+					'id'     => 'subscriberLists'
 				),
 				$checkboxGroup
 			)
@@ -277,11 +274,11 @@ class SproutListsService extends BaseApplicationComponent
 		return TemplateHelper::getRaw($html);
 	}
 
-	public function getListsByRecipientId($id)
+	public function getListsBySubscriberId($id)
 	{
 		$lists         = array();
-		$record        = SproutLists_ListsRecipientsRecord::model();
-		$relationships = $record->findAllByAttributes(array('recipientId' => $id));
+		$record        = SproutLists_ListsSubscribersRecord::model();
+		$relationships = $record->findAllByAttributes(array('subscriberId' => $id));
 
 		if (count($relationships))
 		{
@@ -294,31 +291,31 @@ class SproutListsService extends BaseApplicationComponent
 		return $lists;
 	}
 
-	public function addSyncElement(array $recipientLists, $elementId, $type = 'email')
+	public function addSyncElement(array $subscriberLists, $elementId, $type = 'email')
 	{
 		$subscription = array(
 			'elementId' => $elementId,
 			'type'      => $type
 		);
 
-		$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+		$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
 
-		if ($listRecipients != null)
+		if ($listSubscribers != null)
 		{
 			SproutLists_ListsElementsRelationsRecord::model()->deleteAllByAttributes($subscription);
 		}
 
-		return $this->addListsElement($recipientLists, $elementId, $type);
+		return $this->addListsElement($subscriberLists, $elementId, $type);
 	}
 
-	public function addListsElement(array $recipientLists, $elementId, $type = 'email')
+	public function addListsElement(array $subscriberLists, $elementId, $type = 'email')
 	{
 		$subscription = array(
 			'elementId' => $elementId,
 			'type'      => $type
 		);
 
-		$listRecordIds = $recipientLists['recipientLists'];
+		$listRecordIds = $subscriberLists['subscriberLists'];
 
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
@@ -341,10 +338,10 @@ class SproutListsService extends BaseApplicationComponent
 					'listId'    => $listRecordId
 				);
 
-				$listRecipients = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+				$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
 
 				// to avoid duplication
-				if ($listRecipients != null) return;
+				if ($listSubscribers != null) return;
 
 				$record->elementId = $subscriptionModel->elementId;
 				$record->type      = $subscriptionModel->type;
@@ -357,7 +354,14 @@ class SproutListsService extends BaseApplicationComponent
 		return $result;
 	}
 
-	public function getAllRecipientsByElementIds($elementIds)
+	/**
+	 * @todo - this function doesn't appear to be in use
+	 *
+	 * @param $elementIds
+	 *
+	 * @return array
+	 */
+	public function getAllSubscribersByElementIds($elementIds)
 	{
 		$subscription = array(
 			'elementId' => $elementIds,
@@ -375,10 +379,10 @@ class SproutListsService extends BaseApplicationComponent
 			}
 		}
 
-		return $this->getAllRecipientsByListIds($listIds);
+		return $this->getAllSubscribersByListIds($listIds);
 	}
 
-	public function getAllRecipientsByListIds(array $listIds)
+	public function getAllSubscribersByListIds(array $listIds)
 	{
 		$attributes = array(
 			'id' => $listIds
@@ -386,27 +390,27 @@ class SproutListsService extends BaseApplicationComponent
 
 		$records = SproutLists_ListsRecord::model()->findAllByAttributes($attributes);
 
-		$recipientLists = array();
+		$subscriberLists = array();
 
 		if (!empty($records))
 		{
 			foreach ($records as $record)
 			{
-				$recipientLists = array_merge($recipientLists, $record->recipients);
+				$subscriberLists = array_merge($subscriberLists, $record->subscribers);
 			}
 		}
 
-		$recipients = array();
+		$subscribers = array();
 
-		if (!empty($recipientLists))
+		if (!empty($subscriberLists))
 		{
-			foreach ($recipientLists as $recipientList)
+			foreach ($subscriberLists as $subscriberList)
 			{
-				$recipients[] = $recipientList;
+				$subscribers[] = $subscriberList;
 			}
 		}
 
-		return $recipients;
+		return $subscribers;
 	}
 
 	public function getElementTitle($elementId)

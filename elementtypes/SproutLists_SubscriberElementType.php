@@ -1,14 +1,14 @@
 <?php
 namespace Craft;
 
-class SproutLists_RecipientElementType extends BaseElementType
+class SproutLists_SubscriberElementType extends BaseElementType
 {
 	/**
 	 * @return string
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout List Recipients');
+		return Craft::t('Sprout List Subscribers');
 	}
 
 	/**
@@ -35,7 +35,6 @@ class SproutLists_RecipientElementType extends BaseElementType
 		return false;
 	}
 
-
 	/**
 	 * @param null $context
 	 *
@@ -43,14 +42,13 @@ class SproutLists_RecipientElementType extends BaseElementType
 	 */
 	public function getSources($context = null)
 	{
-
 		$sources = array(
 			'*' => array(
 				'label' => Craft::t('All Lists'),
 			),
 		);
 
-		$lists = sproutLists()->listRecipient->getLists();
+		$lists = sproutLists()->subscribers->getLists();
 
 		if (!empty($lists))
 		{
@@ -71,14 +69,15 @@ class SproutLists_RecipientElementType extends BaseElementType
 
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
-		$query->addSelect('recipients.*')
-			->join('sproutlists_recipients recipients', 'recipients.id = elements.id')
-			->join('sproutlists_lists_recipients listsrecipients', 'listsrecipients.recipientId = recipients.id')
-			->join('sproutlists_lists lists', 'lists.id = listsrecipients.listId');
+		$query->addSelect('subscribers.*')
+			->addSelect('lists.*')
+			->join('sproutlists_subscribers subscribers', 'subscribers.id = elements.id')
+			->join('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
+			->join('sproutlists_lists_subscribers_elements listsubscriberselements', '')
+			->join('sproutlists_lists lists', 'lists.id = listssubscribers.listId');
 
 		if ($criteria->order)
 		{
-			//$criteria->order = $criteria->order . 'x';
 			// Sort by list name not by listId
 			if (stripos($criteria->order, "listId") !== false)
 			{
@@ -89,8 +88,8 @@ class SproutLists_RecipientElementType extends BaseElementType
 			// Let's make sure mysql knows what we want to sort by
 			if (stripos($criteria->order, 'elements.') === false)
 			{
-				$criteria->order = str_replace('dateCreated', 'recipients.dateCreated', $criteria->order);
-				$criteria->order = str_replace('dateUpdated', 'recipients.dateUpdated', $criteria->order);
+				$criteria->order = str_replace('dateCreated', 'subscribers.dateCreated', $criteria->order);
+				$criteria->order = str_replace('dateUpdated', 'subscribers.dateUpdated', $criteria->order);
 			}
 		}
 
@@ -105,18 +104,18 @@ class SproutLists_RecipientElementType extends BaseElementType
 		switch ($attribute)
 		{
 			case "action":
-					return "<a href='recipients/edit/" . $element->id . "'>" . Craft::t("Edit") . "</a>";
+				return "<a href='" . UrlHelper::getUrl('sproutlists/subscribers/edit/' . $element->id) . "'>" . Craft::t("Edit") . "</a>";
 				break;
 
 			case "elementId":
-					$listElement = craft()->elements->getElementById($element->elementId);
+				$listElement = craft()->elements->getElementById($element->elementId);
 
-					if (!empty($listElement) && !empty($listElement->title))
-					{
-						return $listElement->title;
-					}
+				if (!empty($listElement) && !empty($listElement->title))
+				{
+					return $listElement->title;
+				}
 
-					return $element->elementId;
+				return $element->elementId;
 				break;
 
 			default:
@@ -131,6 +130,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
 			'userId'      => array('label' => Craft::t('User ID')),
+			'name'        => array('label' => Craft::t('List Name')),
 			'action'      => array('label' => ''),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
@@ -142,8 +142,8 @@ class SproutLists_RecipientElementType extends BaseElementType
 	public function defineCriteriaAttributes()
 	{
 		return array(
-			'email'     => AttributeType::Number,
-			'listId'    => AttributeType::Number
+			'email'  => AttributeType::Number,
+			'listId' => AttributeType::Number
 		);
 	}
 
@@ -157,6 +157,7 @@ class SproutLists_RecipientElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'userId';
+		$attributes[] = 'name';
 		$attributes[] = 'action';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
@@ -166,11 +167,11 @@ class SproutLists_RecipientElementType extends BaseElementType
 
 	public function getAvailableActions($source = null)
 	{
-		$deleteAction = craft()->elements->getAction('SproutLists_RecipientDelete');
+		$deleteAction = craft()->elements->getAction('SproutLists_SubscriberDelete');
 
 		$deleteAction->setParams(array(
-			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected recipients?'),
-			'successMessage'      => Craft::t('Recipients deleted.'),
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected subscribers?'),
+			'successMessage'      => Craft::t('Subscribers deleted.'),
 		));
 
 		return array($deleteAction);
@@ -178,6 +179,6 @@ class SproutLists_RecipientElementType extends BaseElementType
 
 	public function populateElementModel($row)
 	{
-		return SproutLists_RecipientModel::populateModel($row);
+		return SproutLists_SubscriberModel::populateModel($row);
 	}
 }

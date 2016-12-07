@@ -8,7 +8,7 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_lists_recpients_elements';
+		return 'sproutlists_lists_subscribers_elements';
 	}
 
 	/**
@@ -17,8 +17,8 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'type'              => AttributeType::String,
-			'listId'   => AttributeType::Number
+			'listId' => AttributeType::Number,
+			'type'   => AttributeType::String
 		);
 	}
 
@@ -32,7 +32,7 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 				'required' => true,
 				'onDelete' => static::CASCADE,
 			),
-			'list' => array(
+			'list'    => array(
 				static::BELONGS_TO,
 				'SproutLists_ListsRecord',
 				'listId',

@@ -34,6 +34,7 @@ class SproutListsPlugin extends BasePlugin
 	public function init()
 	{
 		parent::init();
+
 		if (craft()->request->isCpRequest())
 		{
 			craft()->templates->includeJsResource('sproutlists/js/SproutListsIndex.js');
@@ -49,12 +50,14 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/lists/edit/(?P<listId>[\d]+)' => array(
 				'action' => 'sproutLists/lists/editList'
 			),
-			'sproutlists/recipients/new' => array(
-				'action' => 'sproutLists/recipients/editRecipient'
+			'sproutlists/subscribers/new' => array(
+				'action' => 'sproutLists/subscribers/editSubscriber'
 			),
-			'sproutlists/recipients/(?P<listHandle>{handle})' => 'sproutlists/recipients',
-			'sproutlists/recipients/edit/(?P<id>[\d]+)' => array(
-				'action' => 'sproutLists/recipients/editRecipient'
+			'sproutlists/subscribers/(?P<listHandle>{handle})' =>
+				'sproutlists/subscribers',
+
+			'sproutlists/subscribers/edit/(?P<id>[\d]+)' => array(
+				'action' => 'sproutLists/subscribers/editSubscriber'
 			),
 		);
 	}
@@ -63,10 +66,10 @@ class SproutListsPlugin extends BasePlugin
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
-		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_RecipientListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
 
 		return array(
-			new SproutLists_RecipientListType()
+			new SproutLists_SubscriberListType()
 		);
 	}
 

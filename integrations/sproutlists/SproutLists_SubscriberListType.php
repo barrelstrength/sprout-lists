@@ -2,7 +2,7 @@
 
 namespace Craft;
 
-class SproutLists_RecipientListType extends SproutListsBaseListType
+class SproutLists_SubscriberListType extends SproutListsBaseListType
 {
 	public function subscribe($subscription)
 	{
@@ -15,66 +15,66 @@ class SproutLists_RecipientListType extends SproutListsBaseListType
 
 		$attributes = array(
 			'email' => $subscriptionModel->email,
-			'recipientLists' => array($listId)
+			'subscriberLists' => array($listId)
 		);
 
 		if ($subscriptionModel->email != null)
 		{
-			$recipientAttributes['email'] = $subscriptionModel->email;
+			$subscriberAttributes['email'] = $subscriptionModel->email;
 		}
 
 		if ($subscriptionModel->userId != null)
 		{
-			$recipientAttributes['userId'] = $subscriptionModel->userId;
+			$subscriberAttributes['userId'] = $subscriptionModel->userId;
 
 			$attributes['userId'] = $subscriptionModel->userId;
 		}
 
-		$model = sproutLists()->listRecipient->getRecipient($recipientAttributes);
+		$model = sproutLists()->subscribers->getSubscriber($subscriberAttributes);
 
 		if ($model->id == null)
 		{
-			$model = SproutLists_RecipientModel::populateModel($attributes);
+			$model = SproutLists_SubscriberModel::populateModel($attributes);
 		}
 		else
 		{
-			$model->setAttribute('recipientLists', $attributes['recipientLists']);
+			$model->setAttribute('subscriberLists', $attributes['subscriberLists']);
 		}
 
-		return sproutLists()->listRecipient->subscribe($model, $subscriptionModel);
+		return sproutLists()->subscribers->subscribe($model, $subscriptionModel);
 	}
 
 	public function unsubscribe($subscription)
 	{
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
 
-		return sproutLists()->listRecipient->unsubscribe($subscriptionModel);
+		return sproutLists()->subscribers->unsubscribe($subscriptionModel);
 	}
 
 	public function isSubscribed($criteria)
 	{
 
 		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
-		return sproutLists()->listRecipient->isSubscribed($subscriptionModel);
+		return sproutLists()->subscribers->isSubscribed($subscriptionModel);
 	}
 
 	public function getSubscriptions($criteria)
 	{
-		return sproutLists()->listRecipient->getSubscriptions($criteria);
+		return sproutLists()->subscribers->getSubscriptions($criteria);
 	}
 
 	public function getSubscribers($criteria)
 	{
-		return sproutLists()->listRecipient->getSubscribers($criteria);
+		return sproutLists()->subscribers->getSubscribers($criteria);
 	}
 
 	public function getListCount($criteria)
 	{
-		return sproutLists()->listRecipient->getListCount($criteria);
+		return sproutLists()->subscribers->getListCount($criteria);
 	}
 
 	public function getSubscriberCount($criteria)
 	{
-		return sproutLists()->listRecipient->getSubscriberCount($criteria);
+		return sproutLists()->subscribers->getSubscriberCount($criteria);
 	}
 }

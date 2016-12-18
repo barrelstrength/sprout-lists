@@ -1,5 +1,6 @@
 {% extends "sproutlists/_layouts/base" %}
 {% import "_includes/forms" as forms %}
+{% import 'sproutemail/_includes/sproutcp' as sprout %}
 
 {% set title = "Lists"|t %}
 
@@ -61,18 +62,27 @@
 
 	{% else %}
 
-		<div>
-
-			<h2>{{ "Create your first List"|t }}</h2>
+		{% set boxBody %}
+			<p>{{ "Create lists to manage targeted communications with your audience."|t }}</p>
 
 			<div class="buttons">
-				<a class="btn submit icon" href="{{ url('sproutlists/lists/new') }}">{{ "Create a list"|t }} &raquo;</a>
+				<a class="btn submit add icon" href="{{ url('sproutlists/lists/new') }}">{{ "New List"|t
+					}}</a>
 			</div>
+		{% endset %}
 
-		</div>
+		{{ sprout.mediaBox({
+			heading: "Create your first list"|t,
+			body: boxBody,
+			resourceUrl: resourceUrl('sproutlists/icons/sprout-icon.svg'),
+			resourceAltText: "Sprout Icon"|t,
+		}) }}
+
 	{% endif %}
 
 {% endset %}
+
+{% includeCssResource "sproutlists/css/sproutcp.css" %}
 
 {% set js %}
 	new Craft.AdminTable({

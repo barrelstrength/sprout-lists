@@ -4,13 +4,18 @@
 {% set title = "Edit List"|t %}
 
 {% set fullPageForm = true %}
-{% block saveButton %}{% endblock %}
+
+{% block saveButton %}
+	<div class="btngroup submit first">
+		<input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
+	</div>
+{% endblock %}
 
 {% set saveShortcutRedirect = continueEditingUrl %}
 
 {% block main %}
 
-<div class="grid first" data-max-cols="3">
+<div class="grid">
 	<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
 		<div class="pane">
 			<input type="hidden" name="action" value="sproutLists/lists/saveList">
@@ -19,6 +24,7 @@
 
 			{{ forms.textField({
 				label: "List Name"|t,
+				instructions: "The name of your list that will be visible to users."|t,
 				id: 'name',
 				name: 'list[name]',
 				value: (list is defined ? list.name : null),
@@ -30,6 +36,7 @@
 
 			{{ forms.textField({
 				label: "List Handle"|t,
+				instructions: "How you’ll refer to this list in your templates."|t,
 				id: 'handle',
 				name: 'list[handle]',
 				value: (list is defined ? list.handle : null),
@@ -37,18 +44,15 @@
 				errors: (list is defined ? list.getErrors('handle') : null)
 			}) }}
 
-			<div class="btngroup submit first">
-				<input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
-			</div>
-		</div>
-	</div>
-
-
-	<div class="item" data-position="right" data-colspan="1">
-		<div class="pane meta">
 
 		</div>
 	</div>
 </div>
 
 {% endblock %}
+
+{% if not list.handle %}
+	{% includejs %}
+		new Craft.HandleGenerator('#name', '#handle');
+	{% endincludejs %}
+{% endif %}

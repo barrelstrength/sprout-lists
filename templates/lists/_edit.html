@@ -3,6 +3,10 @@
 
 {% set title = "Edit List"|t %}
 
+{% set crumbs = [
+{ label: "Lists"|t, url: url('sproutlists/lists') },
+] %}
+
 {% set fullPageForm = true %}
 
 {% block saveButton %}

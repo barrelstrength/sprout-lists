@@ -35,7 +35,8 @@ class SproutListsPlugin extends BasePlugin
 	{
 		parent::init();
 
-		if (craft()->request->isCpRequest())
+		// @todo - move this to be in the context of the page it relates to
+		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutlists')
 		{
 			craft()->templates->includeJsResource('sproutlists/js/SproutListsIndex.js');
 		}

@@ -1,28 +1,30 @@
 <?php
 namespace Craft;
 
-class SproutLists_RecipientRecord extends BaseRecord
+class SproutLists_SubscriberRecord extends BaseRecord
 {	
 	/**
 	 * Return table name corresponding to this record
+	 *
 	 * @return string
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_recipients';
+		return 'sproutlists_subscribers';
 	}
 
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
+	 *
 	 * @return array
 	 */
 	public function defineAttributes()
 	{
 		return array(
+			'userId'      => AttributeType::Number,
 			'email'       => AttributeType::String,
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
-			'userId'      => AttributeType::Number,
 			'type'        => AttributeType::String,
 			'details'     => AttributeType::String,
 			'dateCreated' => AttributeType::DateTime,
@@ -40,10 +42,10 @@ class SproutLists_RecipientRecord extends BaseRecord
 				'required' => true, 
 				'onDelete' => static::CASCADE
 			),
-			'recipientLists' => array(
+			'subscriberLists' => array(
 				static::MANY_MANY,
 				'SproutLists_ListsRecord',
-				'sproutlists_lists_recipients(recipientId, listId)'
+				'sproutlists_lists_subscribers(subscriberId, listId)'
 			)
 		);
 	}

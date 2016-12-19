@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_RecipientDeleteElementAction extends DeleteElementAction
+class SproutLists_SubscriberDeleteElementAction extends DeleteElementAction
 {
 
 	/**

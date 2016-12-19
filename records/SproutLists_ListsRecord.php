@@ -5,6 +5,7 @@ class SproutLists_ListsRecord extends BaseRecord
 {	
 	/**
 	 * Return table name corresponding to this record
+	 *
 	 * @return string
 	 */
 	public function getTableName()
@@ -14,6 +15,7 @@ class SproutLists_ListsRecord extends BaseRecord
 
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
+	 *
 	 * @return array
 	 */
 	public function defineAttributes()
@@ -27,10 +29,10 @@ class SproutLists_ListsRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'recipients' => array(
+			'subscribers' => array(
 				static::MANY_MANY,
-				'SproutLists_RecipientRecord',
-				'sproutlists_lists_recipients(listId, recipientId)'
+				'SproutLists_SubscriberRecord',
+				'sproutlists_lists_subscribers(listId, subscriberId)'
 			)
 		);
 	}

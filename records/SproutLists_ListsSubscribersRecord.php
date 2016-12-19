@@ -1,17 +1,17 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListsRecipientsRecord extends BaseRecord
+class SproutLists_ListsSubscribersRecord extends BaseRecord
 {
 	public function getTableName()
 	{
-		return 'sproutlists_lists_recipients';
+		return 'sproutlists_lists_subscribers';
 	}
 
 	public function defineAttributes()
 	{
 		return array(
-			'recipientId'     => AttributeType::Number,
+			'subscriberId'     => AttributeType::Number,
 			'listId' => AttributeType::Number,
 		);
 	}
@@ -32,7 +32,7 @@ class SproutLists_ListsRecipientsRecord extends BaseRecord
 	public function defineIndexes()
 	{
 		return array(
-			array('columns' => array('recipientId', 'listId'), 'unique' => true)
+			array('columns' => array('subscriberId', 'listId'), 'unique' => true)
 		);
 	}
 }

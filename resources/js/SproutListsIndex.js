@@ -21,4 +21,4 @@ Craft.SproutListsIndex = Craft.BaseElementIndex.extend(
 });
 
 // Register it!
-Craft.registerElementIndexClass('SproutLists_Recipient', Craft.SproutListsIndex);
+Craft.registerElementIndexClass('SproutLists_Subscriber', Craft.SproutListsIndex);

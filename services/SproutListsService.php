@@ -80,7 +80,7 @@ class SproutListsService extends BaseApplicationComponent
 			))->queryScalar();
 
 		// If no key found dynamically create one
-		if(!$listId)
+		if (!$listId)
 		{
 			$record = new SproutLists_ListsRecord;
 			$record->name = $name;
@@ -159,16 +159,31 @@ class SproutListsService extends BaseApplicationComponent
 
 		if ($record->validate())
 		{
-			if ($record->save(false))
+			try
 			{
-				$model->id = $record->id;
+				if (craft()->elements->saveElement($model))
+				{
+					$record->id = $model->id;
 
+					if ($record->save(false))
+					{
+						if ($transaction && $transaction->active)
+						{
+							$transaction->commit();
+						}
+
+						$result = true;
+					}
+				}
+			}
+			catch (\Exception $e)
+			{
 				if ($transaction && $transaction->active)
 				{
-					$transaction->commit();
+					$transaction->rollback();
 				}
 
-				$result = true;
+				throw $e;
 			}
 		}
 		else

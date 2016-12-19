@@ -172,7 +172,11 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 	public function getListElement($subscriptionModel)
 	{
-		$listId = sproutLists()->getListId($subscriptionModel->list);
+		$handle = $subscriptionModel->list;
+
+		$listId = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
+
+		$listSubscriber = null;
 
 		if ($listId != null)
 		{
@@ -201,7 +205,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	{
 		$listElement = $this->getListElement($subscriptionModel);
 
-		return ($listElement != null) ? true : false; // xxtempxx
+		return ($listElement != null) ? true : false;
 	}
 
 	public function getQuerySubscriptions($criteria)

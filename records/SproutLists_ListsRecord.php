@@ -29,6 +29,13 @@ class SproutLists_ListsRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
+			'element' => array(
+				static::BELONGS_TO,
+				'ElementRecord',
+				'id',
+				'required' => true,
+				'onDelete' => static::CASCADE
+			),
 			'subscribers' => array(
 				static::MANY_MANY,
 				'SproutLists_SubscriberRecord',

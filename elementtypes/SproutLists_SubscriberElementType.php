@@ -73,7 +73,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			->addSelect('lists.*')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = elements.id')
 			->join('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
-			->join('sproutlists_lists_subscribers_elements listsubscriberselements', '')
 			->join('sproutlists_lists lists', 'lists.id = listssubscribers.listId');
 
 		if ($criteria->order)
@@ -112,19 +111,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 
 				break;
 
-			//case "elementId":
-			//
-			//	$listElement = craft()->elements->getElementById($element->elementId);
-			//
-			//	if (!empty($listElement) && !empty($listElement->title))
-			//	{
-			//		return $listElement->title;
-			//	}
-			//
-			//	return $element->elementId;
-			//
-			//	break;
-
 			default:
 				return parent::getTableAttributeHtml($element, $attribute);
 				break;
@@ -144,18 +130,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		return $attributes;
 	}
 
-	public function defineCriteriaAttributes()
-	{
-		return array(
-			'email'  => AttributeType::Number,
-			'listId' => AttributeType::Number
-		);
-	}
-
-	public function defineSearchableAttributes()
-	{
-		return array('email');
-	}
 
 	public function getDefaultTableAttributes($source = null)
 	{
@@ -167,6 +141,19 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		$attributes[] = 'dateUpdated';
 
 		return $attributes;
+	}
+
+	public function defineCriteriaAttributes()
+	{
+		return array(
+			'email'  => AttributeType::Number,
+			'listId' => AttributeType::Number
+		);
+	}
+
+	public function defineSearchableAttributes()
+	{
+		return array('email');
 	}
 
 	public function getAvailableActions($source = null)

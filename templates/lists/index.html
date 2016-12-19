@@ -1,93 +1,10 @@
-{% extends "sproutlists/_layouts/base" %}
-{% import "_includes/forms" as forms %}
-{% import 'sproutemail/_includes/sproutcp' as sprout %}
+{% extends "sproutlists/_layouts/elementindex" %}
 
 {% set title = "Lists"|t %}
-
-{% set lists = craft.sproutLists.getLists() %}
+{% set elementType = 'SproutLists_Lists' %}
 
 {% set extraPageHeaderHtml %}
-
 	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutlists/lists/new') }}">{{ "New List"|t
-			}}</a>
+		<a class="btn submit add icon" href="{{ url('sproutlists/lists/new') }}">{{ "Add List"|t }}</a>
 	</div>
-
 {% endset %}
-
-{% set content %}
-
-	{% if lists|length %}
-
-		{% for list in lists %}
-
-			{% if loop.first %}
-				<table id="lists" class="data fullwidth">
-					<thead>
-						<th width="20%">{{ "Name"|t }}</th>
-						<th width="20%">{{ "Handle"|t }}</th>
-						<th width="20%">{{ "View"|t }}</th>
-
-						{% for listType in craft.sproutLists.getAllListTypes() %}
-							<th width="10%">{{ "Total List"|t }} {{ listType.getName()  }}</th>
-						{% endfor %}
-						<th class="thin"></th>
-					</thead>
-			{% endif %}
-
-				<tr data-id="{{ list.id }}" data-name="{{ list.name }}">
-					<td>
-						<a href="{{ url('sproutlists/subscribers/edit/' ~ list.id ) }}">{{ list.name }}</a>
-					</td>
-					<td>
-						<code>{{ list.handle }}</code>
-					</td>
-					<td>
-						<code><a href="{{ url('sproutlists/subscribers/' ~ list.handle ) }}">{{ "View"|t }}</a></code>
-					</td>
-					{% for listType in craft.sproutLists.getAllListTypes() %}
-						<td>{{ listType.listCount({id: list.id})  }}</td>
-					{% endfor %}
-
-					<td colspan="3" class="thin">
-						<a class="delete icon" title='{{ "Delete"|t }}'></a>
-					</td>
-				</tr>
-
-			{% if loop.last %}
-				</table>
-			{% endif %}
-
-		{% endfor %}
-
-	{% else %}
-
-		{% set boxBody %}
-			<p>{{ "Create lists to manage targeted communications with your audience."|t }}</p>
-
-			<div class="buttons">
-				<a class="btn submit add icon" href="{{ url('sproutlists/lists/new') }}">{{ "New List"|t
-					}}</a>
-			</div>
-		{% endset %}
-
-		{{ sprout.mediaBox({
-			heading: "Create your first list"|t,
-			body: boxBody,
-			resourceUrl: resourceUrl('sproutlists/icons/sprout-icon.svg'),
-			resourceAltText: "Sprout Icon"|t,
-		}) }}
-
-	{% endif %}
-
-{% endset %}
-
-{% includeCssResource "sproutlists/css/sproutcp.css" %}
-
-{% set js %}
-	new Craft.AdminTable({
-		tableSelector: '#lists',
-		deleteAction: 'sproutLists/lists/deleteList'
-	});
-{% endset %}
-{% includeJs js %}

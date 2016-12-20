@@ -67,28 +67,24 @@ class SproutListsService extends BaseApplicationComponent
 	{
 		$handle = $this->camelCase($name);
 
-		$listId = craft()->db->createCommand()
-			->select('id')
-			->from('sproutlists_lists')
-			->where(array(
-				'OR',
-				'name = :name',
-				'handle = :handle'
-			), array(
-				':name' => $name,
-				':handle' => $handle
-			))->queryScalar();
+		$listId = null;
+
+		$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
 
 		// If no key found dynamically create one
-		if (!$listId)
+		if ($list == null)
 		{
-			$record = new SproutLists_ListsRecord;
-			$record->name = $name;
-			$record->handle = $handle;
+			$model = new SproutLists_ListsModel;
+			$model->name = $name;
+			$model->handle = $handle;
 
-			$record->save();
+			$this->saveList($model);
 
-			return $record->id;
+			$listId = $model->id;
+		}
+		else
+		{
+			$listId = $list->id;
 		}
 
 		return $listId;

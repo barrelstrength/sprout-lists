@@ -34,7 +34,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		if ($model->id == null)
 		{
-			$model = SproutLists_SubscriberModel::populateModel($attributes);
+			$model = $model::populateModel($attributes);
 		}
 		else
 		{

@@ -64,6 +64,7 @@ class SproutLists_ListsElementType extends BaseElementType
 			'handle'      => array('label' => Craft::t('List Handle')),
 			'name'        => array('label' => Craft::t('List Name')),
 			'view'        => array('label' => Craft::t('View Subscribers')),
+			'total'       => array('label' => Craft::t('Total Subscribers')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
@@ -79,6 +80,7 @@ class SproutLists_ListsElementType extends BaseElementType
 		$attributes[] = 'handle';
 		$attributes[] = 'name';
 		$attributes[] = 'view';
+		$attributes[] = 'total';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 
@@ -87,16 +89,23 @@ class SproutLists_ListsElementType extends BaseElementType
 
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
+		$count = sproutLists()->subscribers->getListCount(array('id' => $element->id));
+
 		switch ($attribute)
 		{
 			case "view":
 
-				if ($element->id)
+				if ($element->id && $count > 0)
 				{
 					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "'>" . Craft::t('View 
 					Subscribers') .	"</a>";
 				}
 
+				break;
+
+			case "total":
+
+					return $count;
 				break;
 
 			default:

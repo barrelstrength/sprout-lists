@@ -67,18 +67,13 @@ class SproutLists_SubscribersController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$id = craft()->request->getPost('subscriber.id');
+		$id = craft()->request->getPost('sproutlists.id');
 
 		if ($id != null)
 		{
-			$model = sproutLists()->subscribers->getSubscriberById($id);
+			$model = sproutLists()->subscribers->deleteSubscriberById($id);
 
-			if (craft()->elements->deleteElementById($id))
-			{
-				SproutLists_ListsSubscribersRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $id));
-
-				$this->redirectToPostedUrl($model);
-			}
+			$this->redirectToPostedUrl($model);
 		}
 	}
 }

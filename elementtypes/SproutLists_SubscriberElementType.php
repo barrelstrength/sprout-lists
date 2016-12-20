@@ -69,8 +69,9 @@ class SproutLists_SubscriberElementType extends BaseElementType
 
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
-		$query->addSelect('subscribers.*')
+		$query
 			->addSelect('lists.*')
+			->addSelect('subscribers.*')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = elements.id')
 			->join('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
 			->join('sproutlists_lists lists', 'lists.id = listssubscribers.listId');

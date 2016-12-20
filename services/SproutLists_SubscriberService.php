@@ -174,14 +174,14 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	{
 		$handle = $subscriptionModel->list;
 
-		$listId = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
+		$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
 
 		$listSubscriber = null;
 
-		if ($listId != null)
+		if ($list != null)
 		{
 			$listElementAttributes = array(
-					'listId'    => $listId,
+					'listId'    => $list->id,
 					'elementId' => $subscriptionModel->elementId
 			);
 
@@ -286,34 +286,24 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 	public function getListCount($criteria)
 	{
-		$records = SproutLists_SubscriberRecord::model()->with('subscriberLists')->findAll();
-
 		$count = 0;
-		if ($records)
+
+		if (isset($criteria['id']))
 		{
-			$ids = array();
+			$listId = $criteria['id'];
 
-			foreach ($records as $record)
-			{
-				$ids[] = $record->id;
-			}
+			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findById($listId);
+		}
+		elseif ($criteria['list'])
+		{
+			$handle =$criteria['list'];
 
-			if (isset($criteria['id']))
-			{
-				$listId = $criteria['id'];
-			}
-			else
-			{
-				$listId = sproutLists()->getListId($criteria['list']);
-			}
+			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findByAttributes(array('handle' => $handle));
+		}
 
-			$query = craft()->db->createCommand()
-				->select('count(listId) as count')
-				->where(array('in', 'subscriberId', $ids))
-				->andWhere(array('and', "listId = :listId"), array(':listId' => $listId) )
-				->from('sproutlists_lists_subscribers');
-
-			$count = $query->queryScalar();
+		if ($lists != null)
+		{
+			$count = count($lists->subscribers);
 		}
 
 		return $count;
@@ -370,13 +360,29 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	{
 		$record = SproutLists_SubscriberRecord::model()->findById($id);
 
-		$list = new SproutLists_SubscriberModel;
+		$susbcriber = new SproutLists_SubscriberModel;
 
-		if (!empty($record))
+		if ($record != null)
 		{
-			$list = SproutLists_SubscriberModel::populateModel($record);
+			$susbcriber = SproutLists_SubscriberModel::populateModel($record);
+
 		}
 
-		return $list;
+		return $susbcriber;
+	}
+
+	public function deleteSubscriberById($id)
+	{
+		$model = sproutLists()->subscribers->getSubscriberById($id);
+
+		if ($model->id != null)
+		{
+			if (craft()->elements->deleteElementById($model->id))
+			{
+				SproutLists_ListsSubscribersRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $model->id));
+			}
+		}
+
+		return $model;
 	}
 }

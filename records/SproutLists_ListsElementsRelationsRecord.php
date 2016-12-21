@@ -30,13 +30,14 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 				'ElementRecord',
 				'elementId',
 				'required' => true,
-				'onDelete' => static::CASCADE,
+				'onDelete' => static::CASCADE
 			),
 			'list'    => array(
 				static::BELONGS_TO,
 				'SproutLists_ListsRecord',
 				'listId',
-				'required' => true
+				'required' => true,
+				'onDelete' => static::CASCADE
 			)
 		);
 	}

@@ -89,7 +89,7 @@ class SproutLists_ListsElementType extends BaseElementType
 
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-		$count = sproutLists()->subscribers->getListCount(array('id' => $element->id));
+		$count = $element->total;
 
 		switch ($attribute)
 		{
@@ -101,11 +101,6 @@ class SproutLists_ListsElementType extends BaseElementType
 					Subscribers') .	"</a>";
 				}
 
-				break;
-
-			case "total":
-
-					return $count;
 				break;
 
 			default:

@@ -39,23 +39,23 @@ class SproutLists_SubscribersController extends BaseController
 
 		$model->setAttributes($subscriber);
 
-		if ($model->validate())
+		if (sproutLists()->subscribers->saveSubscriber($model))
 		{
-			if (sproutLists()->subscribers->saveSubscriber($model))
-			{
-				$result = sproutLists()->subscribers->saveSubscriberListRelations($model);
+			$result = sproutLists()->subscribers->saveSubscriberListRelations($model);
 
-				if ($result !== false)
-				{
-					craft()->userSession->setNotice(Craft::t('Subscriber saved.'));
-				}
+			sproutLists()->subscribers->updateListCount();
+
+			if ($result !== false)
+			{
+				craft()->userSession->setNotice(Craft::t('Subscriber saved.'));
 			}
 
 			$this->redirectToPostedUrl($model);
 		}
 		else
 		{
-			craft()->userSession->setError(Craft::t('Unable to subscribe.'));
+
+			craft()->userSession->setError(Craft::t('Unable to save subscriber.'));
 
 			craft()->urlManager->setRouteVariables(array(
 				'element' => $model

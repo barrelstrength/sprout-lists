@@ -13,12 +13,17 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 			if ($listRecord == null)
 			{
-				$listRecordIds = $this->saveSubscriberListRelations($model);
+				$listRecordIds = $this->saveSubscriberListRelations($model, false);
 			}
 
 			if (!empty($model->subscriberLists))
 			{
 				$subscriberListIds = $model->subscriberLists;
+
+				foreach ($subscriberListIds as $listId)
+				{
+					$this->updateListCount($listId);
+				}
 
 				sproutLists()->saveListsElement($subscriberListIds, $subscriptionModel);
 			}
@@ -28,6 +33,8 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	public function saveSubscriber(SproutLists_SubscriberModel $model)
 	{
 		$record = new SproutLists_SubscriberRecord();
+
+		$result = false;
 
 		if (!empty($model->id))
 		{
@@ -61,10 +68,9 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 							$transaction->commit();
 						}
 
-						return true;
+						$result = true;
 					}
 				}
-
 			}
 			catch (\Exception $e)
 			{
@@ -78,24 +84,27 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		}
 		else
 		{
-			Craft::dd($record->getErrors());
+			$model->addErrors($record->getErrors());
 		}
 
-		return false;
+		return $result;
 	}
 
-	public function saveSubscriberListRelations($model)
+	public function saveSubscriberListRelations($model, $sync = true)
 	{
 		$subscriberId      = $model->id;
 		$subscriberListIds = $model->subscriberLists;
 
-		try
+		if ($sync === true)
 		{
-			SproutLists_ListsSubscribersRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $subscriberId));
-		}
-		catch (Exception $e)
-		{
-			Craft::dd($e->getMessage());
+			try
+			{
+				SproutLists_ListsSubscribersRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $subscriberId));
+			}
+			catch (Exception $e)
+			{
+				Craft::dd($e->getMessage());
+			}
 		}
 
 		$records = array();
@@ -201,11 +210,11 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		}
 	}
 
-	public function isSubscribed($subscriptionModel)
+	public function isSubscribed($criteria)
 	{
-		$listElement = $this->getListElement($subscriptionModel);
+		$results = $this->getQuerySubscriptions($criteria)->queryAll();
 
-		return ($listElement != null) ? true : false;
+		return (!empty($results)) ? true : false;
 	}
 
 	public function getQuerySubscriptions($criteria)
@@ -219,7 +228,14 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 		if (isset($criteria['list']))
 		{
-			$listId = sproutLists()->getListId($criteria['list']);
+			$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $criteria['list']));
+
+			$listId = 0;
+
+			if ($list != null)
+			{
+				$listId = $list->id;
+			}
 
 			$query->where(array('and', 'lists.id = :listId'), array(':listId' => $listId));
 		}
@@ -296,7 +312,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		}
 		elseif ($criteria['list'])
 		{
-			$handle =$criteria['list'];
+			$handle = $criteria['list'];
 
 			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findByAttributes(array('handle' => $handle));
 		}
@@ -307,6 +323,48 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		}
 
 		return $count;
+	}
+
+	public function updateListCount($listId = null)
+	{
+		$result = false;
+
+		if ($listId == null)
+		{
+			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findAll();
+
+			if ($lists)
+			{
+				foreach ($lists as $list)
+				{
+					$result = $this->saveListCount($list);
+				}
+			}
+		}
+		else
+		{
+			$list = SproutLists_ListsRecord::model()->with('subscribers')->findById($listId);
+
+			if ($list != null)
+			{
+				$result = $this->saveListCount($list);
+			}
+		}
+
+		return $result;
+	}
+
+	private function saveListCount($list)
+	{
+		$result = false;
+
+		$count = count($list->subscribers);
+
+		$list->total = $count;
+
+		$result = $list->save();
+
+		return $result;
 	}
 
 	public function getLists()

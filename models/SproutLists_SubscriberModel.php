@@ -28,7 +28,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 		$attributes = array(
 			'id'              => AttributeType::Number,
-			'email'           => array(AttributeType::String),
+			'email'           => array(AttributeType::Email),
 			'userId'          => array(AttributeType::Number),
 			'firstName'       => AttributeType::String,
 			'lastName'        => AttributeType::String,

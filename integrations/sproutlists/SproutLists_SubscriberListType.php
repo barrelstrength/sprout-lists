@@ -53,9 +53,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 	public function isSubscribed($criteria)
 	{
-		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
-
-		return sproutLists()->subscribers->isSubscribed($subscriptionModel);
+		return sproutLists()->subscribers->isSubscribed($criteria);
 	}
 
 	public function getSubscriptions($criteria)

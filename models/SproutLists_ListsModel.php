@@ -13,6 +13,7 @@ class SproutLists_ListsModel extends BaseElementModel
 			'id'     => AttributeType::Number,
 			'name'   => array(AttributeType::String, 'required' => true),
 			'handle' => array(AttributeType::String, 'required' => true),
+			'total'  => array(AttributeType::Number),
 		);
 
 		return array_merge($defaults, $attributes);

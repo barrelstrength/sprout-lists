@@ -22,7 +22,7 @@ class SproutLists_SubscriberRecord extends BaseRecord
 	{
 		return array(
 			'userId'      => AttributeType::Number,
-			'email'       => AttributeType::String,
+			'email'       => array(AttributeType::Email, 'required' => true, 'unique' => true),
 			'firstName'   => AttributeType::String,
 			'lastName'    => AttributeType::String,
 			'type'        => AttributeType::String,

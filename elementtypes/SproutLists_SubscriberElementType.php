@@ -73,8 +73,8 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			->addSelect('lists.*')
 			->addSelect('subscribers.*')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = elements.id')
-			->join('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
-			->join('sproutlists_lists lists', 'lists.id = listssubscribers.listId');
+			->leftJoin('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
+			->leftJoin('sproutlists_lists lists', 'lists.id = listssubscribers.listId');
 
 		if ($criteria->order)
 		{
@@ -123,7 +123,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		$attributes = array(
 			'id'          => array('label' => Craft::t('Email')),
 			'userId'      => array('label' => Craft::t('User Account')),
-			'name'        => array('label' => Craft::t('List Name')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
 			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);

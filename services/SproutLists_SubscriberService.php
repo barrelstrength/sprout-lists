@@ -40,6 +40,18 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		{
 			$record = SproutLists_SubscriberRecord::model()->findById($model->id);
 		}
+		else
+		{
+			if ($model->email != null)
+			{
+				$user = craft()->users->getUserByUsernameOrEmail($model->email);
+
+				if ($user != null)
+				{
+					$model->userId = $user->id;
+				}
+			}
+		}
 
 		$modelAttributes = $model->getAttributes();
 

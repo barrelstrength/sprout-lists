@@ -107,7 +107,7 @@ class SproutLists_SubscriberElementType extends BaseElementType
 
 				if ($element->userId)
 				{
-					return "<a href='" . UrlHelper::getCpUrl('users/' . $element->userId) . "'>" . Craft::t('Edit User') . "</a>";
+					return "<a href='" . UrlHelper::getCpUrl('users/' . $element->userId) . "' class='go'>" . Craft::t('Edit User') . "</a>";
 				}
 
 				break;

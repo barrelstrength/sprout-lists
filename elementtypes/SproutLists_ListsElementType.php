@@ -61,8 +61,8 @@ class SproutLists_ListsElementType extends BaseElementType
 	{
 		$attributes = array(
 			'id'          => array('label' => Craft::t('ID')),
-			'handle'      => array('label' => Craft::t('List Handle')),
 			'name'        => array('label' => Craft::t('List Name')),
+			'handle'      => array('label' => Craft::t('List Handle')),
 			'view'        => array('label' => Craft::t('View Subscribers')),
 			'total'       => array('label' => Craft::t('Total Subscribers')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
@@ -77,8 +77,8 @@ class SproutLists_ListsElementType extends BaseElementType
 		$attributes = array();
 
 		$attributes[] = 'id';
-		$attributes[] = 'handle';
 		$attributes[] = 'name';
+		$attributes[] = 'handle';
 		$attributes[] = 'view';
 		$attributes[] = 'total';
 		$attributes[] = 'dateCreated';
@@ -93,12 +93,17 @@ class SproutLists_ListsElementType extends BaseElementType
 
 		switch ($attribute)
 		{
+			case "handle":
+
+				return "<code>" . $element->handle . "</code>";
+
+				break;
+
 			case "view":
 
 				if ($element->id && $count > 0)
 				{
-					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "'>" . Craft::t('View 
-					Subscribers') .	"</a>";
+					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "' class='go'>" . Craft::t('View Subscribers') .	"</a>";
 				}
 
 				break;

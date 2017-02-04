@@ -21,7 +21,7 @@ class SproutLists_ListsSubscribersRecord extends BaseRecord
 		return array(
 			'listElements' => array(
 				static::HAS_MANY,
-				'SproutLists_ListsElementsRelationsRecord',
+				'SproutLists_SubscriptionsRecord',
 				'listId',
 				'required' => true,
 				'onDelete' => static::CASCADE

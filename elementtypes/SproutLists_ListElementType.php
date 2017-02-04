@@ -1,14 +1,14 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListsElementType extends BaseElementType
+class SproutLists_ListElementType extends BaseElementType
 {
 	/**
 	 * @return string
 	 */
 	public function getName()
 	{
-		return Craft::t('Sprout Lists');
+		return Craft::t('Sprout List');
 	}
 
 	/**
@@ -117,6 +117,6 @@ class SproutLists_ListsElementType extends BaseElementType
 
 	public function populateElementModel($row)
 	{
-		return SproutLists_ListsModel::populateModel($row);
+		return SproutLists_ListModel::populateModel($row);
 	}
 }

@@ -164,7 +164,7 @@ class SproutLists_ListsController extends BaseController
 
 		$list = craft()->request->getPost('list');
 
-		$model = new SproutLists_ListsModel;
+		$model = new SproutLists_ListModel();
 
 		if (!empty($list['id']))
 		{
@@ -226,7 +226,7 @@ class SproutLists_ListsController extends BaseController
 
 		$id = craft()->request->getRequiredPost('id');
 
-		$record = SproutLists_ListsElementsRelationsRecord::model()->findById($id);
+		$record = SproutLists_SubscriptionsRecord::model()->findById($id);
 
 		if ($record->delete())
 		{

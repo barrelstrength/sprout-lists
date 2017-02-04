@@ -69,12 +69,12 @@ class SproutListsService extends BaseApplicationComponent
 
 		$listId = null;
 
-		$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
+		$list = SproutLists_ListRecord::model()->findByAttributes(array('handle' => $handle));
 
 		// If no key found dynamically create one
 		if ($list == null)
 		{
-			$model = new SproutLists_ListsModel;
+			$model = new SproutLists_ListModel;
 			$model->name = $name;
 			$model->handle = $handle;
 
@@ -102,13 +102,13 @@ class SproutListsService extends BaseApplicationComponent
 
 	public function getLists()
 	{
-		$records = SproutLists_ListsRecord::model()->findAll();
+		$records = SproutLists_ListRecord::model()->findAll();
 
 		$lists = array();
 
 		if (!empty($records))
 		{
-			$lists = SproutLists_ListsModel::populateModels($records);
+			$lists = SproutLists_ListModel::populateModels($records);
 		}
 
 		return $lists;
@@ -116,29 +116,29 @@ class SproutListsService extends BaseApplicationComponent
 
 	public function getListById($id)
 	{
-		$record = SproutLists_ListsRecord::model()->findById($id);
+		$record = SproutLists_ListRecord::model()->findById($id);
 
-		$list = new SproutLists_ListsModel;
+		$list = new SproutLists_ListModel;
 
 		if (!empty($record))
 		{
-			$list = SproutLists_ListsModel::populateModel($record);
+			$list = SproutLists_ListModel::populateModel($record);
 		}
 
 		return $list;
 	}
 
-	public function saveList(SproutLists_ListsModel $model)
+	public function saveList(SproutLists_ListModel $model)
 	{
 		$result = false;
 
 		if ($model->id)
 		{
-			$record = SproutLists_ListsRecord::model()->findById($model->id);
+			$record = SproutLists_ListRecord::model()->findById($model->id);
 		}
 		else
 		{
-			$record = new SproutLists_ListsRecord();
+			$record = new SproutLists_ListRecord();
 		}
 
 		$modelAttributes = $model->getAttributes();
@@ -192,7 +192,7 @@ class SproutListsService extends BaseApplicationComponent
 
 	public function deleteList($id)
 	{
-		$record = SproutLists_ListsRecord::model()->findById($id);
+		$record = SproutLists_ListRecord::model()->findById($id);
 
 		if ($record != null)
 		{
@@ -222,7 +222,7 @@ class SproutListsService extends BaseApplicationComponent
 				'type'      => $type
 			);
 
-			$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($listElementAttributes);
+			$listSubscribers = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($listElementAttributes);
 
 			if ($listSubscribers != null)
 			{
@@ -309,11 +309,11 @@ class SproutListsService extends BaseApplicationComponent
 			'type'      => $type
 		);
 
-		$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+		$listSubscribers = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($subscription);
 
 		if ($listSubscribers != null)
 		{
-			SproutLists_ListsElementsRelationsRecord::model()->deleteAllByAttributes($subscription);
+			SproutLists_SubscriptionsRecord::model()->deleteAllByAttributes($subscription);
 		}
 
 		return $this->addListsElement($subscriberLists, $elementId, $type);
@@ -341,7 +341,7 @@ class SproutListsService extends BaseApplicationComponent
 		{
 			foreach ($listRecordIds as $listRecordId)
 			{
-				$record = new SproutLists_ListsElementsRelationsRecord;
+				$record = new SproutLists_SubscriptionsRecord;
 
 				$subscription = array(
 					'elementId' => $subscriptionModel->elementId,
@@ -349,7 +349,7 @@ class SproutListsService extends BaseApplicationComponent
 					'listId'    => $listRecordId
 				);
 
-				$listSubscribers = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+				$listSubscribers = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($subscription);
 
 				// to avoid duplication
 				if ($listSubscribers != null) return;
@@ -378,7 +378,7 @@ class SproutListsService extends BaseApplicationComponent
 			'elementId' => $elementIds,
 		);
 
-		$lists = SproutLists_ListsElementsRelationsRecord::model()->findAllByAttributes($subscription);
+		$lists = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($subscription);
 
 		$listIds = array();
 
@@ -399,7 +399,7 @@ class SproutListsService extends BaseApplicationComponent
 			'id' => $listIds
 		);
 
-		$records = SproutLists_ListsRecord::model()->findAllByAttributes($attributes);
+		$records = SproutLists_ListRecord::model()->findAllByAttributes($attributes);
 
 		$subscriberLists = array();
 
@@ -447,7 +447,7 @@ class SproutListsService extends BaseApplicationComponent
 	{
 		$results = array();
 
-		$elements = SproutLists_ListsElementsRelationsRecord::model()->findAll();
+		$elements = SproutLists_SubscriptionsRecord::model()->findAll();
 
 		if ($elements != null)
 		{

@@ -1,9 +1,9 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListsModel extends BaseElementModel
+class SproutLists_ListModel extends BaseElementModel
 {
-	protected $elementType = 'SproutLists_Lists';
+	protected $elementType = 'SproutLists_List';
 
 	public function defineAttributes()
 	{

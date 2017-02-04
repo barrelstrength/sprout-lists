@@ -1,7 +1,7 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListsElementsRelationsModel extends BaseModel
+class SproutLists_ListElementsRelationsModel extends BaseModel
 {
 	public function defineAttributes()
 	{

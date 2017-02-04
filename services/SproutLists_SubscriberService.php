@@ -195,7 +195,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	{
 		$handle = $subscriptionModel->list;
 
-		$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $handle));
+		$list = SproutLists_ListRecord::model()->findByAttributes(array('handle' => $handle));
 
 		$listSubscriber = null;
 
@@ -206,7 +206,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 					'elementId' => $subscriptionModel->elementId
 			);
 
-			$listSubscriber = SproutLists_ListsElementsRelationsRecord::model()->findByAttributes($listElementAttributes);
+			$listSubscriber = SproutLists_SubscriptionsRecord::model()->findByAttributes($listElementAttributes);
 		}
 
 		return $listSubscriber;
@@ -224,6 +224,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 	public function isSubscribed($criteria)
 	{
+
 		$results = $this->getQuerySubscriptions($criteria)->queryAll();
 
 		return (!empty($results)) ? true : false;
@@ -232,15 +233,15 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 	public function getQuerySubscriptions($criteria)
 	{
 		$query = craft()->db->createCommand()
-			->select('lists.*, listsubscribers.*, subscribers.*, listelements.*')
+			->select('lists.*, listsubscribers.*, subscribers.*, subscriptions.*')
 			->from('sproutlists_lists lists')
 			->join('sproutlists_lists_subscribers listsubscribers', 'lists.id = listsubscribers.listId')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = listsubscribers.subscriberId')
-			->join('sproutlists_lists_subscribers_elements listelements', 'listelements.listId = lists.id');
+			->join('sproutlists_subscriptions subscriptions', 'subscriptions.listId = lists.id');
 
 		if (isset($criteria['list']))
 		{
-			$list = SproutLists_ListsRecord::model()->findByAttributes(array('handle' => $criteria['list']));
+			$list = SproutLists_ListRecord::model()->findByAttributes(array('handle' => $criteria['list']));
 
 			$listId = 0;
 
@@ -249,12 +250,12 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 				$listId = $list->id;
 			}
 
-			$query->where(array('and', 'lists.id = :listId'), array(':listId' => $listId));
+			$query->andWhere(array('and', 'lists.id = :listId'), array(':listId' => $listId));
 		}
 
 		if (isset($criteria['userId']))
 		{
-			$query->where(array('and', 'subscribers.userId = :userId'), array(':userId' => $criteria['userId']));
+			$query->andWhere(array('and', 'subscribers.userId = :userId'), array(':userId' => $criteria['userId']));
 		}
 
 		if (isset($criteria['email']))
@@ -267,12 +268,12 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 		if (isset($criteria['elementId']))
 		{
-			$query->andWhere(array('and', 'listelements.elementId = :elementId'), array(':elementId' => $criteria['elementId']));
+			$query->andWhere(array('and', 'subscriptions.elementId = :elementId'), array(':elementId' => $criteria['elementId']));
 		}
 
 		if (isset($criteria['elementIds']))
 		{
-			$query->andWhere(array('and', array('in', 'listelements.elementId', $criteria['elementIds'])));
+			$query->andWhere(array('and', array('in', 'subscriptions.elementId', $criteria['elementIds'])));
 		}
 
 		if (isset($criteria['order']))
@@ -320,13 +321,13 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		{
 			$listId = $criteria['id'];
 
-			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findById($listId);
+			$lists = SproutLists_ListRecord::model()->with('subscribers')->findById($listId);
 		}
 		elseif ($criteria['list'])
 		{
 			$handle = $criteria['list'];
 
-			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findByAttributes(array('handle' => $handle));
+			$lists = SproutLists_ListRecord::model()->with('subscribers')->findByAttributes(array('handle' => $handle));
 		}
 
 		if ($lists != null)
@@ -343,7 +344,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 
 		if ($listId == null)
 		{
-			$lists = SproutLists_ListsRecord::model()->with('subscribers')->findAll();
+			$lists = SproutLists_ListRecord::model()->with('subscribers')->findAll();
 
 			if ($lists)
 			{
@@ -355,7 +356,7 @@ class SproutLists_SubscriberService extends BaseApplicationComponent
 		}
 		else
 		{
-			$list = SproutLists_ListsRecord::model()->with('subscribers')->findById($listId);
+			$list = SproutLists_ListRecord::model()->with('subscribers')->findById($listId);
 
 			if ($list != null)
 			{

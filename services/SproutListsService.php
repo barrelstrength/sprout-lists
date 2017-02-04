@@ -19,19 +19,17 @@ class SproutListsService extends BaseApplicationComponent
 
 	public function getAllListTypes()
 	{
-		$classesToLoad = craft()->plugins->call('registerSproutListsListType');
+		$registeredListTypes = craft()->plugins->call('registerSproutListsListType');
 
-		$types = array();
-
-		if ($classesToLoad)
+		if ($registeredListTypes)
 		{
-			foreach ($classesToLoad as $plugin => $classes)
+			foreach ($registeredListTypes as $plugin => $listTypes)
 			{
-				foreach ($classes as $class)
+				foreach ($listTypes as $listType)
 				{
-					if ($class && $class instanceof SproutListsBaseListType)
+					if ($listType && $listType instanceof SproutListsBaseListType)
 					{
-						$this->listTypes[$class->getClassName()] = $class;
+						$this->listTypes[$listType->getClassName()] = $listType;
 					}
 				}
 			}

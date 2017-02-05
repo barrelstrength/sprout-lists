@@ -3,7 +3,12 @@ namespace Craft;
 
 class SproutLists_SubscribersController extends BaseController
 {
-	public function actionEditSubscriber(array $variables = array())
+	/**
+	 * Prepare variables for Subscriber Edit Template
+	 *
+	 * @param array $variables
+	 */
+	public function actionEditSubscriberTemplate(array $variables = array())
 	{
 		$id      = isset($variables['id']) ? $variables['id'] : null;
 		$element = (isset($variables['element'])) ? $variables['element'] : null;
@@ -12,6 +17,7 @@ class SproutLists_SubscribersController extends BaseController
 		{
 			$element = new SproutLists_SubscriberModel();
 
+			// @todo - why is this nested in another if statement?
 			if ($id)
 			{
 				$element = sproutLists()->subscribers->getSubscriberById($id);
@@ -24,26 +30,29 @@ class SproutLists_SubscribersController extends BaseController
 		));
 	}
 
+	/**
+	 * Saves a Subscriber
+	 */
 	public function actionSaveSubscriber()
 	{
 		$this->requirePostRequest();
 
-		$subscriber = craft()->request->getPost('sproutlists');
+		$post = craft()->request->getRequiredPost('sproutlists');
 
 		$model = new SproutLists_SubscriberModel();
 
-		if (!empty($subscriber['id']))
+		if (isset($post['id']) && $post['id'])
 		{
-			$model = sproutLists()->subscribers->getSubscriberById($subscriber['id']);
+			$model = sproutLists()->subscribers->getSubscriberById($post['id']);
 		}
 
-		$model->setAttributes($subscriber);
+		$model->setAttributes($post);
 
 		if (sproutLists()->subscribers->saveSubscriber($model))
 		{
-			$result = sproutLists()->subscribers->saveSubscriberListRelations($model);
+			$result = sproutLists()->subscriptions->saveSubscriptions($model);
 
-			sproutLists()->subscribers->updateListCount();
+			sproutLists()->subscribers->updateTotalSubscribersCount();
 
 			if ($result !== false)
 			{
@@ -54,7 +63,6 @@ class SproutLists_SubscribersController extends BaseController
 		}
 		else
 		{
-
 			craft()->userSession->setError(Craft::t('Unable to save subscriber.'));
 
 			craft()->urlManager->setRouteVariables(array(
@@ -63,17 +71,26 @@ class SproutLists_SubscribersController extends BaseController
 		}
 	}
 
+	/**
+	 * Deletes a Subscriber
+	 */
 	public function actionDeleteSubscriber()
 	{
 		$this->requirePostRequest();
 
-		$id = craft()->request->getPost('sproutlists.id');
+		$id = craft()->request->getRequiredPost('sproutlists.id');
 
-		if ($id != null)
+		if ($model = sproutLists()->subscribers->deleteSubscriberById($id))
 		{
-			$model = sproutLists()->subscribers->deleteSubscriberById($id);
-
 			$this->redirectToPostedUrl($model);
+		}
+		else
+		{
+			craft()->userSession->setError(Craft::t('Unable to delete subscriber.'));
+
+			craft()->urlManager->setRouteVariables(array(
+				'element' => $model
+			));
 		}
 	}
 }

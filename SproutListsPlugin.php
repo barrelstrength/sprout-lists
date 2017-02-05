@@ -3,21 +3,41 @@ namespace Craft;
 
 class SproutListsPlugin extends BasePlugin
 {
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return 'Sprout Lists';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getVersion()
 	{
 		return '0.6.1';
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getSchemaVersion()
+	{
+		return '0.6.1';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDeveloper()
 	{
 		return 'Barrel Strength Design';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDeveloperUrl()
 	{
 		return 'http://barrelstrengthdesign.com';
@@ -31,38 +51,35 @@ class SproutListsPlugin extends BasePlugin
 		return true;
 	}
 
-	public function init()
-	{
-		parent::init();
-
-		// @todo - move this to be in the context of the page it relates to
-		if (craft()->request->isCpRequest() && craft()->request->getSegment(1) == 'sproutlists')
-		{
-			craft()->templates->includeJsResource('sproutlists/js/SproutListsIndex.js');
-		}
-	}
-
+	/**
+	 * @return array
+	 */
 	public function registerCpRoutes()
 	{
 		return array(
 			'sproutlists/lists/new' => array(
-				'action' => 'sproutLists/lists/editList'
+				'action' => 'sproutLists/lists/editListTemplate'
 			),
 			'sproutlists/lists/edit/(?P<listId>[\d]+)' => array(
-				'action' => 'sproutLists/lists/editList'
+				'action' => 'sproutLists/lists/editListTemplate'
 			),
 			'sproutlists/subscribers/new' => array(
-				'action' => 'sproutLists/subscribers/editSubscriber'
+				'action' => 'sproutLists/subscribers/editSubscriberTemplate'
 			),
 			'sproutlists/subscribers/(?P<listHandle>{handle})' =>
 				'sproutlists/subscribers',
 
 			'sproutlists/subscribers/edit/(?P<id>[\d]+)' => array(
-				'action' => 'sproutLists/subscribers/editSubscriber'
+				'action' => 'sproutLists/subscribers/editSubscriberTemplate'
 			),
 		);
 	}
 
+	/**
+	 * Register our default Sprout Lists List Types
+	 *
+	 * @return array
+	 */
 	public function registerSproutListsListType()
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
@@ -74,6 +91,11 @@ class SproutListsPlugin extends BasePlugin
 		);
 	}
 
+	/**
+	 * Register Twig Extensions
+	 *
+	 * @return SproutListsTwigExtension
+	 */
 	public function addTwigExtension()
 	{
 		Craft::import('plugins.sproutlists.twigextensions.SproutListsTwigExtension');

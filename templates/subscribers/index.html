@@ -9,6 +9,8 @@
 	</div>
 {% endset %}
 
+{% includeJsResource 'sproutlists/js/SproutListsIndex.js' %}
+
 {% if listHandle is defined %}
 	{% includejs 'window.listHandle = "'~listHandle~'";' %}
 {% endif %}

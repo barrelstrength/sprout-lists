@@ -45,7 +45,7 @@ class SproutLists_SubscriberRecord extends BaseRecord
 			'subscriberLists' => array(
 				static::MANY_MANY,
 				'SproutLists_ListRecord',
-				'sproutlists_lists_subscribers(subscriberId, listId)'
+				'sproutlists_subscriptions(subscriberId, listId)'
 			)
 		);
 	}

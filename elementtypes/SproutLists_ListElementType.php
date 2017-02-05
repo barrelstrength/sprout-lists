@@ -51,42 +51,62 @@ class SproutLists_ListElementType extends BaseElementType
 		return $sources;
 	}
 
+	/**
+	 * @param DbCommand            $query
+	 * @param ElementCriteriaModel $criteria
+	 *
+	 * @return null
+	 */
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query->addSelect('lists.*')
 			->join('sproutlists_lists lists', 'lists.id = elements.id');
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'id'          => array('label' => Craft::t('ID')),
 			'name'        => array('label' => Craft::t('List Name')),
 			'handle'      => array('label' => Craft::t('List Handle')),
 			'view'        => array('label' => Craft::t('View Subscribers')),
 			'total'       => array('label' => Craft::t('Total Subscribers')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated'))
+			'dateUpdated' => array('label' => Craft::t('Date Updated')),
+			'id'          => array('label' => Craft::t('ID')),
 		);
 
 		return $attributes;
 	}
 
+	/**
+	 * @param null $source
+	 *
+	 * @return array
+	 */
 	public function getDefaultTableAttributes($source = null)
 	{
 		$attributes = array();
 
-		$attributes[] = 'id';
 		$attributes[] = 'name';
 		$attributes[] = 'handle';
 		$attributes[] = 'view';
 		$attributes[] = 'total';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
+		$attributes[] = 'id';
 
 		return $attributes;
 	}
 
+	/**
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return mixed|string
+	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
 		$count = $element->total;
@@ -110,11 +130,16 @@ class SproutLists_ListElementType extends BaseElementType
 
 			default:
 				return parent::getTableAttributeHtml($element, $attribute);
+
 				break;
 		}
 	}
 
-
+	/**
+	 * @param array $row
+	 *
+	 * @return BaseModel
+	 */
 	public function populateElementModel($row)
 	{
 		return SproutLists_ListModel::populateModel($row);

@@ -2,7 +2,7 @@
 namespace Craft;
 
 class SproutLists_ListRecord extends BaseRecord
-{	
+{
 	/**
 	 * Return table name corresponding to this record
 	 *
@@ -16,21 +16,27 @@ class SproutLists_ListRecord extends BaseRecord
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
+	 * @todo - we have two elementIds here. One is the List Element ID
+	 *       and the other is a relation to the Element ID to be associated with this List
+	 *       can we enforce this in our db architecture with a fk?
+	 *
 	 * @return array
 	 */
 	public function defineAttributes()
 	{
 		return array(
-			'name'   => AttributeType::String,
-			'handle' => AttributeType::String,
-			'total'  => AttributeType::Number
+			'elementId' => AttributeType::Number,
+			'type'      => AttributeType::String,
+			'name'      => AttributeType::String,
+			'handle'    => AttributeType::String,
+			'total'     => AttributeType::Number
 		);
 	}
 
 	public function defineRelations()
 	{
 		return array(
-			'element' => array(
+			'element'     => array(
 				static::BELONGS_TO,
 				'ElementRecord',
 				'id',
@@ -40,7 +46,7 @@ class SproutLists_ListRecord extends BaseRecord
 			'subscribers' => array(
 				static::MANY_MANY,
 				'SproutLists_SubscriberRecord',
-				'sproutlists_lists_subscribers(listId, subscriberId)'
+				'sproutlists_subscriptions(listId, subscriberId)'
 			)
 		);
 	}

@@ -7,6 +7,11 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 	protected $subscriberListsIds;
 
+	/**
+	 * @todo - should email always be required?
+	 *
+	 * @return string
+	 */
 	public function __toString()
 	{
 		if ($this->email != null)
@@ -22,6 +27,9 @@ class SproutLists_SubscriberModel extends BaseElementModel
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineAttributes()
 	{
 		$defaults = parent::defineAttributes();
@@ -74,11 +82,19 @@ class SproutLists_SubscriberModel extends BaseElementModel
 		return $this->subscriberListsIds;
 	}
 
+	/**
+	 * @todo - update name of these methods. Not clear.
+	 *
+	 * @return mixed
+	 */
 	public function getSubscriberLists()
 	{
-		return sproutLists()->getListsBySubscriberId($this->id);
+		return sproutLists()->lists->getListsBySubscriberId($this->id);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getSubscriberListsHtml()
 	{
 		$id = isset($this->id) ? $this->id : null;
@@ -97,6 +113,6 @@ class SproutLists_SubscriberModel extends BaseElementModel
 			$values = $element->getSubscriberListIds();
 		}
 
-		return sproutLists()->getSubscriberListsHtml($values);
+		return sproutLists()->lists->getSubscriberListsHtml($values);
 	}
 }

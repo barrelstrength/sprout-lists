@@ -36,6 +36,8 @@ class SproutLists_SubscriberElementType extends BaseElementType
 	}
 
 	/**
+	 * @todo - add support to group lists in sidebar by List Type
+	 *
 	 * @param null $context
 	 *
 	 * @return array
@@ -48,10 +50,14 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->subscribers->getLists();
+		$lists = sproutLists()->lists->getListSubscribers();
 
 		if (!empty($lists))
 		{
+			$sources[] = array(
+				'heading' => Craft::t('Lists')
+			);
+
 			foreach ($lists as $list)
 			{
 				$key = 'lists:' . $list->id;
@@ -67,14 +73,20 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		return $sources;
 	}
 
+	/**
+	 * @param DbCommand            $query
+	 * @param ElementCriteriaModel $criteria
+	 *
+	 * @return null
+	 */
 	public function modifyElementsQuery(DbCommand $query, ElementCriteriaModel $criteria)
 	{
 		$query
 			->addSelect('lists.*')
 			->addSelect('subscribers.*')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = elements.id')
-			->leftJoin('sproutlists_lists_subscribers listssubscribers', 'listssubscribers.subscriberId = subscribers.id')
-			->leftJoin('sproutlists_lists lists', 'lists.id = listssubscribers.listId');
+			->leftJoin('sproutlists_subscriptions subscriptions', 'subscriptions.subscriberId = subscribers.id')
+			->leftJoin('sproutlists_lists lists', 'lists.id = subscriptions.listId');
 
 		if ($criteria->order)
 		{
@@ -99,6 +111,12 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		}
 	}
 
+	/**
+	 * @param BaseElementModel $element
+	 * @param string           $attribute
+	 *
+	 * @return mixed|string
+	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
 		switch ($attribute)
@@ -107,17 +125,21 @@ class SproutLists_SubscriberElementType extends BaseElementType
 
 				if ($element->userId)
 				{
-					return "<a href='" . UrlHelper::getCpUrl('users/' . $element->userId) . "'>" . Craft::t('Edit User') . "</a>";
+					return "<a href='" . UrlHelper::getCpUrl('users/' . $element->userId) . "' class='go'>" . Craft::t('Edit User') . "</a>";
 				}
 
 				break;
 
 			default:
 				return parent::getTableAttributeHtml($element, $attribute);
+
 				break;
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
@@ -130,7 +152,11 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		return $attributes;
 	}
 
-
+	/**
+	 * @param null $source
+	 *
+	 * @return array
+	 */
 	public function getDefaultTableAttributes($source = null)
 	{
 		$attributes = array();
@@ -143,6 +169,9 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		return $attributes;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineCriteriaAttributes()
 	{
 		return array(
@@ -151,11 +180,19 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineSearchableAttributes()
 	{
 		return array('email');
 	}
 
+	/**
+	 * @param null $source
+	 *
+	 * @return array
+	 */
 	public function getAvailableActions($source = null)
 	{
 		$deleteAction = craft()->elements->getAction('SproutLists_SubscriberDelete');
@@ -168,6 +205,11 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		return array($deleteAction);
 	}
 
+	/**
+	 * @param array $row
+	 *
+	 * @return BaseModel
+	 */
 	public function populateElementModel($row)
 	{
 		return SproutLists_SubscriberModel::populateModel($row);

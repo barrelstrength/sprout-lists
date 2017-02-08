@@ -1,14 +1,14 @@
 <?php
 namespace Craft;
 
-class SproutLists_ListsElementsRelationsRecord extends BaseRecord
+class SproutLists_SubscriptionsRecord extends BaseRecord
 {
 	/**
 	 * @return string
 	 */
 	public function getTableName()
 	{
-		return 'sproutlists_lists_subscribers_elements';
+		return 'sproutlists_subscriptions';
 	}
 
 	/**
@@ -17,8 +17,11 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'listId' => AttributeType::Number,
-			'type'   => AttributeType::String
+			'listId'       => AttributeType::Number,
+			'subscriberId' => AttributeType::Number,
+
+			'type' => AttributeType::String,
+			'elementId' => AttributeType::Number,
 		);
 	}
 
@@ -34,7 +37,7 @@ class SproutLists_ListsElementsRelationsRecord extends BaseRecord
 			),
 			'list'    => array(
 				static::BELONGS_TO,
-				'SproutLists_ListsRecord',
+				'SproutLists_ListRecord',
 				'listId',
 				'required' => true,
 				'onDelete' => static::CASCADE

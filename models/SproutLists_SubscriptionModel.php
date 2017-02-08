@@ -3,14 +3,24 @@ namespace Craft;
 
 class SproutLists_SubscriptionModel extends BaseModel
 {
+	/**
+	 * @return array
+	 */
 	public function defineAttributes()
 	{
 		return array(
-			'elementId' => AttributeType::Number,
-			'type'      => AttributeType::String,
-			'email'     => AttributeType::String,
-			'userId'    => AttributeType::Number,
-			'list'      => AttributeType::Mixed
+			// Subscriber Info
+			'email'        => AttributeType::String,
+			'userId'       => AttributeType::Number,
+			'subscriberId' => AttributeType::Number,
+
+			// List Info
+			'list'         => AttributeType::Mixed,
+			'listId'       => AttributeType::Number,
+			'elementId'    => AttributeType::Number,
+
+			// Other
+			'type'         => AttributeType::String,
 		);
 	}
 }

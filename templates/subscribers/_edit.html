@@ -48,9 +48,9 @@
 		<section id="default-fields">
 
 			{{ forms.textField({
-				id: 'email',
-				name: 'sproutlists[email]',
 				label: "Email"|t,
+				name: 'sproutlists[email]',
+				id: 'email',
 				required: true,
 				autofocus: true,
 				value: element is defined ? element.email : null,
@@ -58,17 +58,17 @@
 			}) }}
 
 			{{ forms.textField({
-				id: 'firstName',
-				name: 'sproutlists[firstName]',
 				label: "First Name"|t,
+				name: 'sproutlists[firstName]',
+				id: 'firstName',
 				value: element is defined ? element.firstName : null,
 				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
 			}) }}
 
 			{{ forms.textField({
-				id: 'lastName',
-				name: 'sproutlists[lastName]',
 				label: "Last Name"|t,
+				name: 'sproutlists[lastName]',
+				id: 'lastName',
 				value: element is defined ? element.lastName : null,
 				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
 			}) }}
@@ -82,7 +82,7 @@
 		<div class="pane meta">
 			<div class="field">
 				<div class="heading">
-					<label>{{ "Subscriber Lists"|t }}</label>
+					<label>{{ "Lists"|t }}</label>
 				</div>
 				<div class="input">
 					{{ element.getSubscriberListsHtml() }}
@@ -111,6 +111,5 @@
 	</div>
 
 </div>
-
 
 {% endblock %}

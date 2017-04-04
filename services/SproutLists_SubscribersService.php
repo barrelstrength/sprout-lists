@@ -148,6 +148,23 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		return $listSubscriber;
 	}
 
+	public function getSubscribers($listIds)
+	{
+		$recipients = array();
+
+		if (!empty($listIds))
+		{
+			foreach ($listIds as $listId)
+			{
+				$list = SproutLists_ListRecord::model()->findById(4498);
+
+				$recipients = array_merge($recipients, $list->subscribers);
+			}
+		}
+
+		return $recipients;
+	}
+
 	public function updateTotalSubscribersCount($listId = null)
 	{
 		$result = false;

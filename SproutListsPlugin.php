@@ -80,7 +80,7 @@ class SproutListsPlugin extends BasePlugin
 	 *
 	 * @return array
 	 */
-	public function registerSproutListsListType()
+	public function registerSproutListsListTypes()
 	{
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');

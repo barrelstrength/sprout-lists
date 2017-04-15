@@ -14,7 +14,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 
 	public function getAllListTypes()
 	{
-		$registeredListTypes = craft()->plugins->call('registerSproutListsListType');
+		$registeredListTypes = craft()->plugins->call('registerSproutListsListTypes');
 
 		if ($registeredListTypes)
 		{

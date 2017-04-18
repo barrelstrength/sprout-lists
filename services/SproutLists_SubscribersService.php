@@ -156,7 +156,7 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		{
 			foreach ($listIds as $listId)
 			{
-				$list = SproutLists_ListRecord::model()->findById(4498);
+				$list = SproutLists_ListRecord::model()->findById($listId);
 
 				$recipients = array_merge($recipients, $list->subscribers);
 			}

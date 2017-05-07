@@ -3,8 +3,12 @@
 
 {% set title = "Edit List"|t %}
 
+{% if craft.request.getSegment(3) == 'new' %}
+	{% set title = "New List"|t %}
+{% endif %}
+
 {% set crumbs = [
-{ label: "Lists"|t, url: url('sproutlists/lists') },
+  { label: "Lists"|t, url: url('sproutlists/lists') },
 ] %}
 
 {% set fullPageForm = true %}
@@ -20,7 +24,7 @@
 {% block main %}
 
 <div class="grid">
-	<div class="item" data-position="left" data-min-colspan="2" data-max-colspan="3">
+	<div class="item" data-position="left" data-min-colspan="2" data-max-cols="3">
 		<div class="pane">
 			<input type="hidden" name="action" value="sproutLists/lists/saveList">
 			<input type="hidden" name="redirect" value="sproutlists/lists">

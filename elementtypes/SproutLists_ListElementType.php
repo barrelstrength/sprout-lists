@@ -74,8 +74,7 @@ class SproutLists_ListElementType extends BaseElementType
 			'view'        => array('label' => Craft::t('View Subscribers')),
 			'total'       => array('label' => Craft::t('Total Subscribers')),
 			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated')),
-			'id'          => array('label' => Craft::t('ID')),
+			'dateUpdated' => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -96,7 +95,6 @@ class SproutLists_ListElementType extends BaseElementType
 		$attributes[] = 'total';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
-		$attributes[] = 'id';
 
 		return $attributes;
 	}

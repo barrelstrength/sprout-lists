@@ -21,6 +21,8 @@ class SproutLists_SubscriberDeleteElementAction extends DeleteElementAction
 			));
 		}
 
+		sproutLists()->subscribers->updateTotalSubscribersCount();
+
 		return true;
 	}
 }

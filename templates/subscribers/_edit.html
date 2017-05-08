@@ -9,7 +9,7 @@
 
 {% set selectedTab    = 'lists' %}
 
-{% if element is empty %}
+{% if element is null %}
 	{% exit 404 %}
 {% endif %}
 

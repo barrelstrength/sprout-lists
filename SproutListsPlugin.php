@@ -91,6 +91,15 @@ class SproutListsPlugin extends BasePlugin
 		);
 	}
 
+	public function init()
+	{
+		parent::init();
+
+		craft()->on('users.saveUser', function (Event $event) {
+			sproutLists()->subscribers->updateUserIdOnSave($event);
+		});
+	}
+
 	/**
 	 * Register Twig Extensions
 	 *

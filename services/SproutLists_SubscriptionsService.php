@@ -60,6 +60,8 @@ class SproutLists_SubscriptionsService extends BaseApplicationComponent
 			}
 		}
 
+		sproutLists()->subscribers->updateTotalSubscribersCount();
+
 		return $records;
 	}
 }

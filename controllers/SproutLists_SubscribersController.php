@@ -11,22 +11,16 @@ class SproutLists_SubscribersController extends BaseController
 	 */
 	public function actionEditSubscriberTemplate(array $variables = array())
 	{
-		$id      = isset($variables['id']) ? $variables['id'] : null;
-		$element = (isset($variables['element'])) ? $variables['element'] : null;
+		$element = new SproutLists_SubscriberModel();
 
-		if ($element == null)
+		$id = isset($variables['id']) ? $variables['id'] : null;
+
+		if ($id != null)
 		{
-			$element = new SproutLists_SubscriberModel();
-
-			// @todo - simplify nested logic
-			if ($id)
-			{
-				$element = sproutLists()->subscribers->getSubscriberById($id);
-			}
+			$element = sproutLists()->subscribers->getSubscriberById($id);
 		}
 
 		$this->renderTemplate('sproutlists/subscribers/_edit', array(
-			'id'      => $id,
 			'element' => $element
 		));
 	}
@@ -52,9 +46,6 @@ class SproutLists_SubscribersController extends BaseController
 		if (sproutLists()->subscribers->saveSubscriber($model))
 		{
 			$result = sproutLists()->subscriptions->saveSubscriptions($model);
-
-			// @todo - move to service layer
-			sproutLists()->subscribers->updateTotalSubscribersCount();
 
 			if ($result !== false)
 			{

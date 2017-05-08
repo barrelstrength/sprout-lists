@@ -19,20 +19,17 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		{
 			$record = SproutLists_SubscriberRecord::model()->findById($model->id);
 		}
-		else
+		elseif ($model->email)
 		{
-			if ($model->email)
-			{
-				// @todo - Review logic
-				// What if someone submits a new subscriber with an existing Subscriber email address?
-				// this scenario would have no ID but should also be matched to the existing
-				// Subscriber record instead of creating a new one
-				$user = craft()->users->getUserByUsernameOrEmail($model->email);
+			// @todo - Review logic
+			// What if someone submits a new subscriber with an existing Subscriber email address?
+			// this scenario would have no ID but should also be matched to the existing
+			// Subscriber record instead of creating a new one
+			$user = craft()->users->getUserByUsernameOrEmail($model->email);
 
-				if ($user != null)
-				{
-					$model->userId = $user->id;
-				}
+			if ($user != null)
+			{
+				$model->userId = $user->id;
 			}
 		}
 
@@ -130,7 +127,10 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 			{
 				$list = SproutLists_ListRecord::model()->findById($listId);
 
-				$recipients = array_merge($recipients, $list->subscribers);
+				if ($list != null)
+				{
+					$recipients = array_merge($recipients, $list->subscribers);
+				}
 			}
 		}
 
@@ -168,8 +168,6 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 
 	private function saveTotalSubscribersCount($list)
 	{
-		$result = false;
-
 		$count = count($list->subscribers);
 
 		$list->total = $count;
@@ -235,6 +233,8 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 			}
 		}
 
+		sproutLists()->subscribers->updateTotalSubscribersCount();
+
 		return $model;
 	}
 
@@ -246,5 +246,56 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		}
 
 		return $ids;
+	}
+
+	/**
+	 * Sync SproutLists subscriber to craft_users if same email is found on save.
+	 *
+	 * @param Event $event
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function updateUserIdOnSave(Event $event)
+	{
+		$result = false;
+
+		$email = $event->params['user']->email;
+
+		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+			'userId' => null,
+			'email'  => $email
+		));
+
+		if ($record != null)
+		{
+			$record->userId = $event->params['user']->id;
+
+			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+			try
+			{
+				if ($record->save(false))
+				{
+					if ($transaction && $transaction->active)
+					{
+						$transaction->commit();
+					}
+
+					$result = true;
+				}
+			}
+			catch (\Exception $e)
+			{
+				if ($transaction && $transaction->active)
+				{
+					$transaction->rollback();
+				}
+
+				throw $e;
+			}
+		}
+
+		return $result;
 	}
 }

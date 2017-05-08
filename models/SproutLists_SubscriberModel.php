@@ -12,17 +12,21 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	 */
 	public function __toString()
 	{
+		$email = '';
+
 		if ($this->email != null)
 		{
-			return $this->email;
+			$email = $this->email;
 		}
 
 		if ($this->userId != null)
 		{
 			$user = craft()->users->getUserById($this->userId);
 
-			return $user->email;
+			$email = $user->email;
 		}
+
+		return $email;
 	}
 
 	/**

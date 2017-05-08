@@ -251,11 +251,9 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @todo - Improve method name. Document behavior.
-	 *
 	 * @return array
 	 */
-	public function getListSubscribers()
+	public function getListsWithSubscribers()
 	{
 		$records = SproutLists_SubscriberRecord::model()->with('subscriberLists')->findAll();
 		$ids     = array();

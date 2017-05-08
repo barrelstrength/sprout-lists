@@ -48,7 +48,7 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->lists->getListSubscribers();
+		$lists = sproutLists()->lists->getListsWithSubscribers();
 
 		if (!empty($lists))
 		{

@@ -9,9 +9,6 @@ class SproutLists_ListModel extends BaseElementModel
 	protected $elementType = 'SproutLists_List';
 
 	/**
-	 * @todo - this is needed for the first row on the List Element Index page
-	 *         consider updating List Element to use Titles.
-	 *
 	 * @return string
 	 */
 	public function __toString()

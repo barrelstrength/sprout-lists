@@ -313,7 +313,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 			$values = $default;
 		}
 
-		// @todo - Move template code to a template
+		// @todo - Move template code to a template and use Twig Macros
 		$checkboxGroup = craft()->templates->renderMacro(
 			'_includes/forms', 'checkboxGroup', array(
 				array(

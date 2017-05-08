@@ -81,7 +81,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	}
 
 	/**
-	 * @todo - Improve method names. Not clear.
+	 * @todo - Improve clarity of method names. Not clear.
 	 *
 	 * @return mixed
 	 */

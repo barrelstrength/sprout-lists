@@ -8,8 +8,6 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	protected $subscriberListsIds;
 
 	/**
-	 * @todo - should email always be required?
-	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -83,7 +81,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	}
 
 	/**
-	 * @todo - update name of these methods. Not clear.
+	 * @todo - Improve method names. Not clear.
 	 *
 	 * @return mixed
 	 */

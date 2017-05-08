@@ -3,12 +3,11 @@ namespace Craft;
 
 class SproutLists_SubscriptionsService extends BaseApplicationComponent
 {
-
-
 	/**
 	 * @todo - this should probably be delegated to the $listType class as well.
+	 * @todo - clarify that this takes a SproutLists_SubscriberModel with an array of listIds as an attribute
 	 */
-	public function saveSubscriptions($model, $sync = true)
+	public function saveSubscriptions(SproutLists_SubscriberModel $model, $sync = true)
 	{
 		$subscriberId      = $model->id;
 		$subscriberListIds = $model->subscriberLists;

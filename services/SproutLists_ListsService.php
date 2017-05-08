@@ -14,7 +14,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 
 	public function getAllListTypes()
 	{
-		$registeredListTypes = craft()->plugins->call('registerSproutListsListType');
+		$registeredListTypes = craft()->plugins->call('registerSproutListsListTypes');
 
 		if ($registeredListTypes)
 		{
@@ -153,8 +153,6 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @todo - Record used in return statement. Update to use Model.
-	 *
 	 * Retrieve id of "list" from lists table.
 	 * Queries to check if it exists.
 	 * If not dynamically creates it.
@@ -253,7 +251,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	}
 
 	/**
-	 * @todo - document better and rename
+	 * @todo - Improve method name. Document behavior.
 	 *
 	 * @return array
 	 */
@@ -290,36 +288,9 @@ class SproutLists_ListsService extends BaseApplicationComponent
 		return $lists;
 	}
 
-	//
-	// @todo - it appears this is not in use and only getSubscriberListsHtml is used.
-	//
-	//public function getListsHtml($elementId = null, $type = 'email')
-	//{
-	//	$values = array();
-	//
-	//	if ($elementId != null)
-	//	{
-	//		$listElementAttributes = array(
-	//			'elementId' => $elementId,
-	//			'type'      => $type
-	//		);
-	//
-	//		$listSubscribers = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($listElementAttributes);
-	//
-	//		if ($listSubscribers != null)
-	//		{
-	//			foreach ($listSubscribers as $listSubscriber)
-	//			{
-	//				$values[] = $listSubscriber->listId;
-	//			}
-	//		}
-	//	}
-	//
-	//	return $this->getSubscriberListsHtml($values);
-	//}
-
 	/**
-	 * @param null $element
+	 * @param array $values
+	 * @param array $default
 	 *
 	 * @return \Twig_Markup
 	 */
@@ -344,7 +315,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 			$values = $default;
 		}
 
-		// @todo - Move template code to the template
+		// @todo - Move template code to a template
 		$checkboxGroup = craft()->templates->renderMacro(
 			'_includes/forms', 'checkboxGroup', array(
 				array(
@@ -366,37 +337,6 @@ class SproutLists_ListsService extends BaseApplicationComponent
 
 		return TemplateHelper::getRaw($html);
 	}
-
-	//public function addSyncElement(array $subscriberLists, $elementId, $type = 'email')
-	//{
-	//	$subscription = array(
-	//		'elementId' => $elementId,
-	//		'type'      => $type
-	//	);
-	//
-	//	$listSubscribers = SproutLists_SubscriptionsRecord::model()->findAllByAttributes($subscription);
-	//
-	//	if ($listSubscribers != null)
-	//	{
-	//		SproutLists_SubscriptionsRecord::model()->deleteAllByAttributes($subscription);
-	//	}
-	//
-	//	return $this->addListsElement($subscriberLists, $elementId, $type);
-	//}
-	//
-	//public function addListsElement(array $subscriberLists, $elementId, $type = 'email')
-	//{
-	//	$subscription = array(
-	//		'elementId' => $elementId,
-	//		'type'      => $type
-	//	);
-	//
-	//	$listRecordIds = $subscriberLists['subscriberLists'];
-	//
-	//	$subscriptionModel = SproutLists_SubscriptionModel::populateModel($subscription);
-	//
-	//	return $this->saveList($listRecordIds, $subscriptionModel);
-	//}
 
 	/**
 	 * Returns camelCased version of original string.

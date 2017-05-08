@@ -36,8 +36,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 	}
 
 	/**
-	 * @todo - add support to group lists in sidebar by List Type
-	 *
 	 * @param null $context
 	 *
 	 * @return array

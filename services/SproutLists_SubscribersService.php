@@ -4,35 +4,6 @@ namespace Craft;
 class SproutLists_SubscribersService extends BaseApplicationComponent
 {
 	/**
-	 * @param SproutLists_SubscriberModel $subscriber
-	 * @param                             $subscriptionModel
-	 */
-	public function subscribe(SproutLists_SubscriberModel $subscriber, $subscriptionModel)
-	{
-		if ($this->saveSubscriber($subscriber))
-		{
-			$listRecord = $this->getListSubscriber($subscriptionModel);
-
-			if ($listRecord == null)
-			{
-				sproutLists()->subscriptions->saveSubscriptions($subscriber, false);
-			}
-
-			if (!empty($subscriber->subscriberLists))
-			{
-				$subscriberListIds = $subscriber->subscriberLists;
-
-				foreach ($subscriberListIds as $listId)
-				{
-					$this->updateTotalSubscribersCount($listId);
-				}
-
-				sproutLists()->lists->saveListElement($subscriberListIds, $subscriptionModel);
-			}
-		}
-	}
-
-	/**
 	 * @param SproutLists_SubscriberModel $model
 	 *
 	 * @return bool

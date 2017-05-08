@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscribersController extends BaseController
@@ -17,7 +18,7 @@ class SproutLists_SubscribersController extends BaseController
 		{
 			$element = new SproutLists_SubscriberModel();
 
-			// @todo - why is this nested in another if statement?
+			// @todo - simplify nested logic
 			if ($id)
 			{
 				$element = sproutLists()->subscribers->getSubscriberById($id);
@@ -52,6 +53,7 @@ class SproutLists_SubscribersController extends BaseController
 		{
 			$result = sproutLists()->subscriptions->saveSubscriptions($model);
 
+			// @todo - move to service layer
 			sproutLists()->subscribers->updateTotalSubscribersCount();
 
 			if ($result !== false)

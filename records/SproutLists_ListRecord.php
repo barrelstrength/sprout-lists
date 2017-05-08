@@ -16,10 +16,6 @@ class SproutLists_ListRecord extends BaseRecord
 	/**
 	 * These have to be explicitly defined in order for the plugin to install
 	 *
-	 * @todo - we have two elementIds here. One is the List Element ID
-	 *       and the other is a relation to the Element ID to be associated with this List
-	 *       can we enforce this in our db architecture with a fk?
-	 *
 	 * @return array
 	 */
 	public function defineAttributes()

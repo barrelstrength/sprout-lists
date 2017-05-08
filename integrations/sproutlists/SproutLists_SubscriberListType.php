@@ -66,7 +66,8 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
-			// @todo - remove
+
+			// @todo - Remove.
 			$subscriptionRecord->elementId = $list->id;
 
 			// Create a criteria between our List Element and Subscriber Element
@@ -128,7 +129,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			'listId'       => $list->id,
 			'subscriberId' => $subscriber->id,
 
-			// @todo - remove
+			// @todo - Remove.
 			'elementId'    => $list->id
 		);
 
@@ -178,10 +179,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		if (isset($criteria['email']))
 		{
-			// Search by user ID or array of user IDs
-			$emails = $this->prepareIdsForQuery($criteria['email']);
-
-			$query->andWhere(array('and', array('in', 'subscribers.email', $emails)));
+			$query->andWhere(array('and', array('in', 'subscribers.email', $criteria['email'])));
 		}
 
 		if (isset($criteria['elementId']))

@@ -52,7 +52,8 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		{
 			if ($model->email)
 			{
-				// @todo - what if someone submits a new subscriber with an existing Subscriber email address?
+				// @todo - Review logic
+				// What if someone submits a new subscriber with an existing Subscriber email address?
 				// this scenario would have no ID but should also be matched to the existing
 				// Subscriber record instead of creating a new one
 				$user = craft()->users->getUserByUsernameOrEmail($model->email);

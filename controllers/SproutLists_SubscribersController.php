@@ -13,11 +13,13 @@ class SproutLists_SubscribersController extends BaseController
 	{
 		$element = new SproutLists_SubscriberModel();
 
-		$id = isset($variables['id']) ? $variables['id'] : null;
-
-		if ($id != null)
+		if (isset($variables['element']))
 		{
-			$element = sproutLists()->subscribers->getSubscriberById($id);
+			$element = $variables['element'];
+		}
+		elseif (isset($variables['id']))
+		{
+			$element = sproutLists()->subscribers->getSubscriberById($variables['id']);
 		}
 
 		$this->renderTemplate('sproutlists/subscribers/_edit', array(

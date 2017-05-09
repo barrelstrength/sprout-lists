@@ -10,16 +10,21 @@ class SproutLists_ListsController extends BaseController
 	 */
 	public function actionEditListTemplate(array $variables = array())
 	{
-		$listId = isset($variables['listId']) ? $variables['listId'] : null;
-		$list   = isset($variables['list']) ? $variables['list'] : null;
+		$list   = new SproutLists_ListModel;
+		$listId = null;
+		$continueEditingUrl = null;
 
-		$continueEditingUrl = isset($variables['listId'])
-			? 'sproutlists/lists/edit/' . $variables['listId']
-			: null;
-
-		if ($list == null)
+		if (isset($variables['list']))
 		{
+			$list = $variables['list'];
+		}
+		elseif (isset($variables['listId']))
+		{
+			$listId = $variables['listId'];
+
 			$list = sproutLists()->lists->getListById($listId);
+
+			$continueEditingUrl = 'sproutlists/lists/edit/' . $listId;
 		}
 
 		$this->renderTemplate('sproutlists/lists/_edit', array(

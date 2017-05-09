@@ -29,7 +29,7 @@
 			<input type="hidden" name="action" value="sproutLists/lists/saveList">
 			<input type="hidden" name="redirect" value="sproutlists/lists">
 
-			<input type="hidden" id="id" name="sproutlists[id]" value="{{ listId }}">
+			<input type="hidden" id="id" name="sproutlists[id]" value="{{ list.id is defined ? list.id : null }}">
 
 			{{ forms.textField({
 				label: "List Name"|t,
@@ -87,17 +87,18 @@
 
 		</div>
 
-		<div class="pane lightpane meta">
-			<div class="data">
-				<h5 class="heading">{{ "Date Created"|t }}</h5>
-				<div class="value">{{ list.dateCreated.localeDate() }} {{ list.dateCreated.localeTime() }}</div>
+		{% if list.dateCreated is not null %}
+			<div class="pane lightpane meta">
+				<div class="data">
+					<h5 class="heading">{{ "Date Created"|t }}</h5>
+					<div class="value">{{ list.dateCreated.localeDate() }} {{ list.dateCreated.localeTime() }}</div>
+				</div>
+				<div class="data">
+					<h5 class="heading">{{ "Date Updated"|t }}</h5>
+					<div class="value">{{ list.dateUpdated.localeDate() }} {{ list.dateUpdated.localeTime() }}</div>
+				</div>
 			</div>
-			<div class="data">
-				<h5 class="heading">{{ "Date Updated"|t }}</h5>
-				<div class="value">{{ list.dateUpdated.localeDate() }} {{ list.dateUpdated.localeTime() }}</div>
-			</div>
-		</div>
-
+		{% endif %}
 	</div>
 	{% endif %}
 

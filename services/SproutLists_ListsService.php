@@ -313,25 +313,10 @@ class SproutLists_ListsService extends BaseApplicationComponent
 			$values = $default;
 		}
 
-		// @todo - Move template code to a template and use Twig Macros
-		$checkboxGroup = craft()->templates->renderMacro(
-			'_includes/forms', 'checkboxGroup', array(
-				array(
-					'name'    => 'sproutlists[subscriberLists]',
-					'options' => $options,
-					'values'  => $values
-				)
-			)
-		);
-
-		$html = craft()->templates->renderMacro(
-			'_includes/forms', 'field', array(
-				array(
-					'id' => 'subscriberLists'
-				),
-				$checkboxGroup
-			)
-		);
+		$html = craft()->templates->render('sproutlists/subscribers/checkboxlists', array(
+			'options' => $options,
+			'values'  => $values
+		));
 
 		return TemplateHelper::getRaw($html);
 	}

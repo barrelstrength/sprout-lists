@@ -133,6 +133,24 @@ class SproutLists_ListElementType extends BaseElementType
 		}
 	}
 
+
+	/**
+	 * @param null $source
+	 *
+	 * @return array
+	 */
+	public function getAvailableActions($source = null)
+	{
+		$deleteAction = craft()->elements->getAction('SproutLists_ListDelete');
+
+		$deleteAction->setParams(array(
+			'confirmationMessage' => Craft::t('Are you sure you want to delete the selected lists?'),
+			'successMessage'      => Craft::t('Lists deleted.'),
+		));
+
+		return array($deleteAction);
+	}
+
 	/**
 	 * @param array $row
 	 *

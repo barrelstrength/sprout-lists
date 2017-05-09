@@ -21,7 +21,6 @@ class SproutLists_ListRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'elementId' => AttributeType::Number,
 			'type'      => AttributeType::String,
 			'name'      => array(AttributeType::String, 'required' => true),
 			'handle'    => array(AttributeType::String, 'required' => true),

@@ -53,7 +53,7 @@ class SproutListsTwigExtension extends \Twig_Extension
 
 	public function subscriptionIds($subscriptions)
 	{
-		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'elementId');
+		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'listId');
 		$subscriptionIds = array_values(array_unique($subscriptionIds));
 
 		return StringHelper::arrayToString($subscriptionIds);

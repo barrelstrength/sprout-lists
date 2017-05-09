@@ -21,6 +21,7 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		}
 		elseif ($model->email)
 		{
+
 			$user = craft()->users->getUserByUsernameOrEmail($model->email);
 
 			if ($user != null)
@@ -190,6 +191,13 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 			if (isset($attributes['userId']))
 			{
 				$subscriberModel->userId   = $attributes['userId'];
+
+				$user = craft()->users->getUserById($attributes['userId']);
+
+				if ($user)
+				{
+					$subscriberModel->email = $user->email;
+				}
 			}
 
 			if (isset($attributes['email']))

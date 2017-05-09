@@ -44,7 +44,6 @@ class SproutLists_ListsService extends BaseApplicationComponent
 				$record = new SproutLists_SubscriptionsRecord;
 
 				$subscription = array(
-					'elementId' => $subscriptionModel->elementId,
 					'type'      => $subscriptionModel->type,
 					'listId'    => $listRecordId
 				);
@@ -57,7 +56,6 @@ class SproutLists_ListsService extends BaseApplicationComponent
 					return;
 				}
 
-				$record->elementId = $subscriptionModel->elementId;
 				$record->type      = $subscriptionModel->type;
 				$record->listId    = $listRecordId;
 
@@ -159,7 +157,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	 *
 	 * @param  string $handle
 	 *
-	 * @return int          Returns id of existing or dynamic list.
+	 * @return BaseRecord  Returns list record of existing or dynamic list.
 	 */
 	public function getListByHandle($listHandle, SproutLists_SubscriptionModel $subscription = null)
 	{
@@ -171,7 +169,6 @@ class SproutLists_ListsService extends BaseApplicationComponent
 			$list            = new SproutLists_ListModel();
 			$list->name      = $subscription->list;
 			$list->handle    = $subscription->list;
-			$list->elementId = $subscription->elementId != null ? $subscription->elementId : null;
 			$list->type      = $subscription->type != null ? $subscription->type : 'subscriber';
 
 			$this->saveList($list);

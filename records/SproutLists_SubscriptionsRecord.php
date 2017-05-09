@@ -17,24 +17,14 @@ class SproutLists_SubscriptionsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'listId'       => AttributeType::Number,
 			'subscriberId' => AttributeType::Number,
-
-			'type' => AttributeType::String,
-			'elementId' => AttributeType::Number,
+			'type' => AttributeType::String
 		);
 	}
 
 	public function defineRelations()
 	{
 		return array(
-			'element' => array(
-				static::BELONGS_TO,
-				'ElementRecord',
-				'elementId',
-				'required' => true,
-				'onDelete' => static::CASCADE
-			),
 			'list'    => array(
 				static::BELONGS_TO,
 				'SproutLists_ListRecord',
@@ -48,7 +38,7 @@ class SproutLists_SubscriptionsRecord extends BaseRecord
 	public function defineIndexes()
 	{
 		return array(
-			array('columns' => array('elementId'))
+			array('columns' => array('listId'))
 		);
 	}
 }

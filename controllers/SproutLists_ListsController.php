@@ -118,7 +118,6 @@ class SproutLists_ListsController extends BaseController
 	public function actionSubscribe()
 	{
 		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['elementId'] = craft()->request->getRequiredPost('elementId');
 		$criteria['userId']    = craft()->request->getPost('userId');
 		$criteria['email']     = craft()->request->getPost('email');
 
@@ -177,7 +176,6 @@ class SproutLists_ListsController extends BaseController
 	public function actionUnsubscribe()
 	{
 		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['elementId'] = craft()->request->getRequiredPost('elementId');
 		$criteria['userId']    = craft()->request->getPost('userId');
 		$criteria['email']     = craft()->request->getPost('email');
 
@@ -191,9 +189,7 @@ class SproutLists_ListsController extends BaseController
 			return !is_null($var);
 		});
 
-		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
-
-		if ($listType->unsubscribe($subscriptionModel))
+		if ($listType->unsubscribe($criteria))
 		{
 			if (craft()->request->isAjaxRequest())
 			{

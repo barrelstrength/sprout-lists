@@ -25,7 +25,6 @@ class SproutLists_ListModel extends BaseElementModel
 
 		$attributes = array(
 			'id'        => array(AttributeType::Number),
-			'elementId' => array(AttributeType::Number),
 			'type'      => array(AttributeType::String),
 			'name'      => array(AttributeType::String, 'required' => true),
 			'handle'    => array(AttributeType::String, 'required' => true),

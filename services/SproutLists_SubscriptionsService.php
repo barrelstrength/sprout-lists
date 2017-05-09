@@ -40,7 +40,8 @@ class SproutLists_SubscriptionsService extends BaseApplicationComponent
 
 					$relation->subscriberId = $subscriberId;
 					$relation->listId       = $list->id;
-					$relation->elementId    = $list->id;
+					// Default type
+					$relation->type         = "subscriber";
 
 					$result = $relation->save(false);
 

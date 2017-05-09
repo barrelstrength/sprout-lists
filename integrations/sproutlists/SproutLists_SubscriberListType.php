@@ -66,9 +66,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
-
-			// @todo - Remove.
-			$subscriptionRecord->elementId = $list->id;
+			$subscriptionRecord->type         = 'subscriber';
 
 			// Create a criteria between our List Element and Subscriber Element
 			if ($subscriptionRecord->save(false))
@@ -92,58 +90,59 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 				$transaction->rollback();
 			}
 
-			throw $e;
-
 			// Return false if not successful
 			return false;
 		}
 		// END TRANSACTION
 	}
 
-	public function unsubscribe($subscription)
+	public function unsubscribe($criteria)
 	{
-		// Prepare our data
+		$result = false;
 
-		$listCriteria = array(
-			'handle' => $subscription->list
-		);
-
-		// Get the List ID (if we only have the Element ID)
-		$list = sproutLists()->lists->getListByHandle($listCriteria);
-
-		$subscriberCriteria = array(
-			'userId' => $subscription->userId,
-			'email'  => $subscription->email
-		);
-
-		// Remove any null values from our array, so we only query for what we have
-		$subscriberCriteria = array_filter($subscriberCriteria, function ($var)
+		if (!is_int($criteria['list']))
 		{
-			return !is_null($var);
-		});
-
-		// Get the Subscriber ID (if we only have the User ID)
-		$subscriber = sproutLists()->subscribers->getSubscriber($subscriberCriteria);
-
-		$subscriptionCriteria = array(
-			'listId'       => $list->id,
-			'subscriberId' => $subscriber->id,
-
-			// @todo - Remove.
-			'elementId'    => $list->id
-		);
-
-		$subscription = SproutLists_SubscriptionsRecord::model()->findByAttributes($subscriptionCriteria);
-
-		// Remove the user from the subscription
-		if ($subscription != null)
+			$list = SproutLists_ListRecord::model()->findByAttributes(array('handle' => $criteria['list']));
+		}
+		else
 		{
-			$subscription->delete();
-
-			return true;
+			$list = SproutLists_ListRecord::model()->findById($criteria['list']);
 		}
 
-		return false;
+		if ($list)
+		{
+			$subscriber = new SproutLists_SubscriberRecord;
+
+			if (isset($criteria['userId']))
+			{
+				$subscriber = SproutLists_SubscriberRecord::model()->findByAttributes(array('userId' => $criteria['userId']));
+			}
+
+			if (isset($criteria['email']))
+			{
+				$subscriber = SproutLists_SubscriberRecord::model()->findByAttributes(array('email' => $criteria['email']));
+			}
+
+			if (isset($subscriber->id))
+			{
+				$subscriptionCriteria = array(
+					'listId'       => $list->id,
+					'subscriberId' => $subscriber->id
+				);
+
+				$subscription = SproutLists_SubscriptionsRecord::model()->findByAttributes($subscriptionCriteria);
+
+				// Remove the user from the subscription
+				if ($subscription != null)
+				{
+					$subscription->delete();
+
+					$result = true;
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	public function isSubscribed($criteria)
@@ -182,19 +181,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$query->andWhere(array('and', array('in', 'subscribers.email', $criteria['email'])));
 		}
 
-		if (isset($criteria['elementId']))
-		{
-			// Convert Element ID to array of potential List Element IDs
-			$listElementIds = $this->getListElementIdsFromElementId($criteria['elementId']);
-
-			$query->andWhere(array('and', array('in', 'subscriptions.listId', $listElementIds)));
-		}
-
-		if (isset($criteria['elementIds']))
-		{
-			$query->andWhere(array('and', array('in', 'subscriptions.elementId', $criteria['elementIds'])));
-		}
-
 		if (isset($criteria['order']))
 		{
 			$query->order($criteria['order']);
@@ -223,23 +209,5 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		return 0;
-	}
-
-	/**
-	 * Returns the ids of all List Elements that match a given Element ID
-	 *
-	 * @param $elementId
-	 *
-	 * @return array
-	 */
-	public function getListElementIdsFromElementId($elementId)
-	{
-		$results = craft()->db->createCommand()
-			->select('id')
-			->from('sproutlists_lists')
-			->where(array('and', 'elementId = :elementId'), array(':elementId' => $elementId))
-			->queryAll();
-
-		return array_values(ArrayHelper::flattenArray($results));
 	}
 }

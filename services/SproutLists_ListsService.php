@@ -53,7 +53,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 				// to avoid duplication
 				if ($listSubscribers != null)
 				{
-					return;
+					return false;
 				}
 
 				$record->type      = $subscriptionModel->type;
@@ -169,9 +169,18 @@ class SproutLists_ListsService extends BaseApplicationComponent
 			$list            = new SproutLists_ListModel();
 			$list->name      = $subscription->list;
 			$list->handle    = $subscription->list;
-			$list->type      = $subscription->type != null ? $subscription->type : 'subscriber';
+			$list->type      = $subscription->type;
+			$list->elementId = $subscription->elementId;
 
 			$this->saveList($list);
+		}
+		elseif ($subscription->elementId != null)
+		{
+			$model = SproutLists_ListModel::populateModel($list->getAttributes());
+
+			$model->elementId = $subscription->elementId;
+
+			$this->saveList($model);
 		}
 
 		return $list;
@@ -227,12 +236,12 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	 *
 	 * @param $type
 	 *
-	 * @return mixed
+	 * @return SproutListsBaseListType
 	 * @throws \Exception
 	 */
 	public function getListType($type)
 	{
-		$type = !is_null($type) ? $type : 'subscriber';
+		$type = !is_null($type) ? $type : SproutLists_SubscriberListType::NAME;
 		$type = ucwords($type);
 
 		$className = 'SproutLists_' . $type . 'ListType';

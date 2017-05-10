@@ -4,19 +4,26 @@ namespace Craft;
 
 class SproutLists_SubscriberListType extends SproutListsBaseListType
 {
+	const NAME = 'subscriber';
 	/**
 	 * @param $criteria
 	 *
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function subscribe($subscription)
+	public function subscribe($criteria)
 	{
-		// Prepare our data
+		$subscription = SproutLists_SubscriptionModel::populateModel($criteria);
 
+		// Prepare our data
 		$listCriteria = array(
 			'handle' => $subscription->list
 		);
+
+		if ($subscription->type == null)
+		{
+			$subscription->type = SproutLists_SubscriberListType::NAME;
+		}
 
 		$subscriberCriteria = array(
 			'userId' => $subscription->userId,
@@ -34,8 +41,15 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		try
 		{
-			// If our List doesn't exist, create a List Element on the fly
-			$list = sproutLists()->lists->getListByHandle($listCriteria, $subscription);
+			if (!is_int($criteria['list']))
+			{
+				// If our List doesn't exist, create a List Element on the fly
+				$list = sproutLists()->lists->getListByHandle($listCriteria, $subscription);
+			}
+			else
+			{
+				$list = SproutLists_ListRecord::model()->findById($criteria['list']);
+			}
 
 			// If it didn't work, rollback the transaction. Can't save a subscription without a List.
 			if (!$list->id)
@@ -66,7 +80,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
-			$subscriptionRecord->type         = 'subscriber';
+			$subscriptionRecord->type         = SproutLists_SubscriberListType::NAME;
 
 			// Create a criteria between our List Element and Subscriber Element
 			if ($subscriptionRecord->save(false))
@@ -130,12 +144,30 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 					'subscriberId' => $subscriber->id
 				);
 
-				$subscription = SproutLists_SubscriptionsRecord::model()->findByAttributes($subscriptionCriteria);
+				$subscriptions = SproutLists_SubscriptionsRecord::model()->deleteAllByAttributes($subscriptionCriteria);
 
 				// Remove the user from the subscription
-				if ($subscription != null)
+				if ($subscriptions != null)
 				{
-					$subscription->delete();
+					sproutLists()->subscribers->updateTotalSubscribersCount();
+
+					$result = true;
+				}
+			}
+
+			if (isset($criteria['elementId']))
+			{
+				$record = SproutLists_ListRecord::model()->findByAttributes(
+					array('id' => $list->id, 'elementId' => $criteria['elementId']));
+
+				// Update elementId to list id to remove relation or to un-subscribe
+				if ($record != null)
+				{
+					$model = SproutLists_ListModel::populateModel($record->getAttributes());
+
+					$model->elementId = $list->id;
+
+					sproutLists()->lists->saveList($model);
 
 					$result = true;
 				}
@@ -181,6 +213,11 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$query->andWhere(array('and', array('in', 'subscribers.email', $criteria['email'])));
 		}
 
+		if (isset($criteria['elementId']))
+		{
+			$query->andWhere(array('and', array('in', 'lists.elementId', $criteria['elementId'])));
+		}
+
 		if (isset($criteria['order']))
 		{
 			$query->order($criteria['order']);
@@ -209,5 +246,10 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		return 0;
+	}
+
+	public function getSubscriptionCount($criteria)
+	{
+		return $this->getSubscriberCount($criteria);
 	}
 }

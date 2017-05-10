@@ -82,10 +82,6 @@ class SproutListsPlugin extends BasePlugin
 	 */
 	public function registerSproutListsListTypes()
 	{
-		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
-		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
-		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
-
 		return array(
 			new SproutLists_SubscriberListType()
 		);
@@ -94,6 +90,10 @@ class SproutListsPlugin extends BasePlugin
 	public function init()
 	{
 		parent::init();
+
+		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
 
 		craft()->on('users.saveUser', function (Event $event) {
 			sproutLists()->subscribers->updateUserIdOnSave($event);
@@ -114,7 +114,7 @@ class SproutListsPlugin extends BasePlugin
 }
 
 /**
- * @return SproutListsService
+ * @return SproutLists_ListsService
  */
 function sproutLists()
 {

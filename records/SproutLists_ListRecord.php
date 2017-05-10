@@ -22,6 +22,7 @@ class SproutLists_ListRecord extends BaseRecord
 	{
 		return array(
 			'type'      => AttributeType::String,
+			'elementId' => AttributeType::Number,
 			'name'      => array(AttributeType::String, 'required' => true),
 			'handle'    => array(AttributeType::String, 'required' => true),
 			'total'     => AttributeType::Number

@@ -121,6 +121,11 @@ class SproutLists_ListsController extends BaseController
 		$criteria['userId']    = craft()->request->getPost('userId');
 		$criteria['email']     = craft()->request->getPost('email');
 
+		if (craft()->request->getPost('elementId') != null)
+		{
+			$criteria['elementId'] = craft()->request->getPost('elementId');
+		}
+
 		$type = craft()->request->getPost('type');
 
 		$listType = sproutLists()->lists->getListType($type);
@@ -131,9 +136,7 @@ class SproutLists_ListsController extends BaseController
 			return !is_null($var);
 		});
 
-		$subscriptionModel = SproutLists_SubscriptionModel::populateModel($criteria);
-
-		if ($listType->subscribe($subscriptionModel))
+		if ($listType->subscribe($criteria))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -178,6 +181,11 @@ class SproutLists_ListsController extends BaseController
 		$criteria['list']      = craft()->request->getRequiredPost('list');
 		$criteria['userId']    = craft()->request->getPost('userId');
 		$criteria['email']     = craft()->request->getPost('email');
+
+		if (craft()->request->getPost('elementId') != null)
+		{
+			$criteria['elementId'] = craft()->request->getPost('elementId');
+		}
 
 		$type = craft()->request->getPost('type');
 

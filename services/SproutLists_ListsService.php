@@ -241,7 +241,7 @@ class SproutLists_ListsService extends BaseApplicationComponent
 	 */
 	public function getListType($type)
 	{
-		$type = !is_null($type) ? $type : SproutLists_SubscriberListType::NAME;
+		$type = !is_null($type) ? $type : 'subscriber';
 		$type = ucwords($type);
 
 		$className = 'SproutLists_' . $type . 'ListType';

@@ -4,7 +4,6 @@ namespace Craft;
 
 class SproutLists_SubscriberListType extends SproutListsBaseListType
 {
-	const NAME = 'subscriber';
 	/**
 	 * @param $criteria
 	 *
@@ -22,7 +21,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		if ($subscription->type == null)
 		{
-			$subscription->type = SproutLists_SubscriberListType::NAME;
+			$subscription->type = 'subscriber';
 		}
 
 		$subscriberCriteria = array(
@@ -80,7 +79,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
-			$subscriptionRecord->type         = SproutLists_SubscriberListType::NAME;
+			$subscriptionRecord->type         = 'subscriber';
 
 			// Create a criteria between our List Element and Subscriber Element
 			if ($subscriptionRecord->save(false))

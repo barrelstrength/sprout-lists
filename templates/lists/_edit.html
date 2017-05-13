@@ -31,6 +31,8 @@
 
 			<input type="hidden" id="id" name="sproutlists[id]" value="{{ list.id is defined ? list.id : null }}">
 
+			<input type="hidden" name="sproutlists[type]" value="subscriber">
+
 			{{ forms.textField({
 				label: "List Name"|t,
 				instructions: "The name of your list that will be visible to users."|t,

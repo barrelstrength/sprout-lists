@@ -98,6 +98,10 @@ class SproutListsPlugin extends BasePlugin
 		craft()->on('users.saveUser', function (Event $event) {
 			sproutLists()->subscribers->updateUserIdOnSave($event);
 		});
+
+		craft()->on('users.onDeleteUser', function (Event $event) {
+			sproutLists()->subscribers->updateUserIdOnDelete($event);
+		});
 	}
 
 	/**

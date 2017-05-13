@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscribersService extends BaseApplicationComponent
@@ -190,7 +191,7 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		{
 			if (isset($attributes['userId']))
 			{
-				$subscriberModel->userId   = $attributes['userId'];
+				$subscriberModel->userId = $attributes['userId'];
 
 				$user = craft()->users->getUserById($attributes['userId']);
 
@@ -202,7 +203,7 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 
 			if (isset($attributes['email']))
 			{
-				$subscriberModel->email   = $attributes['email'];
+				$subscriberModel->email = $attributes['email'];
 			}
 
 			$this->saveSubscriber($subscriberModel);
@@ -274,6 +275,58 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		if ($record != null)
 		{
 			$record->userId = $event->params['user']->id;
+
+			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+			try
+			{
+				if ($record->save(false))
+				{
+					if ($transaction && $transaction->active)
+					{
+						$transaction->commit();
+					}
+
+					$result = true;
+				}
+			}
+			catch (\Exception $e)
+			{
+				if ($transaction && $transaction->active)
+				{
+					$transaction->rollback();
+				}
+
+				throw $e;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Remove any relationships between Sprout Lists Subscribers and Users who are deleted
+	 *
+	 * @param Event $event
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function updateUserIdOnDelete(Event $event)
+	{
+		$result = false;
+
+		$userId = $event->params['user']->id;
+		$email  = $event->params['user']->email;
+
+		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+			'userId' => $userId,
+			'email'  => $email
+		));
+
+		if ($record != null)
+		{
+			$record->userId = null;
 
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 

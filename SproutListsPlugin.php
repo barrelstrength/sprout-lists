@@ -97,13 +97,16 @@ class SproutListsPlugin extends BasePlugin
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
 
-		craft()->on('users.saveUser', function (Event $event) {
-			sproutLists()->subscribers->updateUserIdOnSave($event);
-		});
+		if ($this->getSettings()->enableUserSync)
+		{
+			craft()->on('users.saveUser', function (Event $event) {
+				sproutLists()->subscribers->updateUserIdOnSave($event);
+			});
 
-		craft()->on('users.onDeleteUser', function (Event $event) {
-			sproutLists()->subscribers->updateUserIdOnDelete($event);
-		});
+			craft()->on('users.onDeleteUser', function (Event $event) {
+				sproutLists()->subscribers->updateUserIdOnDelete($event);
+			});
+		}
 	}
 
 	/**

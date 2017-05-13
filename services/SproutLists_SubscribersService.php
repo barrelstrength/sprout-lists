@@ -12,6 +12,8 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 	 */
 	public function saveSubscriber(SproutLists_SubscriberModel $model)
 	{
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+
 		$record = new SproutLists_SubscriberRecord();
 
 		$result = false;
@@ -22,12 +24,15 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		}
 		elseif ($model->email)
 		{
-
-			$user = craft()->users->getUserByUsernameOrEmail($model->email);
-
-			if ($user != null)
+			// Sync updates with Craft User if User Sync enabled
+			if ($settings->enableUserSync)
 			{
-				$model->userId = $user->id;
+				$user = craft()->users->getUserByUsernameOrEmail($model->email);
+
+				if ($user != null)
+				{
+					$model->userId = $user->id;
+				}
 			}
 		}
 
@@ -53,6 +58,16 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 
 					if ($record->save(false))
 					{
+						// Sync updates with Craft User if User Sync enabled
+						if ($record->userId != null && $settings->enableUserSync)
+						{
+							$user = craft()->users->getUserById($record->userId);
+
+							$user->email = $record->email;
+
+							craft()->users->saveUser($user);
+						}
+
 						if ($transaction && $transaction->active)
 						{
 							$transaction->commit();

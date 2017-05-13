@@ -1,6 +1,11 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutListsPlugin
+ *
+ * @package Craft
+ */
 class SproutListsPlugin extends BasePlugin
 {
 	/**
@@ -135,7 +140,7 @@ class SproutListsPlugin extends BasePlugin
 }
 
 /**
- * @return SproutLists_ListsService
+ * @return SproutListsService
  */
 function sproutLists()
 {

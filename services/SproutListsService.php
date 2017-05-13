@@ -1,22 +1,19 @@
 <?php
-
 namespace Craft;
 
+/**
+ * Class SproutListsService
+ *
+ * @package Craft
+ * --
+ * @property SproutLists_ListsService         $lists
+ * @property SproutLists_SubscriptionsService $subscriptions
+ * @property SproutLists_SubscribersService   $subscribers
+ */
 class SproutListsService extends BaseApplicationComponent
 {
-	/**
-	 * @property SproutLists_ListsService $lists
-	 */
 	public $lists;
-
-	/**
-	 * @property SproutLists_SubscriptionsService $subscriptions
-	 */
 	public $subscriptions;
-
-	/**
-	 * @property SproutLists_SubscribersService $subscribers
-	 */
 	public $subscribers;
 
 	public function init()

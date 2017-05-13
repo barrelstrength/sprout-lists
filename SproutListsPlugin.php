@@ -51,6 +51,20 @@ class SproutListsPlugin extends BasePlugin
 		return true;
 	}
 
+	protected function defineSettings()
+	{
+		return array(
+			'enableUserSync' => array(AttributeType::Bool, 'default' => false)
+		);
+	}
+
+	public function getSettingsHtml()
+	{
+		return craft()->templates->render('sproutlists/_cp/settings', array(
+			'settings' => $this->getSettings()
+		));
+	}
+
 	/**
 	 * @return array
 	 */
@@ -72,18 +86,6 @@ class SproutListsPlugin extends BasePlugin
 			'sproutlists/subscribers/edit/(?P<id>[\d]+)' => array(
 				'action' => 'sproutLists/subscribers/editSubscriberTemplate'
 			),
-		);
-	}
-
-	/**
-	 * Register our default Sprout Lists List Types
-	 *
-	 * @return array
-	 */
-	public function registerSproutListsListTypes()
-	{
-		return array(
-			new SproutLists_SubscriberListType()
 		);
 	}
 
@@ -114,6 +116,18 @@ class SproutListsPlugin extends BasePlugin
 		Craft::import('plugins.sproutlists.twigextensions.SproutListsTwigExtension');
 
 		return new SproutListsTwigExtension();
+	}
+
+	/**
+	 * Register our default Sprout Lists List Types
+	 *
+	 * @return array
+	 */
+	public function registerSproutListsListTypes()
+	{
+		return array(
+			new SproutLists_SubscriberListType()
+		);
 	}
 }
 

@@ -265,16 +265,30 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 	{
 		$result = false;
 
-		$email = $event->params['user']->email;
+		$userId = $event->params['user']->id;
+		$email  = $event->params['user']->email;
 
+		// First try to find a user by the Craft User ID
 		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
-			'userId' => null,
-			'email'  => $email
+			'userId' => $userId
 		));
+
+		// If that doesn't work, try to find a user with a matching email address
+		if ($record == null)
+		{
+			$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+				'userId' => null,
+				'email'  => $email
+			));
+
+			// Assign the user ID to the subscriber with the matching email address
+			$record->userId = $event->params['user']->id;
+		}
 
 		if ($record != null)
 		{
-			$record->userId = $event->params['user']->id;
+			// If the user has updated their email, let's also update it for our Subscriber
+			$record->email = $event->params['user']->email;
 
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
@@ -317,11 +331,9 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		$result = false;
 
 		$userId = $event->params['user']->id;
-		$email  = $event->params['user']->email;
 
 		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 			'userId' => $userId,
-			'email'  => $email
 		));
 
 		if ($record != null)

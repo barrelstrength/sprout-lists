@@ -212,16 +212,18 @@ class SproutLists_ListsController extends BaseController
 		}
 		else
 		{
+			$errors = array(Craft::t('Unable to remove subscription.'));
+
 			if (craft()->request->isAjaxRequest())
 			{
 				$this->returnJson(array(
-					'success' => false
+					'errors' => $errors,
 				));
 			}
 			else
 			{
 				craft()->urlManager->setRouteVariables(array(
-					'success' => false
+					'errors' => $errors
 				));
 
 				$this->redirectToPostedUrl();

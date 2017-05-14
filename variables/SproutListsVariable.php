@@ -58,16 +58,12 @@ class SproutListsVariable
 	{
 		if (!isset($criteria['list']))
 		{
-			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
+			throw new Exception(Craft::t("Missing argument 'list' is required."));
 		}
 
 		$type     = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
 		$listType = sproutLists()->lists->getListType($type);
 
-		/**
-		 * @todo - not sure this is working. $criteria gets passed as $listIds to the next method and
-		 * has more than just the listIds above.
-		 */
 		return $listType->getSubscribers($criteria);
 	}
 

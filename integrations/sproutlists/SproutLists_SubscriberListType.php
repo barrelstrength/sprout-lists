@@ -454,24 +454,24 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return array
 	 */
-	public function getSubscribers($listIds)
+	public function getSubscribers($criteria)
 	{
-		$recipients = array();
+		$subscribers = array();
 
-		if (!empty($listIds))
+		if (empty($criteria))
 		{
-			foreach ($listIds as $listId)
-			{
-				$list = SproutLists_ListRecord::model()->findById($listId);
-
-				if ($list != null)
-				{
-					$recipients = array_merge($recipients, $list->subscribers);
-				}
-			}
+			return $subscribers;
 		}
 
-		return $recipients;
+		$listHandle = $criteria['list'];
+
+		$list = SproutLists_ListRecord::model()->findByAttributes(array(
+			'handle' => $listHandle
+		));
+
+		$subscribers = $list->subscribers;
+
+		return $subscribers;
 	}
 
 	public function getSubscriberById($id)

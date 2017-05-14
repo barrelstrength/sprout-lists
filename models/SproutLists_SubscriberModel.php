@@ -83,11 +83,8 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	 */
 	public function getListsBySubscriberId()
 	{
-		// @todo - add support for other List Types
-		$type     = 'subscriber';
-		$listType = sproutLists()->lists->getListType($type);
-
-		$lists = array();
+		$lists    = array();
+		$listType = sproutLists()->lists->getListType('subscriber');
 
 		$subscriptionsRecord = SproutLists_SubscriptionRecord::model();
 

@@ -220,12 +220,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			'handle' => $subscription->list
 		);
 
-		// @todo - define this as a fallback on the SproutLists_SubscriptionModel
-		if ($subscription->type == null)
-		{
-			$subscription->type = 'subscriber';
-		}
-
 		$subscriberCriteria = array(
 			'userId' => $subscription->userId,
 			'email'  => $subscription->email
@@ -282,7 +276,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
-			$subscriptionRecord->type         = 'subscriber';
 
 			// Create a criteria between our List Element and Subscriber Element
 			if ($subscriptionRecord->save(false))
@@ -599,7 +592,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$list            = new SproutLists_ListModel();
 			$list->name      = $subscription->list;
 			$list->handle    = $subscription->list;
-			$list->type      = $subscription->type;
+			$list->type      = 'subscriber';
 			$list->elementId = $subscription->elementId;
 
 			$this->saveList($list);
@@ -790,8 +783,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 					$relation->subscriberId = $subscriberId;
 					$relation->listId       = $list->id;
-					// Default type
-					$relation->type = "subscriber";
 
 					$result = $relation->save(false);
 

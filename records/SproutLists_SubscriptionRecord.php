@@ -18,8 +18,7 @@ class SproutLists_SubscriptionRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'subscriberId' => array(AttributeType::Number),
-			'type'         => array(AttributeType::String)
+			'subscriberId' => array(AttributeType::Number)
 		);
 	}
 

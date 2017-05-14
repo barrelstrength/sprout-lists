@@ -34,11 +34,11 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		if ($list->id)
 		{
-			$record = SproutLists_ListRecord::model()->findById($list->id);
+			$listRecord = SproutLists_ListRecord::model()->findById($list->id);
 		}
 		else
 		{
-			$record = new SproutLists_ListRecord();
+			$listRecord = new SproutLists_ListRecord();
 		}
 
 		$modelAttributes = $list->getAttributes();
@@ -47,21 +47,27 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			foreach ($modelAttributes as $handle => $value)
 			{
-				$record->setAttribute($handle, $value);
+				$listRecord->setAttribute($handle, $value);
 			}
 		}
 
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-		if ($record->validate())
+		if ($listRecord->validate())
 		{
 			try
 			{
 				if (craft()->elements->saveElement($list))
 				{
-					$record->id = $list->id;
+					$listRecord->id        = $list->id;
+					$listRecord->elementId = $list->id;
 
-					if ($record->save(false))
+					if ($list->totalSubscribers == null)
+					{
+						$listRecord->totalSubscribers = 0;
+					}
+
+					if ($listRecord->save(false))
 					{
 						if ($transaction && $transaction->active)
 						{
@@ -84,7 +90,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 		else
 		{
-			$list->addErrors($record->getErrors());
+			$list->addErrors($listRecord->getErrors());
 		}
 
 		return false;
@@ -840,7 +846,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		$count = count($list->subscribers);
 
-		$list->total = $count;
+		$list->totalSubscribers = $count;
 
 		$result = $list->save();
 

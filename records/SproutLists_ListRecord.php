@@ -18,11 +18,11 @@ class SproutLists_ListRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'elementId' => array(AttributeType::Number),
-			'type'      => array(AttributeType::String),
-			'name'      => array(AttributeType::String, 'required' => true),
-			'handle'    => array(AttributeType::String, 'required' => true),
-			'total'     => array(AttributeType::Number)
+			'elementId'        => array(AttributeType::Number),
+			'type'             => array(AttributeType::String),
+			'name'             => array(AttributeType::String, 'required' => true),
+			'handle'           => array(AttributeType::String, 'required' => true),
+			'totalSubscribers' => array(AttributeType::Number)
 		);
 	}
 

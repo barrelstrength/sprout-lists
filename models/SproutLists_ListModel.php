@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_ListModel extends BaseElementModel
@@ -24,12 +25,12 @@ class SproutLists_ListModel extends BaseElementModel
 		$defaults = parent::defineAttributes();
 
 		$attributes = array(
-			'id'        => array(AttributeType::Number),
-			'elementId' => array(AttributeType::Number),
-			'type'      => array(AttributeType::String),
-			'name'      => array(AttributeType::String, 'required' => true),
-			'handle'    => array(AttributeType::String, 'required' => true),
-			'total'     => array(AttributeType::Number),
+			'id'               => array(AttributeType::Number),
+			'elementId'        => array(AttributeType::Number),
+			'type'             => array(AttributeType::String),
+			'name'             => array(AttributeType::String, 'required' => true),
+			'handle'           => array(AttributeType::String, 'required' => true),
+			'totalSubscribers' => array(AttributeType::Number),
 		);
 
 		return array_merge($defaults, $attributes);

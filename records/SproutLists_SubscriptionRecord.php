@@ -28,7 +28,7 @@ class SproutLists_SubscriptionRecord extends BaseRecord
 	public function defineRelations()
 	{
 		return array(
-			'list' => array(
+			'list'       => array(
 				static::BELONGS_TO,
 				'SproutLists_ListRecord',
 				'listId',

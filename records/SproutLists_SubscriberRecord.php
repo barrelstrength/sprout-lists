@@ -22,8 +22,7 @@ class SproutLists_SubscriberRecord extends BaseRecord
 			'email'       => array(AttributeType::Email, 'required' => true, 'unique' => true),
 			'firstName'   => array(AttributeType::String),
 			'lastName'    => array(AttributeType::String),
-			'type'        => array(AttributeType::String),
-			'dateCreated' => array(AttributeType::DateTime),
+			'dateCreated' => array(AttributeType::DateTime)
 		);
 	}
 

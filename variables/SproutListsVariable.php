@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutListsVariable
@@ -60,26 +61,14 @@ class SproutListsVariable
 			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
 		}
 
-		$type = SproutLists_SubscriberListType::Type;
-
-		if (isset($criteria['type']))
-		{
-			$type = $criteria['type'];
-		}
-
+		$type     = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
 		$listType = sproutLists()->lists->getListType($type);
 
+		/**
+		 * @todo - not sure this is working. $criteria gets passed as $listIds to the next method and
+		 * has more than just the listIds above.
+		 */
 		return $listType->getSubscribers($criteria);
-	}
-
-	/**
-	 * Return all lists
-	 *
-	 * @return array
-	 */
-	public function getLists()
-	{
-		return sproutLists()->lists->getLists();
 	}
 
 	// Counts
@@ -95,7 +84,8 @@ class SproutListsVariable
 	 */
 	public function getSubscriberCount($criteria)
 	{
-		$type     = isset($criteria['type']) ? $criteria['type'] : null;
+		$type = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+
 		$listType = sproutLists()->lists->getListType($type);
 
 		return $listType->getSubscriberCount($criteria);

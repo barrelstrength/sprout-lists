@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_ListsController extends BaseController
@@ -7,12 +8,18 @@ class SproutLists_ListsController extends BaseController
 	 * Prepare variables for the List Edit Template
 	 *
 	 * @param array $variables
+	 *
+	 * @return null
 	 */
 	public function actionEditListTemplate(array $variables = array())
 	{
-		$list   = new SproutLists_ListModel;
-		$listId = null;
+		$list               = new SproutLists_ListModel;
+		$listId             = null;
 		$continueEditingUrl = null;
+
+		// @todo - add support for other List Types
+		$type     = 'subscriber';
+		$listType = sproutLists()->lists->getListType($type);
 
 		if (isset($variables['list']))
 		{
@@ -22,7 +29,7 @@ class SproutLists_ListsController extends BaseController
 		{
 			$listId = $variables['listId'];
 
-			$list = sproutLists()->lists->getListById($listId);
+			$list = $listType->getListById($listId);
 
 			$continueEditingUrl = 'sproutlists/lists/edit/' . $listId;
 		}
@@ -35,24 +42,31 @@ class SproutLists_ListsController extends BaseController
 	}
 
 	/**
-	 * Saves a List
+	 * Saves a list
+	 *
+	 * @return null
 	 */
 	public function actionSaveList()
 	{
 		$this->requirePostRequest();
 
-		$list = craft()->request->getPost('sproutlists');
+		$post   = craft()->request->getPost('sproutlists');
+		$listId = isset($post['id']) ? $post['id'] : null;
 
-		$model = new SproutLists_ListModel();
+		// @todo - add support for other List Types
+		$type     = 'subscriber';
+		$listType = sproutLists()->lists->getListType($type);
 
-		if (!empty($list['id']))
+		$list = new SproutLists_ListModel();
+
+		if ($listId)
 		{
-			$model = sproutLists()->lists->getListById($list['id']);
+			$list = $listType->getListById($listId);
 		}
 
-		$model->setAttributes($list);
+		$list->setAttributes($post);
 
-		if (sproutLists()->lists->saveList($model))
+		if ($listType->saveList($list))
 		{
 			craft()->userSession->setNotice(Craft::t('List saved.'));
 
@@ -63,13 +77,15 @@ class SproutLists_ListsController extends BaseController
 			craft()->userSession->setError(Craft::t('Unable to save list.'));
 
 			craft()->urlManager->setRouteVariables(array(
-				'list' => $model
+				'list' => $list
 			));
 		}
 	}
 
 	/**
-	 * Deletes a List
+	 * Deletes a list.
+	 *
+	 * @return null
 	 */
 	public function actionDeleteList()
 	{
@@ -102,7 +118,7 @@ class SproutLists_ListsController extends BaseController
 			}
 			else
 			{
-				craft()->userSession->setError(Craft::t("Couldn't delete List."));
+				craft()->userSession->setError(Craft::t('Unable to delete list.'));
 
 				$this->redirectToPostedUrl();
 			}
@@ -110,23 +126,23 @@ class SproutLists_ListsController extends BaseController
 	}
 
 	/**
-	 *  Adds a Subscriber to a List
+	 *  Adds a subscriber to a list
 	 *
 	 * @return boolean true/false if successful
 	 * @return array   array of errors if fail
 	 */
 	public function actionSubscribe()
 	{
-		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['userId']    = craft()->request->getPost('userId');
-		$criteria['email']     = craft()->request->getPost('email');
+		$criteria['list']   = craft()->request->getRequiredPost('list');
+		$criteria['userId'] = craft()->request->getPost('userId');
+		$criteria['email']  = craft()->request->getPost('email');
 
 		if (craft()->request->getPost('elementId') != null)
 		{
 			$criteria['elementId'] = craft()->request->getPost('elementId');
 		}
 
-		$type = craft()->request->getPost('type');
+		$type = craft()->request->getPost('type', 'subscriber');
 
 		$listType = sproutLists()->lists->getListType($type);
 
@@ -151,7 +167,7 @@ class SproutLists_ListsController extends BaseController
 		}
 		else
 		{
-			$errors = array(Craft::t('Subscription did not save.'));
+			$errors = array(Craft::t('Unable to save subscription.'));
 
 			if (craft()->request->isAjaxRequest())
 			{
@@ -171,23 +187,23 @@ class SproutLists_ListsController extends BaseController
 	}
 
 	/**
-	 * Remove a Subscriber from a List
+	 * Removes a subscriber from a list
 	 *
 	 * @return boolean true/false if successful
 	 * @return array   array of errors if fail
 	 */
 	public function actionUnsubscribe()
 	{
-		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['userId']    = craft()->request->getPost('userId');
-		$criteria['email']     = craft()->request->getPost('email');
+		$criteria['list']   = craft()->request->getRequiredPost('list');
+		$criteria['userId'] = craft()->request->getPost('userId');
+		$criteria['email']  = craft()->request->getPost('email');
 
 		if (craft()->request->getPost('elementId') != null)
 		{
 			$criteria['elementId'] = craft()->request->getPost('elementId');
 		}
 
-		$type = craft()->request->getPost('type');
+		$type = craft()->request->getPost('type', 'subscriber');
 
 		$listType = sproutLists()->lists->getListType($type);
 

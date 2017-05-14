@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscriberElementType extends BaseElementType
@@ -48,7 +49,10 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->lists->getListsWithSubscribers();
+		// @todo - add support for multiple List Types
+		$listType = sproutLists()->lists->getListType('subscriber');
+
+		$lists = $listType->getListsWithSubscribers();
 
 		if (!empty($lists))
 		{

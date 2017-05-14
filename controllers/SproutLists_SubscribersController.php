@@ -8,83 +8,101 @@ class SproutLists_SubscribersController extends BaseController
 	 * Prepare variables for Subscriber Edit Template
 	 *
 	 * @param array $variables
+	 *
+	 * @return null
 	 */
 	public function actionEditSubscriberTemplate(array $variables = array())
 	{
-		$element = new SproutLists_SubscriberModel();
+		// @todo - add support for other List Types
+		$type        = 'subscriber';
+		$listType    = sproutLists()->lists->getListType($type);
+		$listTypes[] = $listType;
 
-		if (isset($variables['element']))
+		$subscriber = new SproutLists_SubscriberModel();
+
+		if (isset($variables['subscriber']))
 		{
-			$element = $variables['element'];
+			$subscriber = $variables['subscriber'];
 		}
 		elseif (isset($variables['id']))
 		{
-			$element = sproutLists()->subscribers->getSubscriberById($variables['id']);
+			$subscriber = $listType->getSubscriberById($variables['id']);
 		}
 
 		$this->renderTemplate('sproutlists/subscribers/_edit', array(
-			'element' => $element
+			'subscriber' => $subscriber,
+			'listTypes'  => $listTypes
 		));
 	}
 
 	/**
-	 * Saves a Subscriber
+	 * Saves a subscriber
+	 *
+	 * @return null
 	 */
 	public function actionSaveSubscriber()
 	{
 		$this->requirePostRequest();
 
-		$post = craft()->request->getRequiredPost('sproutlists');
+		$post         = craft()->request->getRequiredPost('sproutlists');
+		$subscriberId = isset($post['id']) ? $post['id'] : null;
 
-		$model = new SproutLists_SubscriberModel();
+		// @todo - add support for other List Types
+		$type        = 'subscriber';
+		$listType    = sproutLists()->lists->getListType($type);
 
-		if (isset($post['id']) && $post['id'])
+		$subscriber = new SproutLists_SubscriberModel();
+
+		if ($subscriberId)
 		{
-			$model = sproutLists()->subscribers->getSubscriberById($post['id']);
+			$subscriber = $listType->getSubscriberById($subscriberId);
 		}
 
-		$model->setAttributes($post);
+		$subscriber->setAttributes($post);
 
-		if (sproutLists()->subscribers->saveSubscriber($model))
+		if ($listType->saveSubscriber($subscriber))
 		{
-			$result = sproutLists()->subscriptions->saveSubscriptions($model);
+			craft()->userSession->setNotice(Craft::t('Subscriber saved.'));
 
-			if ($result !== false)
-			{
-				craft()->userSession->setNotice(Craft::t('Subscriber saved.'));
-			}
-
-			$this->redirectToPostedUrl($model);
+			$this->redirectToPostedUrl($subscriber);
 		}
 		else
 		{
 			craft()->userSession->setError(Craft::t('Unable to save subscriber.'));
 
 			craft()->urlManager->setRouteVariables(array(
-				'element' => $model
+				'subscriber' => $subscriber
 			));
 		}
 	}
 
 	/**
-	 * Deletes a Subscriber
+	 * Deletes a subscriber
+	 *
+	 * @return null
 	 */
 	public function actionDeleteSubscriber()
 	{
 		$this->requirePostRequest();
 
-		$id = craft()->request->getRequiredPost('sproutlists.id');
+		$subscriberId = craft()->request->getRequiredPost('sproutlists.id');
 
-		if ($model = sproutLists()->subscribers->deleteSubscriberById($id))
+		// @todo - add support for other List Types
+		$type        = 'subscriber';
+		$listType    = sproutLists()->lists->getListType($type);
+
+		if ($subscriber = $listType->deleteSubscriberById($subscriberId))
 		{
-			$this->redirectToPostedUrl($model);
+			craft()->userSession->setNotice(Craft::t('Subscriber deleted.'));
+
+			$this->redirectToPostedUrl($subscriber);
 		}
 		else
 		{
 			craft()->userSession->setError(Craft::t('Unable to delete subscriber.'));
 
 			craft()->urlManager->setRouteVariables(array(
-				'element' => $model
+				'subscriber' => $subscriber
 			));
 		}
 	}

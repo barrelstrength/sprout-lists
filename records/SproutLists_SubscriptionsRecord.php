@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscriptionsRecord extends BaseRecord
@@ -17,15 +18,18 @@ class SproutLists_SubscriptionsRecord extends BaseRecord
 	public function defineAttributes()
 	{
 		return array(
-			'subscriberId' => AttributeType::Number,
-			'type' => AttributeType::String
+			'subscriberId' => array(AttributeType::Number),
+			'type'         => array(AttributeType::String)
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineRelations()
 	{
 		return array(
-			'list'    => array(
+			'list' => array(
 				static::BELONGS_TO,
 				'SproutLists_ListRecord',
 				'listId',
@@ -35,6 +39,9 @@ class SproutLists_SubscriptionsRecord extends BaseRecord
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineIndexes()
 	{
 		return array(

@@ -5,15 +5,17 @@
 	{ label: "Subscribers"|t, url: url('sproutlists/subscribers') }
 ] %}
 
-{% set title = element.id is not null ? 'Edit Subscriber'|t : 'New Subscriber'|t %}
+{% set title = subscriber.id is not null ? 'Edit Subscriber'|t : 'New Subscriber'|t %}
 
 {% set selectedTab    = 'lists' %}
 
-{% if element is null %}
+{% if subscriber is null %}
 	{% exit 404 %}
 {% endif %}
 
 {% set fullPageForm = true %}
+
+{% set saveShortcutRedirect = 'sproutlists/subscribers/edit/' ~ subscriber.id %}
 
 {% block saveButton %}
 	<div class="buttons">
@@ -40,8 +42,8 @@
 		<input type="hidden" id="action" name="action" value="sproutLists/subscribers/saveSubscriber">
 		<input type="hidden" id="redirect" name="redirect" value="sproutlists/subscribers/">
 
-		{% if element.id is not null %}
-			<input type="hidden" id="id" name="sproutlists[id]" value="{{ element.id }}">
+		{% if subscriber.id is not null %}
+			<input type="hidden" id="id" name="sproutlists[id]" value="{{ subscriber.id }}">
 		{% endif %}
 
 		<section id="default-fields">
@@ -52,24 +54,24 @@
 				id: 'email',
 				required: true,
 				autofocus: true,
-				value: element is defined ? element.email : null,
-				errors: element is defined and element.hasErrors('email') ? element.getErrors('email') : null
+				value: subscriber is defined ? subscriber.email : null,
+				errors: subscriber is defined and subscriber.hasErrors('email') ? subscriber.getErrors('email') : null
 			}) }}
 
 			{{ forms.textField({
 				label: "First Name"|t,
 				name: 'sproutlists[firstName]',
 				id: 'firstName',
-				value: element is defined ? element.firstName : null,
-				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
+				value: subscriber is defined ? subscriber.firstName : null,
+				errors: subscriber is defined and subscriber.hasErrors('firstName') ? subscriber.getErrors('firstName') : null
 			}) }}
 
 			{{ forms.textField({
 				label: "Last Name"|t,
 				name: 'sproutlists[lastName]',
 				id: 'lastName',
-				value: element is defined ? element.lastName : null,
-				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
+				value: subscriber is defined ? subscriber.lastName : null,
+				errors: subscriber is defined and subscriber.hasErrors('lastName') ? subscriber.getErrors('lastName') : null
 			}) }}
 
 		</section>
@@ -86,9 +88,11 @@
 				</div>
 				<div class="input">
 
-				{% if craft.sproutLists.getLists()|length %}
+				{% if listTypes|length %}
 
-					{{ element.getSubscriberListsHtml() }}
+					{% for listType in listTypes %}
+						{{ listType.getSubscriberListsHtml(subscriber.id) }}
+					{% endfor %}
 
 				{% else %}
 
@@ -104,7 +108,7 @@
 			<div class="field">
 				<div class="heading">&nbsp;</div>
 				<div class="input">
-				{% if element.id is not null %}
+				{% if subscriber.id is not null %}
 					{% set statusInput %}
 						<div class="right">
 							<input

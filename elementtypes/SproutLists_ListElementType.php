@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_ListElementType extends BaseElementType
@@ -121,7 +122,7 @@ class SproutLists_ListElementType extends BaseElementType
 
 				if ($element->id && $count > 0)
 				{
-					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "' class='go'>" . Craft::t('View Subscribers') .	"</a>";
+					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "' class='go'>" . Craft::t('View Subscribers') . "</a>";
 				}
 
 				break;
@@ -132,7 +133,6 @@ class SproutLists_ListElementType extends BaseElementType
 				break;
 		}
 	}
-
 
 	/**
 	 * @param null $source

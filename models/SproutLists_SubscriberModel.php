@@ -1,32 +1,25 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscriberModel extends BaseElementModel
 {
+	/**
+	 * @var string
+	 */
 	protected $elementType = 'SproutLists_Subscriber';
 
-	protected $subscriberListsIds;
+	/**
+	 * @var array
+	 */
+	protected $subscriberListsIds = array();
 
 	/**
 	 * @return string
 	 */
 	public function __toString()
 	{
-		$email = '';
-
-		if ($this->email != null)
-		{
-			$email = $this->email;
-		}
-
-		if ($this->userId != null)
-		{
-			$user = craft()->users->getUserById($this->userId);
-
-			$email = $user->email;
-		}
-
-		return $email;
+		return $this->email;
 	}
 
 	/**
@@ -37,17 +30,16 @@ class SproutLists_SubscriberModel extends BaseElementModel
 		$defaults = parent::defineAttributes();
 
 		$attributes = array(
-			'id'              => AttributeType::Number,
-			'email'           => array(AttributeType::Email),
+			'id'              => array(AttributeType::Number),
+			'email'           => array(AttributeType::Email, 'required' => true),
 			'userId'          => array(AttributeType::Number),
-			'firstName'       => AttributeType::String,
-			'lastName'        => AttributeType::String,
+			'firstName'       => array(AttributeType::String),
+			'lastName'        => array(AttributeType::String),
 			'subscriberLists' => array(AttributeType::Mixed),
-			'details'         => AttributeType::String,
-			'dateCreated'     => AttributeType::DateTime,
+			'dateCreated'     => array(AttributeType::DateTime),
 
 			// List Name
-			'name'            => AttributeType::String
+			'name'            => array(AttributeType::String)
 		);
 
 		return array_merge($defaults, $attributes);
@@ -62,15 +54,15 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	}
 
 	/**
+	 * Gets list IDs of all the lists to which this subscriber is subscribed.
+	 *
 	 * @return array
 	 */
-	public function getSubscriberListIds()
+	public function getListIds()
 	{
-		if (is_null($this->subscriberListsIds))
+		if (empty($this->subscriberListsIds))
 		{
-			$this->subscriberListsIds = array();
-
-			$subscriberLists = $this->getSubscriberLists();
+			$subscriberLists = $this->getListsBySubscriberId();
 
 			if (count($subscriberLists))
 			{
@@ -85,36 +77,32 @@ class SproutLists_SubscriberModel extends BaseElementModel
 	}
 
 	/**
-	 * @todo - Improve clarity of method names. Not clear.
+	 * Gets an array of SproutLists_ListModels to which this subscriber is subscribed.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	public function getSubscriberLists()
+	public function getListsBySubscriberId()
 	{
-		return sproutLists()->lists->getListsBySubscriberId($this->id);
-	}
+		// @todo - add support for other List Types
+		$type     = 'subscriber';
+		$listType = sproutLists()->lists->getListType($type);
 
-	/**
-	 * @return mixed
-	 */
-	public function getSubscriberListsHtml()
-	{
-		$id = isset($this->id) ? $this->id : null;
+		$lists = array();
 
-		$element = new SproutLists_SubscriberModel;
+		$subscriptionsRecord = SproutLists_SubscriptionsRecord::model();
 
-		if ($id != null)
+		$subscriptions = $subscriptionsRecord->findAllByAttributes(array(
+			'subscriberId' => $this->id
+		));
+
+		if (count($subscriptions))
 		{
-			$element = sproutLists()->subscribers->getSubscriberById($id);
+			foreach ($subscriptions as $subscription)
+			{
+				$lists[] = $listType->getListById($subscription->listId);
+			}
 		}
 
-		$values = array();
-
-		if (count($element->getSubscriberListIds()))
-		{
-			$values = $element->getSubscriberListIds();
-		}
-
-		return sproutLists()->lists->getSubscriberListsHtml($values);
+		return $lists;
 	}
 }

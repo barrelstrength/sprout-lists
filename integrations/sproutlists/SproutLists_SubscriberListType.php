@@ -813,43 +813,40 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		return $records;
 	}
 
+	/**
+	 * Updates the totalSubscribers column in the db
+	 *
+	 * @param null $listId
+	 *
+	 * @return bool
+	 */
 	public function updateTotalSubscribersCount($listId = null)
 	{
-		$result = false;
-
 		if ($listId == null)
 		{
 			$lists = SproutLists_ListRecord::model()->with('subscribers')->findAll();
-
-			if ($lists)
-			{
-				foreach ($lists as $list)
-				{
-					$result = $this->saveTotalSubscribersCount($list);
-				}
-			}
 		}
 		else
 		{
 			$list = SproutLists_ListRecord::model()->with('subscribers')->findById($listId);
 
-			if ($list != null)
-			{
-				$result = $this->saveTotalSubscribersCount($list);
-			}
+			$lists = array($list);
 		}
 
-		return $result;
-	}
+		if (count($lists))
+		{
+			foreach ($lists as $list)
+			{
+				$count = count($list->subscribers);
 
-	private function saveTotalSubscribersCount($list)
-	{
-		$count = count($list->subscribers);
+				$list->totalSubscribers = $count;
 
-		$list->totalSubscribers = $count;
+				$list->save();
+			}
 
-		$result = $list->save();
+			return true;
+		}
 
-		return $result;
+		return false;
 	}
 }

@@ -748,31 +748,26 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 	/**
 	 * @todo - clarify that this takes a SproutLists_SubscriberModel with an array of listIds as an attribute
-	 * @todo - what is $sync and why do we need it?
 	 *
 	 * @param SproutLists_SubscriberModel $subscriber
-	 * @param bool                        $sync
 	 *
 	 * @return array
 	 * @throws Exception
 	 */
-	public function saveSubscriptions(SproutLists_SubscriberModel $subscriber, $sync = true)
+	public function saveSubscriptions(SproutLists_SubscriberModel $subscriber)
 	{
 		$subscriberId      = $subscriber->id;
 		$subscriberListIds = $subscriber->subscriberLists;
 
-		if ($sync === true)
+		try
 		{
-			try
-			{
-				SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
-					':subscriberId' => $subscriberId
-				));
-			}
-			catch (Exception $e)
-			{
-				SproutListsPlugin::log($e->getMessage(), LogLevel::Error);
-			}
+			SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
+				':subscriberId' => $subscriberId
+			));
+		}
+		catch (Exception $e)
+		{
+			SproutListsPlugin::log($e->getMessage(), LogLevel::Error);
 		}
 
 		$records = array();

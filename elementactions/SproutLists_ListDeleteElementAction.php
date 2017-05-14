@@ -17,7 +17,7 @@ class SproutLists_ListDeleteElementAction extends DeleteElementAction
 
 		foreach ($criteria->ids() as $id)
 		{
-			SproutLists_SubscriptionsRecord::model()->deleteAll('listId = :listId', array(
+			SproutLists_SubscriptionRecord::model()->deleteAll('listId = :listId', array(
 				':listId' => $id
 			));
 		}

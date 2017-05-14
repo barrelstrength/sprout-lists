@@ -2,7 +2,7 @@
 
 namespace Craft;
 
-class SproutLists_SubscriptionsRecord extends BaseRecord
+class SproutLists_SubscriptionRecord extends BaseRecord
 {
 	/**
 	 * @return string

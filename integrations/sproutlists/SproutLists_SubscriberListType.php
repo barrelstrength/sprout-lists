@@ -108,13 +108,13 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		if ($listRecord->delete())
 		{
-			$subscriptions = SproutLists_SubscriptionsRecord::model()->findByAttributes(array(
+			$subscriptions = SproutLists_SubscriptionRecord::model()->findByAttributes(array(
 				'listId' => $listId
 			));
 
 			if ($subscriptions != null)
 			{
-				SproutLists_SubscriptionsRecord::model()->deleteAll('listId = :listId', array(
+				SproutLists_SubscriptionRecord::model()->deleteAll('listId = :listId', array(
 					':listId' => $listId
 				));
 			}
@@ -278,7 +278,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 				return false;
 			}
 
-			$subscriptionRecord = new SproutLists_SubscriptionsRecord();
+			$subscriptionRecord = new SproutLists_SubscriptionRecord();
 
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
@@ -364,7 +364,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		// Delete the subscription that matches the List and Subscriber IDs
-		$subscriptions = SproutLists_SubscriptionsRecord::model()->deleteAllByAttributes(array(
+		$subscriptions = SproutLists_SubscriptionRecord::model()->deleteAllByAttributes(array(
 			'listId'       => $list->id,
 			'subscriberId' => $subscriberRecord->id
 		));
@@ -497,7 +497,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			if (craft()->elements->deleteElementById($model->id))
 			{
-				SproutLists_SubscriptionsRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $model->id));
+				SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $model->id));
 			}
 		}
 
@@ -766,7 +766,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			try
 			{
-				SproutLists_SubscriptionsRecord::model()->deleteAll('subscriberId = :subscriberId', array(
+				SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
 					':subscriberId' => $subscriberId
 				));
 			}
@@ -786,7 +786,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 				if ($list)
 				{
-					$relation = new SproutLists_SubscriptionsRecord();
+					$relation = new SproutLists_SubscriptionRecord();
 
 					$relation->subscriberId = $subscriberId;
 					$relation->listId       = $list->id;

@@ -89,7 +89,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 		$lists = array();
 
-		$subscriptionsRecord = SproutLists_SubscriptionsRecord::model();
+		$subscriptionsRecord = SproutLists_SubscriptionRecord::model();
 
 		$subscriptions = $subscriptionsRecord->findAllByAttributes(array(
 			'subscriberId' => $this->id

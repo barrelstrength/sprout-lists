@@ -2,6 +2,15 @@
 
 namespace Craft;
 
+/**
+ * Class SproutLists_SubscriptionRecord
+ *
+ * @package Craft
+ * --
+ * @property int    $id
+ * @property int    $listId
+ * @property int    $subscriberId
+ */
 class SproutLists_SubscriptionRecord extends BaseRecord
 {
 	/**

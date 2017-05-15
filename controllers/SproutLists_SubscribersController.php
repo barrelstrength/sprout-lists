@@ -13,9 +13,7 @@ class SproutLists_SubscribersController extends BaseController
 	 */
 	public function actionEditSubscriberTemplate(array $variables = array())
 	{
-		// @todo - add support for other List Types
-		$type        = 'subscriber';
-		$listType    = sproutLists()->lists->getListType($type);
+		$listType    = sproutLists()->lists->getListType('subscriber');
 		$listTypes[] = $listType;
 
 		$subscriber = new SproutLists_SubscriberModel();
@@ -44,21 +42,16 @@ class SproutLists_SubscribersController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$post         = craft()->request->getRequiredPost('sproutlists');
-		$subscriberId = isset($post['id']) ? $post['id'] : null;
+		$subscriber                  = new SproutLists_SubscriberModel();
+		$subscriber->id              = craft()->request->getPost('subscriberId');
+		$subscriber->email           = craft()->request->getRequiredPost('email');
+		$subscriber->firstName       = craft()->request->getPost('firstName');
+		$subscriber->lastName        = craft()->request->getPost('lastName');
+		$subscriber->subscriberLists = craft()->request->getPost('sproutlists.subscriberLists');
 
-		// @todo - add support for other List Types
-		$type        = 'subscriber';
-		$listType    = sproutLists()->lists->getListType($type);
+		$type = craft()->request->getRequiredPost('type');
 
-		$subscriber = new SproutLists_SubscriberModel();
-
-		if ($subscriberId)
-		{
-			$subscriber = $listType->getSubscriberById($subscriberId);
-		}
-
-		$subscriber->setAttributes($post);
+		$listType = sproutLists()->lists->getListType($type);
 
 		if ($listType->saveSubscriber($subscriber))
 		{
@@ -85,11 +78,9 @@ class SproutLists_SubscribersController extends BaseController
 	{
 		$this->requirePostRequest();
 
-		$subscriberId = craft()->request->getRequiredPost('sproutlists.id');
+		$subscriberId = craft()->request->getRequiredPost('subscriberId');
 
-		// @todo - add support for other List Types
-		$type        = 'subscriber';
-		$listType    = sproutLists()->lists->getListType($type);
+		$listType = craft()->request->getRequiredPost('type');
 
 		if ($subscriber = $listType->deleteSubscriberById($subscriberId))
 		{

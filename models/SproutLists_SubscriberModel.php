@@ -2,6 +2,18 @@
 
 namespace Craft;
 
+/**
+ * Class SproutLists_SubscriberModel
+ *
+ * @package Craft
+ * --
+ * @property int $id
+ * @property string $email
+ * @property int $userId
+ * @property string $firstName
+ * @property string $lastName
+ * @property mixed $subscriberLists
+ */
 class SproutLists_SubscriberModel extends BaseElementModel
 {
 	/**
@@ -36,10 +48,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 			'firstName'       => array(AttributeType::String),
 			'lastName'        => array(AttributeType::String),
 			'subscriberLists' => array(AttributeType::Mixed),
-			'dateCreated'     => array(AttributeType::DateTime),
-
-			// List Name
-			'name'            => array(AttributeType::String)
+			'dateCreated'     => array(AttributeType::DateTime)
 		);
 
 		return array_merge($defaults, $attributes);

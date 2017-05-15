@@ -43,14 +43,16 @@
 		<input type="hidden" id="redirect" name="redirect" value="sproutlists/subscribers/">
 
 		{% if subscriber.id is not null %}
-			<input type="hidden" id="id" name="sproutlists[id]" value="{{ subscriber.id }}">
+			<input type="hidden" name="subscriberId" value="{{ subscriber.id }}">
 		{% endif %}
+
+		<input type="hidden" name="type" value="subscriber">
 
 		<section id="default-fields">
 
 			{{ forms.textField({
 				label: "Email"|t,
-				name: 'sproutlists[email]',
+				name: 'email',
 				id: 'email',
 				required: true,
 				autofocus: true,
@@ -60,7 +62,7 @@
 
 			{{ forms.textField({
 				label: "First Name"|t,
-				name: 'sproutlists[firstName]',
+				name: 'firstName',
 				id: 'firstName',
 				value: subscriber is defined ? subscriber.firstName : null,
 				errors: subscriber is defined and subscriber.hasErrors('firstName') ? subscriber.getErrors('firstName') : null
@@ -68,7 +70,7 @@
 
 			{{ forms.textField({
 				label: "Last Name"|t,
-				name: 'sproutlists[lastName]',
+				name: 'lastName',
 				id: 'lastName',
 				value: subscriber is defined ? subscriber.lastName : null,
 				errors: subscriber is defined and subscriber.hasErrors('lastName') ? subscriber.getErrors('lastName') : null

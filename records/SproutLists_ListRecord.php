@@ -2,6 +2,18 @@
 
 namespace Craft;
 
+/**
+ * Class SproutLists_ListRecord
+ *
+ * @package Craft
+ * --
+ * @property int $id
+ * @property int $elementId
+ * @property string $type
+ * @property string $name
+ * @property string $handle
+ * @property int $totalSubscribers
+ */
 class SproutLists_ListRecord extends BaseRecord
 {
 	/**

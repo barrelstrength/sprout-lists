@@ -2,6 +2,18 @@
 
 namespace Craft;
 
+/**
+ * Class SproutLists_SubscriberRecord
+ *
+ * @package Craft
+ * --
+ * @property int $id
+ * @property string $email
+ * @property int $userId
+ * @property string $firstName
+ * @property string $lastName
+ * @property mixed $subscriberLists
+ */
 class SproutLists_SubscriberRecord extends BaseRecord
 {
 	/**

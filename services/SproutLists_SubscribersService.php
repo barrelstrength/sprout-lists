@@ -14,45 +14,43 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 	 */
 	public function updateUserIdOnSave(Event $event)
 	{
-		$result = false;
-
 		$userId = $event->params['user']->id;
 		$email  = $event->params['user']->email;
 
 		// First try to find a user by the Craft User ID
-		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+		$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 			'userId' => $userId
 		));
 
 		// If that doesn't work, try to find a user with a matching email address
-		if ($record == null)
+		if ($subscriberRecord == null)
 		{
-			$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 				'userId' => null,
 				'email'  => $email
 			));
 
 			// Assign the user ID to the subscriber with the matching email address
-			$record->userId = $event->params['user']->id;
+			$subscriberRecord->userId = $event->params['user']->id;
 		}
 
-		if ($record != null)
+		if ($subscriberRecord != null)
 		{
 			// If the user has updated their email, let's also update it for our Subscriber
-			$record->email = $event->params['user']->email;
+			$subscriberRecord->email = $event->params['user']->email;
 
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
 			try
 			{
-				if ($record->save(false))
+				if ($subscriberRecord->save(false))
 				{
 					if ($transaction && $transaction->active)
 					{
 						$transaction->commit();
 					}
 
-					$result = true;
+					return true;
 				}
 			}
 			catch (\Exception $e)
@@ -66,7 +64,7 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 			}
 		}
 
-		return $result;
+		return false;
 	}
 
 	/**
@@ -79,30 +77,28 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 	 */
 	public function updateUserIdOnDelete(Event $event)
 	{
-		$result = false;
-
 		$userId = $event->params['user']->id;
 
-		$record = SproutLists_SubscriberRecord::model()->findByAttributes(array(
+		$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 			'userId' => $userId,
 		));
 
-		if ($record != null)
+		if ($subscriberRecord != null)
 		{
-			$record->userId = null;
+			$subscriberRecord->userId = null;
 
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
 			try
 			{
-				if ($record->save(false))
+				if ($subscriberRecord->save(false))
 				{
 					if ($transaction && $transaction->active)
 					{
 						$transaction->commit();
 					}
 
-					$result = true;
+					return true;
 				}
 			}
 			catch (\Exception $e)
@@ -116,6 +112,6 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 			}
 		}
 
-		return $result;
+		return false;
 	}
 }

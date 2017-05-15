@@ -9,7 +9,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 */
 	public function getName()
 	{
-		return Craft::t('Subscriber');
+		return Craft::t('Subscriber Lists');
 	}
 
 	/**
@@ -21,6 +21,9 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		return 'subscriber';
 	}
+
+	// Lists
+	// =========================================================================
 
 	/**
 	 * Saves a list.
@@ -41,26 +44,25 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$listRecord = new SproutLists_ListRecord();
 		}
 
-		$modelAttributes = $list->getAttributes();
+		$listRecord->type   = $list->type;
+		$listRecord->name   = $list->name;
+		$listRecord->handle = $list->handle;
 
-		if (!empty($modelAttributes))
+		$listRecord->validate();
+		$list->addErrors($listRecord->getErrors());
+
+		if (!$list->hasErrors())
 		{
-			foreach ($modelAttributes as $handle => $value)
-			{
-				$listRecord->setAttribute($handle, $value);
-			}
-		}
+			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
-		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
-		if ($listRecord->validate())
-		{
 			try
 			{
 				if (craft()->elements->saveElement($list))
 				{
-					$listRecord->id        = $list->id;
-					$listRecord->elementId = $list->id;
+					$listRecord->id = $list->id;
+
+					// Use an Element ID if we have it. Fallback to the List Element ID.
+					$listRecord->elementId = is_numeric($list->elementId) ? $list->elementId : $list->id;
 
 					if ($list->totalSubscribers == null)
 					{
@@ -87,10 +89,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 				throw $e;
 			}
-		}
-		else
-		{
-			$list->addErrors($listRecord->getErrors());
 		}
 
 		return false;
@@ -210,6 +208,41 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	}
 
 	/**
+	 * Gets or creates list.
+	 *
+	 * @param SproutLists_SubscriptionModel $subscription
+	 *
+	 * @return BaseModel|SproutLists_ListModel
+	 */
+	public function getOrCreateList(SproutLists_SubscriptionModel $subscription)
+	{
+		$listRecord = SproutLists_ListRecord::model()->findByAttributes(array(
+			'handle' => $subscription->list
+		));
+
+		// If no List exists, dynamically create one
+		if ($listRecord)
+		{
+			$list = SproutLists_ListModel::populateModel($listRecord);
+		}
+		else
+		{
+			$list            = new SproutLists_ListModel();
+			$list->type      = 'subscriber';
+			$list->elementId = $subscription->elementId;
+			$list->name      = $subscription->list;
+			$list->handle    = $subscription->list;
+
+			$this->saveList($list);
+		}
+
+		return $list;
+	}
+
+	// Subscriptions
+	// =========================================================================
+
+	/**
 	 * @inheritDoc SproutListsBaseListType::subscribe()
 	 *
 	 * @param $criteria
@@ -217,41 +250,28 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function subscribe($criteria)
+	public function subscribe($subscription)
 	{
-		$subscription = SproutLists_SubscriptionModel::populateModel($criteria);
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
 
-		// Prepare our data
-		$listCriteria = array(
-			'handle' => $subscription->list
-		);
+		$subscriber = new SproutLists_SubscriberModel();
 
-		$subscriberCriteria = array(
-			'userId' => $subscription->userId,
-			'email'  => $subscription->email
-		);
-
-		// Remove any null values from our array, so we only query for what we have
-		$subscriberCriteria = array_filter($subscriberCriteria, function ($var)
+		if (!empty($subscription->email))
 		{
-			return !is_null($var);
-		});
+			$subscriber->email = $subscription->email;
+		}
 
-		// BEGIN TRANSACTION
+		if (!empty($subscription->userId) && $settings->enableUserSync)
+		{
+			$subscriber->userId = $subscription->userId;
+		}
+
 		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 
 		try
 		{
-			if (!is_int($criteria['list']))
-			{
-				// If our List doesn't exist, create a List Element on the fly
-				// @todo - review $listCriteria and $listHandle - seems a bit complicated. We create it as an array, rename it from where it goes into the method and comes out, and then treat the $listHandle variable as a string instead of an array?
-				$list = $this->getOrCreateList($listCriteria, $subscription);
-			}
-			else
-			{
-				$list = SproutLists_ListRecord::model()->findById($criteria['list']);
-			}
+			// If our List doesn't exist, create a List Element on the fly
+			$list = $this->getOrCreateList($subscription);
 
 			// If it didn't work, rollback the transaction. Can't save a subscription without a List.
 			if (!$list->id)
@@ -265,7 +285,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			}
 
 			// If our Subscriber doesn't exist, create a Subscriber Element on the fly
-			$subscriber = $this->getSubscriber($subscriberCriteria);
+			$subscriber = $this->getSubscriber($subscriber);
 
 			// If it didn't work, rollback the transaction. Can't save a subscription without a Subscriber.
 			if (!$subscriber->id)
@@ -278,8 +298,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 				return false;
 			}
 
-			$subscriptionRecord = new SproutLists_SubscriptionRecord();
-
+			$subscriptionRecord               = new SproutLists_SubscriptionRecord();
 			$subscriptionRecord->listId       = $list->id;
 			$subscriptionRecord->subscriberId = $subscriber->id;
 
@@ -300,15 +319,15 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 		catch (\Exception $e)
 		{
-			if ($transaction !== null)
+			if ($transaction && $transaction->active)
 			{
 				$transaction->rollback();
 			}
 
-			// Return false if not successful
-			return false;
+			throw $e;
 		}
-		// END TRANSACTION
+
+		return false;
 	}
 
 	/**
@@ -318,21 +337,17 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return bool
 	 */
-	public function unsubscribe($criteria)
+	public function unsubscribe($subscription)
 	{
-		// Determine the list from which the user will un-subscribe
-		$listId = isset($criteria['listId']) ? $criteria['listId'] : null;
-
-		if ($listId)
+		if ($subscription->id)
 		{
-			$list = SproutLists_ListRecord::model()->findById($listId);
+			$list = SproutLists_ListRecord::model()->findById($subscription->id);
 		}
 		else
 		{
-			// @todo - we may need to include listType here as handle could be the same for a list
-			// on each List Type
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
-				'handle' => $criteria['list']
+				'type'   => $subscription->type,
+				'handle' => $subscription->list
 			));
 		}
 
@@ -344,16 +359,16 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		// Determine the subscriber that we will un-subscribe
 		$subscriberRecord = new SproutLists_SubscriberRecord();
 
-		if (isset($criteria['userId']))
+		if (isset($subscription->userId))
 		{
 			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
-				'userId' => $criteria['userId']
+				'userId' => $subscription->userId
 			));
 		}
-		elseif (isset($criteria['email']))
+		elseif (isset($subscription->email))
 		{
 			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
-				'email' => $criteria['email']
+				'email' => $subscription->email
 			));
 		}
 
@@ -368,7 +383,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			'subscriberId' => $subscriberRecord->id
 		));
 
-		// Remove the user from the subscription
 		if ($subscriptions != null)
 		{
 			$this->updateTotalSubscribersCount();
@@ -386,32 +400,126 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return bool
 	 */
-	public function isSubscribed($criteria)
+	public function isSubscribed($subscription)
 	{
-		$results = $this->getSubscriptions($criteria);
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
 
-		return (!empty($results)) ? true : false;
+		if (empty($subscription->list))
+		{
+			throw new Exception(Craft::t('Missing argument: `list` is required by the isSubscribed variable'));
+		}
+
+		// We need a user ID or an email, however, if User Sync is not enabled, we need an email
+		if ((empty($subscription->userId) && empty($subscription->email)) OR
+			($settings->enableUserSync == false) && empty($subscription->email)
+		)
+		{
+			throw new Exception(Craft::t('Missing argument: `userId` or `email` are required by the isSubscribed variable'));
+		}
+
+		if (empty($subscription->elementId))
+		{
+			throw new Exception(Craft::t('Missing argument: `elementId` is required by the isSubscribed variable'));
+		}
+
+		$subscriptions = $this->getSubscriptions($subscription);
+
+		return count($subscriptions) ? true : false;
+	}
+
+	/**
+	 * Saves a subscribers subscriptions.
+	 *
+	 * @param SproutLists_SubscriberModel $subscriber
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function saveSubscriptions(SproutLists_SubscriberModel $subscriber)
+	{
+		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+		try
+		{
+			SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
+				':subscriberId' => $subscriber->id
+			));
+
+			if (!empty($subscriber->subscriberLists))
+			{
+				foreach ($subscriber->subscriberLists as $listId)
+				{
+					$list = $this->getListById($listId);
+
+					if ($list)
+					{
+						$subscriptionRecord               = new SproutLists_SubscriptionRecord();
+						$subscriptionRecord->subscriberId = $subscriber->id;
+						$subscriptionRecord->listId       = $list->id;
+
+						if (!$subscriptionRecord->save(false))
+						{
+							throw new Exception(print_r($subscriptionRecord->getErrors(), true));
+						}
+					}
+					else
+					{
+						throw new Exception(Craft::t('The Subscriber List with id {listId} does not exists.', array(
+								'listId' => $listId)
+						));
+					}
+				}
+			}
+
+			$this->updateTotalSubscribersCount();
+
+			if ($transaction && $transaction->active)
+			{
+				$transaction->commit();
+			}
+
+			return true;
+		}
+		catch (\Exception $e)
+		{
+			SproutListsPlugin::log($e->getMessage(), LogLevel::Error);
+
+			if ($transaction && $transaction->active)
+			{
+				$transaction->rollback();
+			}
+
+			throw $e;
+		}
 	}
 
 	/**
 	 * @inheritDoc SproutListsBaseListType::getSubscriptions()
 	 *
-	 * @param $criteria
+	 * @param $subscription
 	 *
 	 * @return array|\CDbDataReader
 	 */
-	public function getSubscriptions($criteria)
+	public function getSubscriptions($subscription)
 	{
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+
+		if (!$settings->enableUserSync && !empty($subscription->userId))
+		{
+			throw new Exception(Craft::t('Enable User Sync in the Sprout Lists settings if you wish to query subscriptions using the `userId` attribute'));
+		}
+
 		$query = craft()->db->createCommand()
 			->select('lists.*, subscribers.*, subscriptions.*')
 			->from('sproutlists_lists lists')
 			->join('sproutlists_subscriptions subscriptions', 'subscriptions.listId = lists.id')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = subscriptions.subscriberId');
 
-		if (isset($criteria['list']))
+		if (!empty($subscription['list']))
 		{
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
-				'handle' => $criteria['list']
+				'type'   => $subscription->type,
+				'handle' => $subscription->list
 			));
 
 			$listId = ($list != null) ? $list->id : 0;
@@ -419,109 +527,35 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$query->andWhere(array('and', 'lists.id = :listId'), array(':listId' => $listId));
 		}
 
-		if (isset($criteria['userId']))
+		if ($settings->enableUserSync)
 		{
-			$query->andWhere(array('and', 'subscribers.userId = :userId'), array(':userId' => $criteria['userId']));
-		}
-
-		if (isset($criteria['email']))
-		{
-			$query->andWhere(array('and', array('in', 'subscribers.email', $criteria['email'])));
-		}
-
-		if (isset($criteria['elementId']))
-		{
-			$query->andWhere(array('and', array('in', 'lists.elementId', $criteria['elementId'])));
-		}
-
-		if (isset($criteria['order']))
-		{
-			$query->order($criteria['order']);
-		}
-
-		if (isset($criteria['limit']))
-		{
-			$query->limit($criteria['limit']);
-		}
-
-		return $query->queryAll();
-	}
-
-	/**
-	 * @inheritDoc SproutListsBaseListType::getSubscribers()
-	 *
-	 * @param $criteria
-	 *
-	 * @return array
-	 */
-	public function getSubscribers($criteria)
-	{
-		$subscribers = array();
-
-		if (empty($criteria))
-		{
-			return $subscribers;
-		}
-
-		$listHandle = $criteria['list'];
-
-		$list = SproutLists_ListRecord::model()->findByAttributes(array(
-			'handle' => $listHandle
-		));
-
-		$subscribers = $list->subscribers;
-
-		return $subscribers;
-	}
-
-	public function getSubscriberById($id)
-	{
-		$record = SproutLists_SubscriberRecord::model()->findById($id);
-
-		$subscriber = new SproutLists_SubscriberModel();
-
-		if ($record != null)
-		{
-			$subscriber = SproutLists_SubscriberModel::populateModel($record);
-		}
-
-		return $subscriber;
-	}
-
-	public function deleteSubscriberById($id)
-	{
-		$model = $this->getSubscriberById($id);
-
-		if ($model->id != null)
-		{
-			if (craft()->elements->deleteElementById($model->id))
+			if (!empty($subscription->userId))
 			{
-				SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $model->id));
+				$query->andWhere(array('and', 'subscribers.userId = :userId'), array(':userId' => $subscription->userId));
 			}
 		}
 
-		$this->updateTotalSubscribersCount();
-
-		return $model;
-	}
-
-	/**
-	 * @inheritDoc SproutListsBaseListType::getSubscriberCount()
-	 *
-	 * @param $criteria
-	 *
-	 * @return int
-	 */
-	public function getSubscriberCount($criteria)
-	{
-		$results = $this->getSubscriptions($criteria);
-
-		if (!empty($results))
+		if (!empty($subscription->email))
 		{
-			return count($results);
+			$query->andWhere(array('and', array('in', 'subscribers.email', $subscription->email)));
 		}
 
-		return 0;
+		if (!empty($subscription->elementId))
+		{
+			$query->andWhere(array('and', array('in', 'lists.elementId', $subscription->elementId)));
+		}
+
+		if (!empty($subscription->order))
+		{
+			$query->order($subscription->order);
+		}
+
+		if (!empty($subscription->limit))
+		{
+			$query->limit($subscription->limit);
+		}
+
+		return $query->queryAll();
 	}
 
 	/**
@@ -534,6 +568,233 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	public function getSubscriptionCount($criteria)
 	{
 		return $this->getSubscriberCount($criteria);
+	}
+
+	// Subscribers
+	// =========================================================================
+
+	/**
+	 * @param SproutLists_SubscriberModel $subscriber
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function saveSubscriber(SproutLists_SubscriberModel $subscriber)
+	{
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+
+		if ($subscriber->id)
+		{
+			$subscriberRecord = SproutLists_SubscriberRecord::model()->findById($subscriber->id);
+		}
+		else
+		{
+			$subscriberRecord = new SproutLists_SubscriberRecord();
+		}
+
+		// Sync updates with Craft User if User Sync enabled
+		if ($subscriber->email && $settings->enableUserSync)
+		{
+			$user = craft()->users->getUserByUsernameOrEmail($subscriber->email);
+
+			if ($user != null)
+			{
+				$subscriber->userId = $user->id;
+			}
+		}
+
+		$subscriberRecord->userId    = $subscriber->userId;
+		$subscriberRecord->email     = $subscriber->email;
+		$subscriberRecord->firstName = $subscriber->firstName;
+		$subscriberRecord->lastName  = $subscriber->lastName;
+		$subscriberRecord->firstName = $subscriber->firstName;
+
+		$subscriberRecord->validate();
+		$subscriber->addErrors($subscriberRecord->getErrors());
+
+		if (!$subscriber->hasErrors())
+		{
+			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
+
+			try
+			{
+				if (craft()->elements->saveElement($subscriber))
+				{
+					$subscriberRecord->id = $subscriber->id;
+
+					if ($subscriberRecord->save(false))
+					{
+						// Save any related Subscriptions
+						$this->saveSubscriptions($subscriber);
+
+						// Sync updates with Craft User if User Sync enabled
+						if ($subscriberRecord->userId != null && $settings->enableUserSync)
+						{
+							$user = craft()->users->getUserById($subscriberRecord->userId);
+
+							$user->email = $subscriberRecord->email;
+
+							craft()->users->saveUser($user);
+						}
+
+						if ($transaction && $transaction->active)
+						{
+							$transaction->commit();
+						}
+
+						return true;
+					}
+				}
+			}
+			catch (\Exception $e)
+			{
+				if ($transaction && $transaction->active)
+				{
+					$transaction->rollback();
+				}
+
+				throw $e;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @inheritDoc SproutListsBaseListType::getSubscribers()
+	 *
+	 * @param $list
+	 *
+	 * @return array|mixed
+	 */
+	public function getSubscribers($list)
+	{
+		if (empty($list->handle))
+		{
+			throw new Exception(Craft::t("Missing argument: 'list' is required by the getSubscribers variable"));
+		}
+
+		$subscribers = array();
+
+		if (empty($list))
+		{
+			return $subscribers;
+		}
+
+		$list = SproutLists_ListRecord::model()->findByAttributes(array(
+			'handle' => $list->handle
+		));
+
+		if ($list != null)
+		{
+			return $list->subscribers;
+		}
+
+		return $subscribers;
+	}
+
+	/**
+	 * Gets a subscriber.
+	 *
+	 * @param SproutLists_SubscriberModel $subscriber
+	 *
+	 * @return BaseModel|SproutLists_SubscriberModel
+	 */
+	public function getSubscriber(SproutLists_SubscriberModel $subscriber)
+	{
+		$attributes = array_filter(array(
+			'email'  => $subscriber->email,
+			'userId' => $subscriber->userId
+		));
+
+		$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($attributes);
+
+		if (!empty($subscriberRecord))
+		{
+			$subscriber = SproutLists_SubscriberModel::populateModel($subscriberRecord);
+		}
+
+		// If no Subscriber was found, create one
+		if (!$subscriber->id)
+		{
+			if (isset($subscriber->userId))
+			{
+				$user = craft()->users->getUserById($subscriber->userId);
+
+				if ($user)
+				{
+					$subscriber->email = $user->email;
+				}
+			}
+
+			$this->saveSubscriber($subscriber);
+		}
+
+		return $subscriber;
+	}
+
+	/**
+	 * Gets a subscriber with a given id.
+	 *
+	 * @param $id
+	 *
+	 * @return BaseModel|SproutLists_SubscriberModel
+	 */
+	public function getSubscriberById($id)
+	{
+		$subscriberRecord = SproutLists_SubscriberRecord::model()->findById($id);
+
+		$subscriber = new SproutLists_SubscriberModel();
+
+		if ($subscriberRecord != null)
+		{
+			$subscriber = SproutLists_SubscriberModel::populateModel($subscriberRecord);
+		}
+
+		return $subscriber;
+	}
+
+	/**
+	 * Deletes a subscriber.
+	 *
+	 * @param $id
+	 *
+	 * @return BaseModel|SproutLists_SubscriberModel
+	 */
+	public function deleteSubscriberById($id)
+	{
+		$subscriber = $this->getSubscriberById($id);
+
+		if ($subscriber->id != null)
+		{
+			if (craft()->elements->deleteElementById($subscriber->id))
+			{
+				SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(':subscriberId' => $subscriber->id));
+			}
+		}
+
+		$this->updateTotalSubscribersCount();
+
+		return $subscriber;
+	}
+
+	/**
+	 * @inheritDoc SproutListsBaseListType::getSubscriberCount()
+	 *
+	 * @param $criteria
+	 *
+	 * @return int
+	 */
+	public function getSubscriberCount($subscription)
+	{
+		$subscriptions = $this->getSubscriptions($subscription);
+
+		if (!empty($subscriptions))
+		{
+			return count($subscriptions);
+		}
+
+		return 0;
 	}
 
 	/**
@@ -568,244 +829,12 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$listIds = $default;
 		}
 
-		$html = craft()->templates->render('sproutlists/subscribers/checkboxlists', array(
+		$html = craft()->templates->render('sproutlists/subscribers/_subscriptionlists', array(
 			'options' => $options,
 			'values'  => $listIds
 		));
 
 		return TemplateHelper::getRaw($html);
-	}
-
-	/**
-	 * Gets or creates list.
-	 *
-	 * @todo - consider refactoring and cleaning up this method
-	 *
-	 * @param                                    $listHandle
-	 * @param SproutLists_SubscriptionModel|null $subscription
-	 *
-	 * @return array|SproutLists_ListModel|mixed|null
-	 */
-	public function getOrCreateList($listHandle, SproutLists_SubscriptionModel $subscription = null)
-	{
-		$list = SproutLists_ListRecord::model()->findByAttributes(array(
-			'handle' => $listHandle
-		));
-
-		// If no List exists, dynamically create one
-		if ($list == null)
-		{
-			$list            = new SproutLists_ListModel();
-			$list->name      = $subscription->list;
-			$list->handle    = $subscription->list;
-			$list->type      = 'subscriber';
-			$list->elementId = $subscription->elementId;
-
-			$this->saveList($list);
-		}
-		elseif ($subscription->elementId != null)
-		{
-			$model = SproutLists_ListModel::populateModel($list->getAttributes());
-
-			$model->elementId = $subscription->elementId;
-
-			$this->saveList($model);
-		}
-
-		return $list;
-	}
-
-	/**
-	 * @param SproutLists_SubscriberModel $subscriber
-	 *
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function saveSubscriber(SproutLists_SubscriberModel $subscriber)
-	{
-		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
-
-		$subscriberRecord = new SproutLists_SubscriberRecord();
-
-		$result = false;
-
-		if ($subscriber->id)
-		{
-			$subscriberRecord = SproutLists_SubscriberRecord::model()->findById($subscriber->id);
-		}
-		elseif ($subscriber->email)
-		{
-			// Sync updates with Craft User if User Sync enabled
-			if ($settings->enableUserSync)
-			{
-				$user = craft()->users->getUserByUsernameOrEmail($subscriber->email);
-
-				if ($user != null)
-				{
-					$subscriber->userId = $user->id;
-				}
-			}
-		}
-
-		$modelAttributes = $subscriber->getAttributes();
-
-		if (!empty($modelAttributes))
-		{
-			foreach ($modelAttributes as $handle => $value)
-			{
-				$subscriberRecord->setAttribute($handle, $value);
-			}
-		}
-
-		$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
-		if ($subscriberRecord->validate())
-		{
-			try
-			{
-				if (craft()->elements->saveElement($subscriber))
-				{
-					$subscriberRecord->id = $subscriber->id;
-
-					if ($subscriberRecord->save(false))
-					{
-						// Save any related Subscriptions
-						$this->saveSubscriptions($subscriber);
-
-						// Sync updates with Craft User if User Sync enabled
-						if ($subscriberRecord->userId != null && $settings->enableUserSync)
-						{
-							$user = craft()->users->getUserById($subscriberRecord->userId);
-
-							$user->email = $subscriberRecord->email;
-
-							craft()->users->saveUser($user);
-						}
-
-						if ($transaction && $transaction->active)
-						{
-							$transaction->commit();
-						}
-
-						$result = true;
-					}
-				}
-			}
-			catch (\Exception $e)
-			{
-				if ($transaction && $transaction->active)
-				{
-					$transaction->rollback();
-				}
-
-				throw $e;
-			}
-		}
-		else
-		{
-			$subscriber->addErrors($subscriberRecord->getErrors());
-		}
-
-		return $result;
-	}
-
-	public function getSubscriber(array $attributes)
-	{
-		$record = SproutLists_SubscriberRecord::model()->findByAttributes($attributes);
-
-		$subscriberModel = new SproutLists_SubscriberModel();
-
-		if (!empty($record))
-		{
-			$subscriberModel = SproutLists_SubscriberModel::populateModel($record);
-		}
-
-		// If no Subscriber was found, create one
-		if (!$subscriberModel->id)
-		{
-			if (isset($attributes['userId']))
-			{
-				$subscriberModel->userId = $attributes['userId'];
-
-				$user = craft()->users->getUserById($attributes['userId']);
-
-				if ($user)
-				{
-					$subscriberModel->email = $user->email;
-				}
-			}
-
-			if (isset($attributes['email']))
-			{
-				$subscriberModel->email = $attributes['email'];
-			}
-
-			$this->saveSubscriber($subscriberModel);
-		}
-
-		return $subscriberModel;
-	}
-
-	/**
-	 * @todo - clarify that this takes a SproutLists_SubscriberModel with an array of listIds as an attribute
-	 *
-	 * @param SproutLists_SubscriberModel $subscriber
-	 *
-	 * @return array
-	 * @throws Exception
-	 */
-	public function saveSubscriptions(SproutLists_SubscriberModel $subscriber)
-	{
-		$subscriberId      = $subscriber->id;
-		$subscriberListIds = $subscriber->subscriberLists;
-
-		try
-		{
-			SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
-				':subscriberId' => $subscriberId
-			));
-		}
-		catch (Exception $e)
-		{
-			SproutListsPlugin::log($e->getMessage(), LogLevel::Error);
-		}
-
-		$records = array();
-
-		if (!empty($subscriberListIds))
-		{
-			foreach ($subscriberListIds as $listId)
-			{
-				$list = $this->getListById($listId);
-
-				if ($list)
-				{
-					$relation = new SproutLists_SubscriptionRecord();
-
-					$relation->subscriberId = $subscriberId;
-					$relation->listId       = $list->id;
-
-					$result = $relation->save(false);
-
-					$records[] = $relation->id;
-
-					if (!$result)
-					{
-						throw new Exception(print_r($relation->getErrors(), true));
-					}
-				}
-				else
-				{
-					throw new Exception(Craft::t('The Subscriber List with id {listId} does not exists.', array(
-							'listId' => $listId)
-					));
-				}
-			}
-		}
-
-		$this->updateTotalSubscribersCount();
-
-		return $records;
 	}
 
 	/**

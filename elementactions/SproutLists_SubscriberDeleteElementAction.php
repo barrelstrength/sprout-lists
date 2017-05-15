@@ -22,9 +22,7 @@ class SproutLists_SubscriberDeleteElementAction extends DeleteElementAction
 			));
 		}
 
-		// @todo - add support for other List Types
-		$type     = 'subscriber';
-		$listType = sproutLists()->lists->getListType($type);
+		$listType = sproutLists()->lists->getListType('subscriber');
 
 		$listType->updateTotalSubscribersCount();
 

@@ -49,7 +49,6 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			),
 		);
 
-		// @todo - add support for multiple List Types
 		$listType = sproutLists()->lists->getListType('subscriber');
 
 		$lists = $listType->getListsWithSubscribers();
@@ -57,7 +56,7 @@ class SproutLists_SubscriberElementType extends BaseElementType
 		if (!empty($lists))
 		{
 			$sources[] = array(
-				'heading' => Craft::t('Lists')
+				'heading' => $listType->getName()
 			);
 
 			foreach ($lists as $list)

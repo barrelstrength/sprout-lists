@@ -567,9 +567,10 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 						// Sync updates with Craft User if User Sync enabled
 						if ($subscriberRecord->userId != null && $settings->enableUserSync)
 						{
-							$user = craft()->users->getUserById($subscriberRecord->userId);
-
-							$user->email = $subscriberRecord->email;
+							// If they changed their Subscriber info, update the Craft User info too
+							$user->email     = $subscriberRecord->email;
+							$user->firstName = $subscriberRecord->firstName;
+							$user->lastName  = $subscriberRecord->lastName;
 
 							craft()->users->saveUser($user);
 						}

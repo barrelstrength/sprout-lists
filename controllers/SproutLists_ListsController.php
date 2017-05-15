@@ -50,7 +50,7 @@ class SproutLists_ListsController extends BaseController
 
 		$list         = new SproutLists_ListModel();
 		$list->id     = craft()->request->getPost('listId');
-		$list->type   = craft()->request->getRequiredPost('type');
+		$list->type   = craft()->request->getRequiredPost('type', 'subscriber');
 		$list->name   = craft()->request->getRequiredPost('name');
 		$list->handle = craft()->request->getRequiredPost('handle');
 

@@ -44,16 +44,16 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	abstract public function isSubscribed($subscription);
 
 	/**
-	 * Return all uses subscribed to lists
+	 * Return all lists for a given subscriber.
 	 *
 	 * @param $criteria
 	 *
 	 * @return mixed
 	 */
-	abstract public function getSubscriptions($subscription);
+	abstract public function getLists($subscription);
 
 	/**
-	 * Get subscribers on a given list
+	 * Get subscribers on a given list.
 	 *
 	 * @param $list
 	 *

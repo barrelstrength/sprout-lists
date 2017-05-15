@@ -7,12 +7,13 @@ namespace Craft;
  *
  * @package Craft
  * --
- * @property int $id
+ * @property int    $id
+ * @property string $type
  * @property string $email
- * @property int $userId
+ * @property int    $userId
  * @property string $firstName
  * @property string $lastName
- * @property mixed $subscriberLists
+ * @property mixed  $subscriberLists
  */
 class SproutLists_SubscriberModel extends BaseElementModel
 {
@@ -43,6 +44,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 
 		$attributes = array(
 			'id'              => array(AttributeType::Number),
+			'type'            => array(AttributeType::String),
 			'email'           => array(AttributeType::Email, 'required' => true),
 			'userId'          => array(AttributeType::Number),
 			'firstName'       => array(AttributeType::String),

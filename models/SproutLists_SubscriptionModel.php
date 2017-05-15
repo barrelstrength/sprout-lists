@@ -9,7 +9,7 @@ namespace Craft;
  * --
  * @property int    $id
  * @property string $type
- * @property mixed  $list
+ * @property mixed  $listHandle
  * @property int    $listId
  * @property int    $elementId
  * @property int    $subscriberId

@@ -31,25 +31,24 @@ class SproutListsVariable
 	// =========================================================================
 
 	/**
-	 * Returns all subscriptions on a given list.
+	 * Returns all lists for a given subscriber.
 	 *
 	 * @param array $criteria
 	 *
 	 * @return mixed
 	 */
-	public function getSubscriptions($criteria)
+	public function getLists($criteria)
 	{
-		$subscription             = new SproutLists_SubscriptionModel();
-		$subscription->type       = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
-		$subscription->listHandle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
-		$subscription->listId     = isset($criteria['listId']) ? $criteria['listId'] : null;
-		$subscription->elementId  = isset($criteria['elementId']) ? $criteria['elementId'] : null;
-		$subscription->userId     = isset($criteria['userId']) ? $criteria['userId'] : null;
-		$subscription->email      = isset($criteria['email']) ? $criteria['email'] : null;
+		$subscriber            = new SproutLists_SubscriberModel();
+		$subscriber->type      = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$subscriber->email     = isset($criteria['email']) ? $criteria['email'] : null;
+		$subscriber->userId    = isset($criteria['userId']) ? $criteria['userId'] : null;
+		$subscriber->firstName = isset($criteria['firstName']) ? $criteria['firstName'] : null;
+		$subscriber->lastName  = isset($criteria['lastName']) ? $criteria['lastName'] : null;
 
-		$listType = sproutLists()->lists->getListType($subscription->type);
+		$listType = sproutLists()->lists->getListType($subscriber->type);
 
-		return $listType->getSubscriptions($subscription);
+		return $listType->getLists($subscriber);
 	}
 
 	/**
@@ -81,11 +80,11 @@ class SproutListsVariable
 	 *
 	 * @return int
 	 */
-	public function getSubscriptionCount($criteria)
+	public function getListCount($criteria)
 	{
-		$subscriptions = $this->getSubscriptions($criteria);
+		$lists = $this->getLists($criteria);
 
-		return count($subscriptions);
+		return count($lists);
 	}
 
 	/**

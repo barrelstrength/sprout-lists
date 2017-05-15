@@ -37,7 +37,9 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 		if ($subscriberRecord != null)
 		{
 			// If the user has updated their email, let's also update it for our Subscriber
-			$subscriberRecord->email = $event->params['user']->email;
+			$subscriberRecord->email     = $event->params['user']->email;
+			$subscriberRecord->firstName = $event->params['user']->firstName;
+			$subscriberRecord->lastName  = $event->params['user']->lastName;
 
 			$transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
 

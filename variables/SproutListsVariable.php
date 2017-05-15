@@ -1,10 +1,11 @@
 <?php
+
 namespace Craft;
 
 class SproutListsVariable
 {
 	/**
-	 * Checks if a user is subscribed to a given list
+	 * Checks if a user is subscribed to a given list.
 	 *
 	 * @param $criteria
 	 *
@@ -13,49 +14,46 @@ class SproutListsVariable
 	 */
 	public function getIsSubscribed($criteria)
 	{
-		if (!isset($criteria['list']))
-		{
-			throw new Exception(Craft::t('Missing arguments. list and userId are all required.'));
-		}
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$subscription->listHandle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
+		$subscription->listId     = isset($criteria['listId']) ? $criteria['listId'] : null;
+		$subscription->elementId  = isset($criteria['elementId']) ? $criteria['elementId'] : null;
+		$subscription->userId     = isset($criteria['userId']) ? $criteria['userId'] : null;
+		$subscription->email      = isset($criteria['email']) ? $criteria['email'] : null;
 
-		$type = SproutLists_SubscriberListType::NAME;
+		$listType = sproutLists()->lists->getListType($subscription->type);
 
-		if (isset($criteria['type']))
-		{
-			$type = $criteria['type'];
-		}
-
-		$listType = sproutLists()->lists->getListType($type);
-
-		return $listType->isSubscribed($criteria);
+		return $listType->isSubscribed($subscription);
 	}
 
 	// Subscriptions
 	// =========================================================================
 
 	/**
-	 * Return all subscriptions on a given list
+	 * Returns all subscriptions on a given list.
 	 *
 	 * @param array $criteria
 	 *
 	 * @return mixed
 	 */
-	public function getSubscriptions($criteria = array())
+	public function getSubscriptions($criteria)
 	{
-		$type = SproutLists_SubscriberListType::NAME;
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$subscription->listHandle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
+		$subscription->listId     = isset($criteria['listId']) ? $criteria['listId'] : null;
+		$subscription->elementId  = isset($criteria['elementId']) ? $criteria['elementId'] : null;
+		$subscription->userId     = isset($criteria['userId']) ? $criteria['userId'] : null;
+		$subscription->email      = isset($criteria['email']) ? $criteria['email'] : null;
 
-		if (isset($criteria['type']))
-		{
-			$type = $criteria['type'];
-		}
+		$listType = sproutLists()->lists->getListType($subscription->type);
 
-		$listType = sproutLists()->lists->getListType($type);
-
-		return $listType->getSubscriptions($criteria);
+		return $listType->getSubscriptions($subscription);
 	}
 
 	/**
-	 * Return all subscribers on a given list
+	 * Return all subscribers on a given list.
 	 *
 	 * @param $criteria
 	 *
@@ -64,38 +62,34 @@ class SproutListsVariable
 	 */
 	public function getSubscribers($criteria)
 	{
-		if (!isset($criteria['list']))
-		{
-			throw new Exception(Craft::t("Missing arguments. 'list' is required."));
-		}
+		$list         = new SproutLists_ListModel();
+		$list->type   = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 
-		$type = SproutLists_SubscriberListType::NAME;
+		$listType = sproutLists()->lists->getListType($list->type);
 
-		if (isset($criteria['type']))
-		{
-			$type = $criteria['type'];
-		}
-
-		$listType = sproutLists()->lists->getListType($type);
-
-		return $listType->getSubscribers($criteria);
-	}
-
-	/**
-	 * Return all lists
-	 *
-	 * @return array
-	 */
-	public function getLists()
-	{
-		return sproutLists()->lists->getLists();
+		return $listType->getSubscribers($list);
 	}
 
 	// Counts
 	// =========================================================================
 
 	/**
-	 * Return total subscriber count from given criteria
+	 * Return total subscriptions for a given subscriber or list.
+	 *
+	 * @param $criteria
+	 *
+	 * @return int
+	 */
+	public function getSubscriptionCount($criteria)
+	{
+		$subscriptions = $this->getSubscriptions($criteria);
+
+		return count($subscriptions);
+	}
+
+	/**
+	 * Return total subscriber count on a given list.
 	 *
 	 * @param $criteria
 	 *
@@ -104,23 +98,8 @@ class SproutListsVariable
 	 */
 	public function getSubscriberCount($criteria)
 	{
-		$type     = isset($criteria['type']) ? $criteria['type'] : null;
-		$listType = sproutLists()->lists->getListType($type);
+		$subscribers = $this->getSubscribers($criteria);
 
-		return $listType->getSubscriberCount($criteria);
-	}
-
-	/**
-	 * Return total subscriptions that a given Subscriber has
-	 * - How many different lists is a user subscribed to?
-	 *
-	 * @param $criteria
-	 *
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function getSubscriptionCount($criteria)
-	{
-		return $this->getSubscriberCount($criteria);
+		return count($subscribers);
 	}
 }

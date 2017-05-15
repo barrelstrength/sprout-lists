@@ -5,15 +5,17 @@
 	{ label: "Subscribers"|t, url: url('sproutlists/subscribers') }
 ] %}
 
-{% set title = element.id is not null ? 'Subscriber'|t : 'New Subscriber'|t %}
+{% set title = subscriber.id is not null ? 'Edit Subscriber'|t : 'New Subscriber'|t %}
 
 {% set selectedTab    = 'lists' %}
 
-{% if element is null %}
+{% if subscriber is null %}
 	{% exit 404 %}
 {% endif %}
 
 {% set fullPageForm = true %}
+
+{% set saveShortcutRedirect = 'sproutlists/subscribers/edit/' ~ subscriber.id %}
 
 {% block saveButton %}
 	<div class="buttons">
@@ -40,36 +42,38 @@
 		<input type="hidden" id="action" name="action" value="sproutLists/subscribers/saveSubscriber">
 		<input type="hidden" id="redirect" name="redirect" value="sproutlists/subscribers/">
 
-		{% if element.id is not null %}
-			<input type="hidden" id="id" name="sproutlists[id]" value="{{ element.id }}">
+		{% if subscriber.id is not null %}
+			<input type="hidden" name="subscriberId" value="{{ subscriber.id }}">
 		{% endif %}
+
+		<input type="hidden" name="type" value="subscriber">
 
 		<section id="default-fields">
 
 			{{ forms.textField({
 				label: "Email"|t,
-				name: 'sproutlists[email]',
+				name: 'email',
 				id: 'email',
 				required: true,
 				autofocus: true,
-				value: element is defined ? element.email : null,
-				errors: element is defined and element.hasErrors('email') ? element.getErrors('email') : null
+				value: subscriber is defined ? subscriber.email : null,
+				errors: subscriber is defined and subscriber.hasErrors('email') ? subscriber.getErrors('email') : null
 			}) }}
 
 			{{ forms.textField({
 				label: "First Name"|t,
-				name: 'sproutlists[firstName]',
+				name: 'firstName',
 				id: 'firstName',
-				value: element is defined ? element.firstName : null,
-				errors: element is defined and element.hasErrors('firstName') ? element.getErrors('firstName') : null
+				value: subscriber is defined ? subscriber.firstName : null,
+				errors: subscriber is defined and subscriber.hasErrors('firstName') ? subscriber.getErrors('firstName') : null
 			}) }}
 
 			{{ forms.textField({
 				label: "Last Name"|t,
-				name: 'sproutlists[lastName]',
+				name: 'lastName',
 				id: 'lastName',
-				value: element is defined ? element.lastName : null,
-				errors: element is defined and element.hasErrors('lastName') ? element.getErrors('lastName') : null
+				value: subscriber is defined ? subscriber.lastName : null,
+				errors: subscriber is defined and subscriber.hasErrors('lastName') ? subscriber.getErrors('lastName') : null
 			}) }}
 
 		</section>
@@ -79,32 +83,52 @@
 
 	<div class="item" data-position="right" data-colspan="1">
 		<div class="pane meta">
+
 			<div class="field">
 				<div class="heading">
 					<label>{{ "Lists"|t }}</label>
 				</div>
 				<div class="input">
-					{{ element.getSubscriberListsHtml() }}
+
+				{% if listTypes|length %}
+
+					{% for listType in listTypes %}
+						{{ listType.getSubscriberListsHtml(subscriber.id) }}
+					{% endfor %}
+
+				{% else %}
+
+					{{ "Add a <a href='{newListUrl}'>Subscriber List</a>."|t({
+						newListUrl: cpUrl('sproutlists/lists/new')
+					})|raw }}
+
+				{% endif %}
+
 				</div>
 			</div>
 
-			{% if element.id is not null %}
-				{% set statusInput %}
-					<div class="right">
-						<input
+			<div class="field">
+				<div class="heading">&nbsp;</div>
+				<div class="input">
+				{% if subscriber.id is not null %}
+					{% set statusInput %}
+						<div class="right">
+							<input
 								type="button"
 								class="btn small formsubmit"
 								data-action="sproutLists/subscribers/deleteSubscriber"
 								data-confirm="{{ 'Are you sure you want to delete this subscriber?'|t }}"
 								data-redirect="sproutlists/subscribers"
 								value="{{ 'Delete'|t }}">
-					</div>
-				{% endset %}
+						</div>
+					{% endset %}
 
-				{{ forms.field({
-					label: '&nbsp;'
-				}, statusInput) }}
-			{% endif %}
+					{{ forms.field({
+						label: '&nbsp;'
+					}, statusInput) }}
+				{% endif %}
+				</div>
+			</div>
 
 		</div>
 	</div>

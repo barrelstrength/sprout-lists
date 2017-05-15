@@ -1,6 +1,11 @@
 <?php
 namespace Craft;
 
+/**
+ * Class SproutListsPlugin
+ *
+ * @package Craft
+ */
 class SproutListsPlugin extends BasePlugin
 {
 	/**
@@ -51,6 +56,20 @@ class SproutListsPlugin extends BasePlugin
 		return true;
 	}
 
+	protected function defineSettings()
+	{
+		return array(
+			'enableUserSync' => array(AttributeType::Bool, 'default' => false)
+		);
+	}
+
+	public function getSettingsHtml()
+	{
+		return craft()->templates->render('sproutlists/_cp/settings', array(
+			'settings' => $this->getSettings()
+		));
+	}
+
 	/**
 	 * @return array
 	 */
@@ -75,18 +94,6 @@ class SproutListsPlugin extends BasePlugin
 		);
 	}
 
-	/**
-	 * Register our default Sprout Lists List Types
-	 *
-	 * @return array
-	 */
-	public function registerSproutListsListTypes()
-	{
-		return array(
-			new SproutLists_SubscriberListType()
-		);
-	}
-
 	public function init()
 	{
 		parent::init();
@@ -95,9 +102,16 @@ class SproutListsPlugin extends BasePlugin
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
 
-		craft()->on('users.saveUser', function (Event $event) {
-			sproutLists()->subscribers->updateUserIdOnSave($event);
-		});
+		if ($this->getSettings()->enableUserSync)
+		{
+			craft()->on('users.saveUser', function (Event $event) {
+				sproutLists()->subscribers->updateUserIdOnSave($event);
+			});
+
+			craft()->on('users.onDeleteUser', function (Event $event) {
+				sproutLists()->subscribers->updateUserIdOnDelete($event);
+			});
+		}
 	}
 
 	/**
@@ -111,10 +125,22 @@ class SproutListsPlugin extends BasePlugin
 
 		return new SproutListsTwigExtension();
 	}
+
+	/**
+	 * Register our default Sprout Lists List Types
+	 *
+	 * @return array
+	 */
+	public function registerSproutListsListTypes()
+	{
+		return array(
+			new SproutLists_SubscriberListType()
+		);
+	}
 }
 
 /**
- * @return SproutLists_ListsService
+ * @return SproutListsService
  */
 function sproutLists()
 {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_ListsController extends BaseController
@@ -7,52 +8,55 @@ class SproutLists_ListsController extends BaseController
 	 * Prepare variables for the List Edit Template
 	 *
 	 * @param array $variables
+	 *
+	 * @return null
 	 */
 	public function actionEditListTemplate(array $variables = array())
 	{
-		$list   = new SproutLists_ListModel;
-		$listId = null;
-		$continueEditingUrl = null;
+		$type     = isset($variables['type']) ? $variables['type'] : 'subscriber';
+		$listType = sproutLists()->lists->getListType($type);
 
-		if (isset($variables['list']))
+		if (empty($variables['list']))
 		{
-			$list = $variables['list'];
-		}
-		elseif (isset($variables['listId']))
-		{
-			$listId = $variables['listId'];
+			if (isset($variables['listId']))
+			{
+				$variables['list'] = $listType->getListById($variables['listId']);
 
-			$list = sproutLists()->lists->getListById($listId);
-
-			$continueEditingUrl = 'sproutlists/lists/edit/' . $listId;
+				$variables['continueEditingUrl'] = 'sproutlists/lists/edit/' . $variables['listId'];
+			}
+			else
+			{
+				$variables['listId']             = null;
+				$variables['list']               = new SproutLists_ListModel();
+				$variables['continueEditingUrl'] = null;
+			}
 		}
 
 		$this->renderTemplate('sproutlists/lists/_edit', array(
-			'listId'             => $listId,
-			'list'               => $list,
-			'continueEditingUrl' => $continueEditingUrl
+			'listId'             => $variables['listId'],
+			'list'               => $variables['list'],
+			'continueEditingUrl' => $variables['continueEditingUrl']
 		));
 	}
 
 	/**
-	 * Saves a List
+	 * Saves a list
+	 *
+	 * @return null
 	 */
 	public function actionSaveList()
 	{
 		$this->requirePostRequest();
 
-		$list = craft()->request->getPost('sproutlists');
+		$list         = new SproutLists_ListModel();
+		$list->id     = craft()->request->getPost('listId');
+		$list->type   = craft()->request->getRequiredPost('type');
+		$list->name   = craft()->request->getRequiredPost('name');
+		$list->handle = craft()->request->getRequiredPost('handle');
 
-		$model = new SproutLists_ListModel();
+		$listType = sproutLists()->lists->getListType($list->type);
 
-		if (!empty($list['id']))
-		{
-			$model = sproutLists()->lists->getListById($list['id']);
-		}
-
-		$model->setAttributes($list);
-
-		if (sproutLists()->lists->saveList($model))
+		if ($listType->saveList($list))
 		{
 			craft()->userSession->setNotice(Craft::t('List saved.'));
 
@@ -63,19 +67,21 @@ class SproutLists_ListsController extends BaseController
 			craft()->userSession->setError(Craft::t('Unable to save list.'));
 
 			craft()->urlManager->setRouteVariables(array(
-				'list' => $model
+				'list' => $list
 			));
 		}
 	}
 
 	/**
-	 * Deletes a List
+	 * Deletes a list.
+	 *
+	 * @return null
 	 */
 	public function actionDeleteList()
 	{
 		$this->requirePostRequest();
 
-		$listId = craft()->request->getRequiredPost('sproutlists.id');
+		$listId = craft()->request->getRequiredPost('listId');
 
 		if (sproutLists()->lists->deleteList($listId))
 		{
@@ -102,7 +108,7 @@ class SproutLists_ListsController extends BaseController
 			}
 			else
 			{
-				craft()->userSession->setError(Craft::t("Couldn't delete List."));
+				craft()->userSession->setError(Craft::t('Unable to delete list.'));
 
 				$this->redirectToPostedUrl();
 			}
@@ -110,33 +116,24 @@ class SproutLists_ListsController extends BaseController
 	}
 
 	/**
-	 *  Adds a Subscriber to a List
+	 *  Adds a subscriber to a list
 	 *
 	 * @return boolean true/false if successful
 	 * @return array   array of errors if fail
 	 */
 	public function actionSubscribe()
 	{
-		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['userId']    = craft()->request->getPost('userId');
-		$criteria['email']     = craft()->request->getPost('email');
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
+		$subscription->listId     = craft()->request->getPost('listId');
+		$subscription->userId     = craft()->request->getPost('userId');
+		$subscription->email      = craft()->request->getPost('email');
+		$subscription->elementId  = craft()->request->getPost('elementId');
 
-		if (craft()->request->getPost('elementId') != null)
-		{
-			$criteria['elementId'] = craft()->request->getPost('elementId');
-		}
+		$listType = sproutLists()->lists->getListType($subscription->type);
 
-		$type = craft()->request->getPost('type');
-
-		$listType = sproutLists()->lists->getListType($type);
-
-		// Remove any null values from our array, so we only query for what we have
-		$criteria = array_filter($criteria, function ($var)
-		{
-			return !is_null($var);
-		});
-
-		if ($listType->subscribe($criteria))
+		if ($listType->subscribe($subscription))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -151,7 +148,7 @@ class SproutLists_ListsController extends BaseController
 		}
 		else
 		{
-			$errors = array(Craft::t('Subscription did not save.'));
+			$errors = array(Craft::t('Unable to save subscription.'));
 
 			if (craft()->request->isAjaxRequest())
 			{
@@ -171,33 +168,24 @@ class SproutLists_ListsController extends BaseController
 	}
 
 	/**
-	 * Remove a Subscriber from a List
+	 * Removes a subscriber from a list
 	 *
 	 * @return boolean true/false if successful
 	 * @return array   array of errors if fail
 	 */
 	public function actionUnsubscribe()
 	{
-		$criteria['list']      = craft()->request->getRequiredPost('list');
-		$criteria['userId']    = craft()->request->getPost('userId');
-		$criteria['email']     = craft()->request->getPost('email');
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
+		$subscription->listId     = craft()->request->getPost('listId');
+		$subscription->userId     = craft()->request->getPost('userId');
+		$subscription->email      = craft()->request->getPost('email');
+		$subscription->elementId  = craft()->request->getPost('elementId');
 
-		if (craft()->request->getPost('elementId') != null)
-		{
-			$criteria['elementId'] = craft()->request->getPost('elementId');
-		}
+		$listType = sproutLists()->lists->getListType($subscription->type);
 
-		$type = craft()->request->getPost('type');
-
-		$listType = sproutLists()->lists->getListType($type);
-
-		// Remove any null values from our array, so we only query for what we have
-		$criteria = array_filter($criteria, function ($var)
-		{
-			return !is_null($var);
-		});
-
-		if ($listType->unsubscribe($criteria))
+		if ($listType->unsubscribe($subscription))
 		{
 			if (craft()->request->isAjaxRequest())
 			{
@@ -212,16 +200,18 @@ class SproutLists_ListsController extends BaseController
 		}
 		else
 		{
+			$errors = array(Craft::t('Unable to remove subscription.'));
+
 			if (craft()->request->isAjaxRequest())
 			{
 				$this->returnJson(array(
-					'success' => false
+					'errors' => $errors,
 				));
 			}
 			else
 			{
 				craft()->urlManager->setRouteVariables(array(
-					'success' => false
+					'errors' => $errors
 				));
 
 				$this->redirectToPostedUrl();

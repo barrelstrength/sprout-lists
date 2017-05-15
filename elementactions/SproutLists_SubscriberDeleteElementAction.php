@@ -1,10 +1,12 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscriberDeleteElementAction extends DeleteElementAction
 {
-
 	/**
+	 * Deletes all selected subscribers
+	 *
 	 * @param ElementCriteriaModel $criteria
 	 *
 	 * @return bool
@@ -13,15 +15,16 @@ class SproutLists_SubscriberDeleteElementAction extends DeleteElementAction
 	{
 		parent::performAction($criteria);
 
-		// Delete all Subscriptions that relate to this subscriber
 		foreach ($criteria->ids() as $id)
 		{
-			SproutLists_SubscriptionsRecord::model()->deleteAll('subscriberId = :subscriberId', array(
+			SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', array(
 				':subscriberId' => $id
 			));
 		}
 
-		sproutLists()->subscribers->updateTotalSubscribersCount();
+		$listType = sproutLists()->lists->getListType('subscriber');
+
+		$listType->updateTotalSubscribersCount();
 
 		return true;
 	}

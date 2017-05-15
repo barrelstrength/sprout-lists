@@ -2,29 +2,25 @@
 
 namespace Craft;
 
+/**
+ * Class SproutListsService
+ *
+ * @package Craft
+ * --
+ * @property SproutLists_ListsService         $lists
+ * @property SproutLists_SubscribersService   $subscribers
+ */
 class SproutListsService extends BaseApplicationComponent
 {
-	/**
-	 * @property SproutLists_ListsService $lists
-	 */
 	public $lists;
-
-	/**
-	 * @property SproutLists_SubscriptionsService $subscriptions
-	 */
 	public $subscriptions;
-
-	/**
-	 * @property SproutLists_SubscribersService $subscribers
-	 */
 	public $subscribers;
 
 	public function init()
 	{
 		parent::init();
 
-		$this->lists         = Craft::app()->getComponent('sproutLists_lists');
-		$this->subscriptions = Craft::app()->getComponent('sproutLists_subscriptions');
-		$this->subscribers   = Craft::app()->getComponent('sproutLists_subscribers');
+		$this->lists       = Craft::app()->getComponent('sproutLists_lists');
+		$this->subscribers = Craft::app()->getComponent('sproutLists_subscribers');
 	}
 }

@@ -1,6 +1,21 @@
 <?php
+
 namespace Craft;
 
+/**
+ * Class SproutLists_SubscriptionModel
+ *
+ * @package Craft
+ * --
+ * @property int    $id
+ * @property string $type
+ * @property mixed  $list
+ * @property int    $listId
+ * @property int    $elementId
+ * @property int    $subscriberId
+ * @property int    $userId
+ * @property string $email
+ */
 class SproutLists_SubscriptionModel extends BaseModel
 {
 	/**
@@ -9,18 +24,18 @@ class SproutLists_SubscriptionModel extends BaseModel
 	public function defineAttributes()
 	{
 		return array(
-			// Subscriber Info
-			'email'        => AttributeType::String,
-			'userId'       => AttributeType::Number,
-			'subscriberId' => AttributeType::Number,
+			'id'           => array(AttributeType::Number),
 
 			// List Info
-			'list'         => AttributeType::Mixed,
-			'elementId'    => AttributeType::Number,
+			'type'         => AttributeType::String,
+			'listHandle'   => AttributeType::Mixed,
 			'listId'       => AttributeType::Number,
+			'elementId'    => AttributeType::Number,
 
-			// Other
-			'type'         => AttributeType::String
+			// Subscriber Info
+			'subscriberId' => AttributeType::Number,
+			'email'        => AttributeType::String,
+			'userId'       => AttributeType::Number,
 		);
 	}
 }

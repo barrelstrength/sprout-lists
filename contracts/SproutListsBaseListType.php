@@ -2,7 +2,7 @@
 
 namespace Craft;
 
-abstract class SproutListsBaseListType
+abstract class SproutListsBaseListType extends BaseComponentType
 {
 	/**
 	 * Returns the class name of this List Type
@@ -17,27 +17,13 @@ abstract class SproutListsBaseListType
 	}
 
 	/**
-	 * Returns the name of the List Type
-	 *
-	 * @return mixed
-	 */
-	public function getName()
-	{
-		preg_match("/SproutLists_(.*)ListType/", get_class($this), $matches);
-
-		$name = $matches[1];
-
-		return $name;
-	}
-
-	/**
 	 * Subscribe a user to a list for this List Type
 	 *
 	 * @param $user
 	 *
 	 * @return mixed
 	 */
-	abstract public function subscribe($criteria);
+	abstract public function subscribe($subscription);
 
 	/**
 	 * Unsubscribe a user from a list for this List Type
@@ -46,7 +32,7 @@ abstract class SproutListsBaseListType
 	 *
 	 * @return mixed
 	 */
-	abstract public function unsubscribe($criteria);
+	abstract public function unsubscribe($subscription);
 
 	/**
 	 * Check if a user is subscribed to a list
@@ -55,7 +41,7 @@ abstract class SproutListsBaseListType
 	 *
 	 * @return mixed
 	 */
-	abstract public function isSubscribed($criteria);
+	abstract public function isSubscribed($subscription);
 
 	/**
 	 * Return all uses subscribed to lists
@@ -64,23 +50,16 @@ abstract class SproutListsBaseListType
 	 *
 	 * @return mixed
 	 */
-	abstract public function getSubscriptions($criteria);
+	abstract public function getSubscriptions($subscription);
 
 	/**
 	 * Get subscribers on a given list
 	 *
-	 * @param $criteria
+	 * @param $list
 	 *
 	 * @return mixed
-	 */
-	abstract public function getSubscribers($criteria);
-
-	/**
-	 * Get the subscriber count for a given list
+	 * @internal param $criteria
 	 *
-	 * @param $criteria
-	 *
-	 * @return mixed
 	 */
-	abstract public function getSubscriberCount($criteria);
+	abstract public function getSubscribers($list);
 }

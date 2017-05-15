@@ -29,13 +29,14 @@
 			<input type="hidden" name="action" value="sproutLists/lists/saveList">
 			<input type="hidden" name="redirect" value="sproutlists/lists">
 
-			<input type="hidden" id="id" name="sproutlists[id]" value="{{ list.id is defined ? list.id : null }}">
+			<input type="hidden" name="listId" value="{{ list.id is defined ? list.id : null }}">
+			<input type="hidden" name="type" value="subscriber">
 
 			{{ forms.textField({
 				label: "List Name"|t,
 				instructions: "The name of your list that will be visible to users."|t,
 				id: 'name',
-				name: 'sproutlists[name]',
+				name: 'name',
 				value: (list is defined ? list.name : null),
 				autofocus: true,
 				required: true,
@@ -47,7 +48,7 @@
 				label: "List Handle"|t,
 				instructions: "How you’ll refer to this list in your templates."|t,
 				id: 'handle',
-				name: 'sproutlists[handle]',
+				name: 'handle',
 				value: (list is defined ? list.handle : null),
 				required: true,
 				errors: (list is defined ? list.getErrors('handle') : null)

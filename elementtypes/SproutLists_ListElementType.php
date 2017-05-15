@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_ListElementType extends BaseElementType
@@ -69,12 +70,12 @@ class SproutLists_ListElementType extends BaseElementType
 	public function defineAvailableTableAttributes()
 	{
 		$attributes = array(
-			'name'        => array('label' => Craft::t('List Name')),
-			'handle'      => array('label' => Craft::t('List Handle')),
-			'view'        => array('label' => Craft::t('View Subscribers')),
-			'total'       => array('label' => Craft::t('Total Subscribers')),
-			'dateCreated' => array('label' => Craft::t('Date Created')),
-			'dateUpdated' => array('label' => Craft::t('Date Updated'))
+			'name'             => array('label' => Craft::t('List Name')),
+			'handle'           => array('label' => Craft::t('List Handle')),
+			'view'             => array('label' => Craft::t('View Subscribers')),
+			'totalSubscribers' => array('label' => Craft::t('Total Subscribers')),
+			'dateCreated'      => array('label' => Craft::t('Date Created')),
+			'dateUpdated'      => array('label' => Craft::t('Date Updated'))
 		);
 
 		return $attributes;
@@ -92,7 +93,7 @@ class SproutLists_ListElementType extends BaseElementType
 		$attributes[] = 'name';
 		$attributes[] = 'handle';
 		$attributes[] = 'view';
-		$attributes[] = 'total';
+		$attributes[] = 'totalSubscribers';
 		$attributes[] = 'dateCreated';
 		$attributes[] = 'dateUpdated';
 
@@ -107,7 +108,7 @@ class SproutLists_ListElementType extends BaseElementType
 	 */
 	public function getTableAttributeHtml(BaseElementModel $element, $attribute)
 	{
-		$count = $element->total;
+		$totalSubscribers = $element->totalSubscribers;
 
 		switch ($attribute)
 		{
@@ -119,9 +120,9 @@ class SproutLists_ListElementType extends BaseElementType
 
 			case "view":
 
-				if ($element->id && $count > 0)
+				if ($element->id && $totalSubscribers > 0)
 				{
-					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "' class='go'>" . Craft::t('View Subscribers') .	"</a>";
+					return "<a href='" . UrlHelper::getCpUrl('sproutlists/subscribers/' . $element->handle) . "' class='go'>" . Craft::t('View Subscribers') . "</a>";
 				}
 
 				break;
@@ -132,7 +133,6 @@ class SproutLists_ListElementType extends BaseElementType
 				break;
 		}
 	}
-
 
 	/**
 	 * @param null $source

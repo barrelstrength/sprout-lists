@@ -1,11 +1,22 @@
 <?php
+
 namespace Craft;
 
+/**
+ * Class SproutLists_ListRecord
+ *
+ * @package Craft
+ * --
+ * @property int $id
+ * @property int $elementId
+ * @property string $type
+ * @property string $name
+ * @property string $handle
+ * @property int $totalSubscribers
+ */
 class SproutLists_ListRecord extends BaseRecord
 {
 	/**
-	 * Return table name corresponding to this record
-	 *
 	 * @return string
 	 */
 	public function getTableName()
@@ -14,21 +25,22 @@ class SproutLists_ListRecord extends BaseRecord
 	}
 
 	/**
-	 * These have to be explicitly defined in order for the plugin to install
-	 *
 	 * @return array
 	 */
 	public function defineAttributes()
 	{
 		return array(
-			'type'      => AttributeType::String,
-			'elementId' => AttributeType::Number,
-			'name'      => array(AttributeType::String, 'required' => true),
-			'handle'    => array(AttributeType::String, 'required' => true),
-			'total'     => AttributeType::Number
+			'elementId'        => array(AttributeType::Number),
+			'type'             => array(AttributeType::String),
+			'name'             => array(AttributeType::String, 'required' => true),
+			'handle'           => array(AttributeType::String, 'required' => true),
+			'totalSubscribers' => array(AttributeType::Number)
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function defineRelations()
 	{
 		return array(

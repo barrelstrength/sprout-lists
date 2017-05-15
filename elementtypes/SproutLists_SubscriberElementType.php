@@ -1,4 +1,5 @@
 <?php
+
 namespace Craft;
 
 class SproutLists_SubscriberElementType extends BaseElementType
@@ -48,12 +49,14 @@ class SproutLists_SubscriberElementType extends BaseElementType
 			),
 		);
 
-		$lists = sproutLists()->lists->getListsWithSubscribers();
+		$listType = sproutLists()->lists->getListType('subscriber');
+
+		$lists = $listType->getListsWithSubscribers();
 
 		if (!empty($lists))
 		{
 			$sources[] = array(
-				'heading' => Craft::t('Lists')
+				'heading' => $listType->getName()
 			);
 
 			foreach ($lists as $list)

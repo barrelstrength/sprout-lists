@@ -134,18 +134,23 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return array
 	 */
-	public function getLists(SproutLists_SubscriberModel $subscriber)
+	public function getLists(SproutLists_SubscriberModel $subscriber = null)
 	{
 		$lists = array();
 
-		$subscriberAttributes = array_filter(array(
-			'email'  => $subscriber->email,
-			'userId' => $subscriber->userId
-		));
+		$subscriberRecord = null;
 
-		$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($subscriberAttributes);
+		if ($subscriber != null)
+		{
+			$subscriberAttributes = array_filter(array(
+				'email'  => $subscriber->email,
+				'userId' => $subscriber->userId
+			));
 
-		if (empty($subscriberRecord))
+			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($subscriberAttributes);
+		}
+
+		if ($subscriberRecord == null)
 		{
 			$listRecord = SproutLists_ListRecord::model()->findAll();
 		}
@@ -373,13 +378,13 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		// Determine the subscriber that we will un-subscribe
 		$subscriberRecord = new SproutLists_SubscriberRecord();
 
-		if (isset($subscription->userId))
+		if (!empty($subscription->userId))
 		{
 			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 				'userId' => $subscription->userId
 			));
 		}
-		elseif (isset($subscription->email))
+		elseif (!empty($subscription->email))
 		{
 			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 				'email' => $subscription->email
@@ -418,6 +423,8 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
 
+		$result = false;
+
 		if (empty($subscription->listHandle))
 		{
 			throw new Exception(Craft::t('Missing argument: `listHandle` is required by the isSubscribed variable'));
@@ -430,15 +437,44 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			throw new Exception(Craft::t('Missing argument: `userId` or `email` are required by the isSubscribed variable'));
 		}
+		$listId       = null;
+		$subscriberId = null;
 
-		if (empty($subscription->elementId))
+		$listRecord = SproutLists_ListRecord::model()->findByAttributes(array(
+			'handle' => $subscription->listHandle
+		));
+
+		if ($listRecord)
 		{
-			throw new Exception(Craft::t('Missing argument: `elementId` is required by the isSubscribed variable'));
+			$listId = $listRecord->id;
 		}
 
-		$subscriptions = $this->getLists($subscriber);
+		$attributes = array_filter(array(
+			'email'  => $subscription->email,
+			'userId' => $subscription->userId
+		));
 
-		return count($subscriptions) ? true : false;
+		$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($attributes);
+
+		if ($subscriberRecord)
+		{
+			$subscriberId = $subscriberRecord->id;
+		}
+
+		if ($listId != null && $subscriberId != null)
+		{
+			$subscriptionRecord = SproutLists_SubscriptionRecord::model()->findByAttributes(array(
+				'subscriberId' => $subscriberId,
+				'listId'       => $listId
+			));
+
+			if ($subscriptionRecord)
+			{
+				$result = true;
+			}
+		}
+
+		return $result;
 	}
 
 	/**

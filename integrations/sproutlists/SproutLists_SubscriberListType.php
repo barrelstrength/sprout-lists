@@ -217,7 +217,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	public function getOrCreateList(SproutLists_SubscriptionModel $subscription)
 	{
 		$listRecord = SproutLists_ListRecord::model()->findByAttributes(array(
-			'handle' => $subscription->list
+			'handle' => $subscription->listHandle
 		));
 
 		// If no List exists, dynamically create one
@@ -230,8 +230,8 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$list            = new SproutLists_ListModel();
 			$list->type      = 'subscriber';
 			$list->elementId = $subscription->elementId;
-			$list->name      = $subscription->list;
-			$list->handle    = $subscription->list;
+			$list->name      = $subscription->listHandle;
+			$list->handle    = $subscription->listHandle;
 
 			$this->saveList($list);
 		}
@@ -347,7 +347,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
 				'type'   => $subscription->type,
-				'handle' => $subscription->list
+				'handle' => $subscription->listHandle
 			));
 		}
 
@@ -404,9 +404,9 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
 
-		if (empty($subscription->list))
+		if (empty($subscription->listHandle))
 		{
-			throw new Exception(Craft::t('Missing argument: `list` is required by the isSubscribed variable'));
+			throw new Exception(Craft::t('Missing argument: `listHandle` is required by the isSubscribed variable'));
 		}
 
 		// We need a user ID or an email, however, if User Sync is not enabled, we need an email
@@ -515,11 +515,11 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			->join('sproutlists_subscriptions subscriptions', 'subscriptions.listId = lists.id')
 			->join('sproutlists_subscribers subscribers', 'subscribers.id = subscriptions.subscriberId');
 
-		if (!empty($subscription['list']))
+		if (!empty($subscription->listHandle))
 		{
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
 				'type'   => $subscription->type,
-				'handle' => $subscription->list
+				'handle' => $subscription->listHandle
 			));
 
 			$listId = ($list != null) ? $list->id : 0;
@@ -556,18 +556,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		return $query->queryAll();
-	}
-
-	/**
-	 * @inheritDoc SproutListsBaseListType::getSubscriptionCount()
-	 *
-	 * @param $criteria
-	 *
-	 * @return int
-	 */
-	public function getSubscriptionCount($criteria)
-	{
-		return $this->getSubscriberCount($criteria);
 	}
 
 	// Subscribers
@@ -671,7 +659,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		if (empty($list->handle))
 		{
-			throw new Exception(Craft::t("Missing argument: 'list' is required by the getSubscribers variable"));
+			throw new Exception(Craft::t("Missing argument: 'listHandle' is required by the getSubscribers variable."));
 		}
 
 		$subscribers = array();
@@ -681,6 +669,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			return $subscribers;
 		}
 
+		// @todo - needs to query for `type` too.
 		$list = SproutLists_ListRecord::model()->findByAttributes(array(
 			'handle' => $list->handle
 		));
@@ -776,25 +765,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		$this->updateTotalSubscribersCount();
 
 		return $subscriber;
-	}
-
-	/**
-	 * @inheritDoc SproutListsBaseListType::getSubscriberCount()
-	 *
-	 * @param $criteria
-	 *
-	 * @return int
-	 */
-	public function getSubscriberCount($subscription)
-	{
-		$subscriptions = $this->getSubscriptions($subscription);
-
-		if (!empty($subscriptions))
-		{
-			return count($subscriptions);
-		}
-
-		return 0;
 	}
 
 	/**

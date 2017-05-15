@@ -16,7 +16,7 @@
   	<input type="hidden" name="action" value="sproutLists/lists/unsubscribe">
   	<input type="hidden" name="elementId" value="{{ entry.id }}">
   	<input type="hidden" name="userId" value="{{ currentUser.id }}">
-  	<input type="hidden" name="list" value="listHandle">
+  	<input type="hidden" name="listHandle" value="listHandle">
     <input type="submit" value="Remove from My Favorites">
   </form>
 
@@ -27,7 +27,7 @@
   	<input type="hidden" name="action" value="sproutLists/lists/subscribe">
   	<input type="hidden" name="elementId" value="{{ entry.id }}">
   	<input type="hidden" name="userId" value="{{ currentUser.id }}">
-  	<input type="hidden" name="list" value="listHandle">
+  	<input type="hidden" name="listHandle" value="listHandle">
     <input type="submit" value="Add to My Favorites">
   </form>
 

@@ -123,13 +123,13 @@ class SproutLists_ListsController extends BaseController
 	 */
 	public function actionSubscribe()
 	{
-		$subscription            = new SproutLists_SubscriptionModel();
-		$subscription->type      = craft()->request->getPost('type', 'subscriber');
-		$subscription->list      = craft()->request->getRequiredPost('list');
-		$subscription->listId    = craft()->request->getPost('listId');
-		$subscription->userId    = craft()->request->getPost('userId');
-		$subscription->email     = craft()->request->getPost('email');
-		$subscription->elementId = craft()->request->getPost('elementId');
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
+		$subscription->listId     = craft()->request->getPost('listId');
+		$subscription->userId     = craft()->request->getPost('userId');
+		$subscription->email      = craft()->request->getPost('email');
+		$subscription->elementId  = craft()->request->getPost('elementId');
 
 		$listType = sproutLists()->lists->getListType($subscription->type);
 
@@ -175,13 +175,13 @@ class SproutLists_ListsController extends BaseController
 	 */
 	public function actionUnsubscribe()
 	{
-		$subscription            = new SproutLists_SubscriptionModel();
-		$subscription->type      = craft()->request->getPost('type', 'subscriber');
-		$subscription->list      = craft()->request->getRequiredPost('list');
-		$subscription->listId    = craft()->request->getPost('listId');
-		$subscription->userId    = craft()->request->getPost('userId');
-		$subscription->email     = craft()->request->getPost('email');
-		$subscription->elementId = craft()->request->getPost('elementId');
+		$subscription             = new SproutLists_SubscriptionModel();
+		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
+		$subscription->listId     = craft()->request->getPost('listId');
+		$subscription->userId     = craft()->request->getPost('userId');
+		$subscription->email      = craft()->request->getPost('email');
+		$subscription->elementId  = craft()->request->getPost('elementId');
 
 		$listType = sproutLists()->lists->getListType($subscription->type);
 

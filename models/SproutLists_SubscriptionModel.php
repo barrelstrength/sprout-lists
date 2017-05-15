@@ -28,7 +28,7 @@ class SproutLists_SubscriptionModel extends BaseModel
 
 			// List Info
 			'type'         => AttributeType::String,
-			'list'         => AttributeType::Mixed,
+			'listHandle'   => AttributeType::Mixed,
 			'listId'       => AttributeType::Number,
 			'elementId'    => AttributeType::Number,
 

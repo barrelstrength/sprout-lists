@@ -5,16 +5,6 @@ namespace Craft;
 class SproutListsTwigExtension extends \Twig_Extension
 {
 	/**
-	 * Plugin Name
-	 *
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'Sprout Lists';
-	}
-
-	/**
 	 * Create our Twig Functions
 	 *
 	 * @return array
@@ -22,21 +12,8 @@ class SproutListsTwigExtension extends \Twig_Extension
 	public function getFilters()
 	{
 		return array(
-			'subscriberIds'   => new \Twig_Filter_Method($this, 'subscriberIds'),
-			'subscriptionIds' => new \Twig_Filter_Method($this, 'subscriptionIds'),
+			'subscriberUserIds'   => new \Twig_Filter_Method($this, 'subscriberUserIds')
 		);
-	}
-
-	/**
-	 * Create a comma, separated list of List Element ids
-	 *
-	 * @return string
-	 */
-	public function listIds($lists)
-	{
-		$listIds = $this->buildArrayOfIds($lists, 'elementId');
-
-		return StringHelper::arrayToString($listIds);
 	}
 
 	/**
@@ -44,7 +21,7 @@ class SproutListsTwigExtension extends \Twig_Extension
 	 *
 	 * @return string
 	 */
-	public function subscriberIds($subscriptions)
+	public function subscriberUserIds($subscriptions)
 	{
 		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'userId');
 
@@ -54,36 +31,22 @@ class SproutListsTwigExtension extends \Twig_Extension
 	}
 
 	/**
-	 * Create a comma, separate list of Subscription ids
+	 * Build an array of ids from our Subscriptions
 	 *
 	 * @param $subscriptions
-	 *
-	 * @return string
-	 */
-	public function subscriptionIds($subscriptions)
-	{
-		$subscriptionIds = $this->buildArrayOfIds($subscriptions, 'listId');
-		$subscriptionIds = array_values(array_unique($subscriptionIds));
-
-		return StringHelper::arrayToString($subscriptionIds);
-	}
-
-	/**
-	 * Build an array of ids
-	 *
-	 * @param $lists
+	 * @param $attribute
 	 *
 	 * @return array
 	 */
-	public function buildArrayOfIds($lists, $type)
+	public function buildArrayOfIds($subscriptions, $attribute)
 	{
-		$listIds = array();
+		$ids = array();
 
-		foreach ($lists as $list)
+		foreach ($subscriptions as $subscription)
 		{
-			$listIds[] = $list[$type];
+			$ids[] = $subscription[$attribute];
 		}
 
-		return $listIds;
+		return $ids;
 	}
 }

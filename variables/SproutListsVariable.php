@@ -37,7 +37,7 @@ class SproutListsVariable
 	 *
 	 * @return mixed
 	 */
-	public function getLists($criteria)
+	public function getLists($criteria = array())
 	{
 		$subscriber            = new SproutLists_SubscriberModel();
 		$subscriber->type      = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
@@ -59,7 +59,7 @@ class SproutListsVariable
 	 * @return mixed
 	 * @throws Exception
 	 */
-	public function getSubscribers($criteria)
+	public function getSubscribers($criteria = array())
 	{
 		$list         = new SproutLists_ListModel();
 		$list->type   = isset($criteria['type']) ? $criteria['type'] : 'subscriber';

@@ -50,7 +50,7 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	 *
 	 * @return mixed
 	 */
-	abstract public function getLists(SproutLists_SubscriberModel $subscription = null);
+	abstract public function getLists($subscriber);
 
 	/**
 	 * Get subscribers on a given list.

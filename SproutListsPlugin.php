@@ -21,7 +21,7 @@ class SproutListsPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '0.6.1';
+		return '0.7.0';
 	}
 
 	/**
@@ -29,7 +29,7 @@ class SproutListsPlugin extends BasePlugin
 	 */
 	public function getSchemaVersion()
 	{
-		return '0.6.1';
+		return '0.7.0';
 	}
 
 	/**

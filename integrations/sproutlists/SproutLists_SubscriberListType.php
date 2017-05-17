@@ -152,7 +152,11 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 		if ($subscriberRecord == null)
 		{
-			$listRecord = SproutLists_ListRecord::model()->findAll();
+			// Only findAll if we are not looking for a specific Subscriber, otherwise we want to return null
+			if ($subscriber == null)
+			{
+				$listRecord = SproutLists_ListRecord::model()->findAll();
+			}
 		}
 		else
 		{

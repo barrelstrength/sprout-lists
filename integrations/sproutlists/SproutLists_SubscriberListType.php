@@ -358,6 +358,8 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 */
 	public function unsubscribe($subscription)
 	{
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+
 		if ($subscription->id)
 		{
 			$list = SproutLists_ListRecord::model()->findById($subscription->id);
@@ -378,7 +380,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		// Determine the subscriber that we will un-subscribe
 		$subscriberRecord = new SproutLists_SubscriberRecord();
 
-		if (!empty($subscription->userId))
+		if (!empty($subscription->userId) && $settings->enableUserSync)
 		{
 			$subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes(array(
 				'userId' => $subscription->userId

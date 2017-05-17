@@ -124,14 +124,14 @@ class SproutLists_ListsController extends BaseController
 	public function actionSubscribe()
 	{
 		$subscription             = new SproutLists_SubscriptionModel();
-		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listType   = craft()->request->getPost('listType', 'subscriber');
 		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
 		$subscription->listId     = craft()->request->getPost('listId');
 		$subscription->userId     = craft()->request->getPost('userId');
 		$subscription->email      = craft()->request->getPost('email');
 		$subscription->elementId  = craft()->request->getPost('elementId');
 
-		$listType = sproutLists()->lists->getListType($subscription->type);
+		$listType = sproutLists()->lists->getListType($subscription->listType);
 
 		if ($listType->subscribe($subscription))
 		{
@@ -176,14 +176,14 @@ class SproutLists_ListsController extends BaseController
 	public function actionUnsubscribe()
 	{
 		$subscription             = new SproutLists_SubscriptionModel();
-		$subscription->type       = craft()->request->getPost('type', 'subscriber');
+		$subscription->listType   = craft()->request->getPost('listType', 'subscriber');
 		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
 		$subscription->listId     = craft()->request->getPost('listId');
 		$subscription->userId     = craft()->request->getPost('userId');
 		$subscription->email      = craft()->request->getPost('email');
 		$subscription->elementId  = craft()->request->getPost('elementId');
 
-		$listType = sproutLists()->lists->getListType($subscription->type);
+		$listType = sproutLists()->lists->getListType($subscription->listType);
 
 		if ($listType->unsubscribe($subscription))
 		{

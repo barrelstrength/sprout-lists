@@ -8,7 +8,7 @@ namespace Craft;
  * @package Craft
  * --
  * @property int    $id
- * @property string $type
+ * @property string $listType
  * @property mixed  $listHandle
  * @property int    $listId
  * @property int    $elementId
@@ -27,7 +27,7 @@ class SproutLists_SubscriptionModel extends BaseModel
 			'id'           => array(AttributeType::Number),
 
 			// List Info
-			'type'         => AttributeType::String,
+			'listType'     => AttributeType::String,
 			'listHandle'   => AttributeType::Mixed,
 			'listId'       => AttributeType::Number,
 			'elementId'    => AttributeType::Number,

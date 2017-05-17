@@ -134,13 +134,13 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return array
 	 */
-	public function getLists(SproutLists_SubscriberModel $subscriber = null)
+	public function getLists($subscriber = null)
 	{
 		$lists = array();
 
 		$subscriberRecord = null;
 
-		if ($subscriber != null)
+		if (!empty($subscriber->email) OR !empty($subscriber->userId))
 		{
 			$subscriberAttributes = array_filter(array(
 				'email'  => $subscriber->email,
@@ -365,7 +365,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		else
 		{
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
-				'type'   => $subscription->type,
+				'type'   => $subscription->listType,
 				'handle' => $subscription->listHandle
 			));
 		}
@@ -423,8 +423,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	{
 		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
 
-		$result = false;
-
 		if (empty($subscription->listHandle))
 		{
 			throw new Exception(Craft::t('Missing argument: `listHandle` is required by the isSubscribed variable'));
@@ -437,6 +435,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		{
 			throw new Exception(Craft::t('Missing argument: `userId` or `email` are required by the isSubscribed variable'));
 		}
+
 		$listId       = null;
 		$subscriberId = null;
 
@@ -470,11 +469,11 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			if ($subscriptionRecord)
 			{
-				$result = true;
+				return true;
 			}
 		}
 
-		return $result;
+		return false;
 	}
 
 	/**

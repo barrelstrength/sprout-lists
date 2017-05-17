@@ -15,14 +15,14 @@ class SproutListsVariable
 	public function getIsSubscribed($criteria)
 	{
 		$subscription             = new SproutLists_SubscriptionModel();
-		$subscription->type       = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$subscription->listType   = isset($criteria['listType']) ? $criteria['listType'] : 'subscriber';
 		$subscription->listHandle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 		$subscription->listId     = isset($criteria['listId']) ? $criteria['listId'] : null;
 		$subscription->elementId  = isset($criteria['elementId']) ? $criteria['elementId'] : null;
 		$subscription->userId     = isset($criteria['userId']) ? $criteria['userId'] : null;
 		$subscription->email      = isset($criteria['email']) ? $criteria['email'] : null;
 
-		$listType = sproutLists()->lists->getListType($subscription->type);
+		$listType = sproutLists()->lists->getListType($subscription->listType);
 
 		return $listType->isSubscribed($subscription);
 	}
@@ -37,16 +37,16 @@ class SproutListsVariable
 	 *
 	 * @return mixed
 	 */
-	public function getLists($criteria)
+	public function getLists($criteria = array())
 	{
 		$subscriber            = new SproutLists_SubscriberModel();
-		$subscriber->type      = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$subscriber->listType  = isset($criteria['listType']) ? $criteria['listType'] : 'subscriber';
 		$subscriber->email     = isset($criteria['email']) ? $criteria['email'] : null;
 		$subscriber->userId    = isset($criteria['userId']) ? $criteria['userId'] : null;
 		$subscriber->firstName = isset($criteria['firstName']) ? $criteria['firstName'] : null;
 		$subscriber->lastName  = isset($criteria['lastName']) ? $criteria['lastName'] : null;
 
-		$listType = sproutLists()->lists->getListType($subscriber->type);
+		$listType = sproutLists()->lists->getListType($subscriber->listType);
 
 		return $listType->getLists($subscriber);
 	}
@@ -59,10 +59,10 @@ class SproutListsVariable
 	 * @return mixed
 	 * @throws Exception
 	 */
-	public function getSubscribers($criteria)
+	public function getSubscribers($criteria = array())
 	{
 		$list         = new SproutLists_ListModel();
-		$list->type   = isset($criteria['type']) ? $criteria['type'] : 'subscriber';
+		$list->type   = isset($criteria['listType']) ? $criteria['listType'] : 'subscriber';
 		$list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 
 		$listType = sproutLists()->lists->getListType($list->type);

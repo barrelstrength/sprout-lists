@@ -30,8 +30,11 @@ class SproutLists_SubscribersService extends BaseApplicationComponent
 				'email'  => $email
 			));
 
-			// Assign the user ID to the subscriber with the matching email address
-			$subscriberRecord->userId = $event->params['user']->id;
+			if ($subscriberRecord)
+			{
+				// Assign the user ID to the subscriber with the matching email address
+				$subscriberRecord->userId = $event->params['user']->id;
+			}
 		}
 
 		if ($subscriberRecord != null)

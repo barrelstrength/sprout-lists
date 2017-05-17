@@ -101,4 +101,9 @@ class SproutListsVariable
 
 		return count($subscribers);
 	}
+
+	public function getListTypes()
+	{
+		return sproutLists()->getListTypes();
+	}
 }

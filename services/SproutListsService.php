@@ -23,4 +23,30 @@ class SproutListsService extends BaseApplicationComponent
 		$this->lists       = Craft::app()->getComponent('sproutLists_lists');
 		$this->subscribers = Craft::app()->getComponent('sproutLists_subscribers');
 	}
+
+	public function getListTypes()
+	{
+		$typesToLoad = craft()->plugins->call('registerSproutListsListTypes');
+
+		$classes = array();
+
+		if ($typesToLoad)
+		{
+			foreach ($typesToLoad as $plugin => $types)
+			{
+				foreach ($types as $type)
+				{
+					if ($type && $type instanceof SproutListsBaseListType)
+					{
+						$classes[$type->getClassName()] = $type;
+						continue;
+					}
+				}
+			}
+		}
+
+		ksort($classes);
+
+		return $classes;
+	}
 }

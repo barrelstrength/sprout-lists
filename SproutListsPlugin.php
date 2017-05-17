@@ -59,7 +59,8 @@ class SproutListsPlugin extends BasePlugin
 	protected function defineSettings()
 	{
 		return array(
-			'enableUserSync' => array(AttributeType::Bool, 'default' => false)
+			'enableUserSync'   => array(AttributeType::Bool, 'default' => false),
+			'listTypeSettings' => array(AttributeType::Mixed, 'default' => false)
 		);
 	}
 
@@ -98,9 +99,12 @@ class SproutListsPlugin extends BasePlugin
 	{
 		parent::init();
 
+		// Loads the MailChimp library and associated dependencies
+		require_once dirname(__FILE__) . '/vendor/autoload.php';
+
 		Craft::import('plugins.sproutlists.contracts.SproutListsBaseListType');
-		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_UserListType');
 		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_SubscriberListType');
+		Craft::import('plugins.sproutlists.integrations.sproutlists.SproutLists_MailChimpListType');
 
 		if ($this->getSettings()->enableUserSync)
 		{
@@ -134,7 +138,8 @@ class SproutListsPlugin extends BasePlugin
 	public function registerSproutListsListTypes()
 	{
 		return array(
-			new SproutLists_SubscriberListType()
+			new SproutLists_SubscriberListType(),
+			new SproutLists_MailchimpListType()
 		);
 	}
 }

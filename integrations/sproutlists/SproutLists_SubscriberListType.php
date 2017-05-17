@@ -134,7 +134,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	 *
 	 * @return array
 	 */
-	public function getLists($subscriber)
+	public function getLists($subscriber = null)
 	{
 		$lists = array();
 
@@ -365,7 +365,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		else
 		{
 			$list = SproutLists_ListRecord::model()->findByAttributes(array(
-				'type'   => $subscription->type,
+				'type'   => $subscription->listType,
 				'handle' => $subscription->listHandle
 			));
 		}

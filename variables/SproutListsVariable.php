@@ -74,7 +74,7 @@ class SproutListsVariable
 	// =========================================================================
 
 	/**
-	 * Return total subscriptions for a given subscriber or list.
+	 * Return total subscriptions for a given subscriber.
 	 *
 	 * @param $criteria
 	 *
@@ -82,9 +82,16 @@ class SproutListsVariable
 	 */
 	public function getListCount($criteria = array())
 	{
-		$lists = $this->getLists($criteria);
+		$subscriber            = new SproutLists_SubscriberModel();
+		$subscriber->listType  = isset($criteria['listType']) ? $criteria['listType'] : 'subscriber';
+		$subscriber->email     = isset($criteria['email']) ? $criteria['email'] : null;
+		$subscriber->userId    = isset($criteria['userId']) ? $criteria['userId'] : null;
+		$subscriber->firstName = isset($criteria['firstName']) ? $criteria['firstName'] : null;
+		$subscriber->lastName  = isset($criteria['lastName']) ? $criteria['lastName'] : null;
 
-		return count($lists);
+		$listType = sproutLists()->lists->getListType($subscriber->listType);
+
+		return $listType->getListCount($subscriber);
 	}
 
 	/**
@@ -97,9 +104,13 @@ class SproutListsVariable
 	 */
 	public function getSubscriberCount($criteria)
 	{
-		$subscribers = $this->getSubscribers($criteria);
+		$list         = new SproutLists_ListModel();
+		$list->type   = isset($criteria['listType']) ? $criteria['listType'] : 'subscriber';
+		$list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 
-		return count($subscribers);
+		$listType = sproutLists()->lists->getListType($list->type);
+
+		return $listType->getSubscriberCount($list);
 	}
 
 	public function getListTypes()

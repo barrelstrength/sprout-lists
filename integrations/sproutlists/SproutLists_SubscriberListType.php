@@ -131,6 +131,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 	/**
 	 * Gets lists.
+	 * @param null $subscriber
 	 *
 	 * @return array
 	 */
@@ -169,6 +170,18 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		return $lists;
+	}
+
+	/**
+	 * @param null $subscriber
+	 *
+	 * @return int
+	 */
+	public function getListCount($subscriber = null)
+	{
+		$lists = $this->getLists($subscriber);
+
+		return count($lists);
 	}
 
 	/**
@@ -349,8 +362,6 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 
 			throw $e;
 		}
-
-		return false;
 	}
 
 	/**
@@ -570,6 +581,8 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$subscriberRecord = new SproutLists_SubscriberRecord();
 		}
 
+		$user = null;
+
 		// Sync updates with Craft User if User Sync enabled
 		if ($subscriber->email && $settings->enableUserSync)
 		{
@@ -678,6 +691,13 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		}
 
 		return $subscribers;
+	}
+
+	public function getSubscriberCount($list)
+	{
+		$subscribers = $this->getSubscribers($list);
+
+		return count($subscribers);
 	}
 
 	/**

@@ -7,3 +7,11 @@
 	name: 'enableUserSync',
 	on: settings.enableUserSync
 }) }}
+
+{% set listTypes = craft.sproutLists.getListTypes() %}
+
+{% for type in listTypes %}
+
+	{{ type.getSettingsHtml(settings)|raw }}
+
+{% endfor %}

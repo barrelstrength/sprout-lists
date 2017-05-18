@@ -80,7 +80,7 @@ class SproutListsVariable
 	 *
 	 * @return int
 	 */
-	public function getListCount($criteria)
+	public function getListCount($criteria = array())
 	{
 		$lists = $this->getLists($criteria);
 
@@ -100,5 +100,10 @@ class SproutListsVariable
 		$subscribers = $this->getSubscribers($criteria);
 
 		return count($subscribers);
+	}
+
+	public function getListTypes()
+	{
+		return sproutLists()->getListTypes();
 	}
 }

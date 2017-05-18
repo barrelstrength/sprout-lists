@@ -4,6 +4,24 @@ namespace Craft;
 
 abstract class SproutListsBaseListType extends BaseComponentType
 {
+	public function getSettings()
+	{
+		$listTypeSettings = array();
+
+		$settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+
+		if (!empty($settings))
+		{
+			$listTypeSettings = $settings->listTypeSettings;
+		}
+
+		return $listTypeSettings;
+	}
+
+	public function getSettingsHtml($settings = null)
+	{
+		return '';
+	}
 	/**
 	 * Returns the class name of this List Type
 	 *

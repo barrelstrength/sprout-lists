@@ -177,7 +177,7 @@ class SproutLists_ListsController extends BaseController
 	{
 		$subscription             = new SproutLists_SubscriptionModel();
 		$subscription->listType   = craft()->request->getPost('listType', 'subscriber');
-		$subscription->listHandle = craft()->request->getRequiredPost('listHandle');
+		$subscription->listHandle = craft()->request->getPost('listHandle');
 		$subscription->listId     = craft()->request->getPost('listId');
 		$subscription->userId     = craft()->request->getPost('userId');
 		$subscription->email      = craft()->request->getPost('email');

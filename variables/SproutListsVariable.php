@@ -113,13 +113,11 @@ class SproutListsVariable
 		return $listType->getSubscriberCount($list);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getError()
 	{
 		return sproutLists()->getError();
-	}
-
-	public function getListTypes()
-	{
-		return sproutLists()->getListTypes();
 	}
 }

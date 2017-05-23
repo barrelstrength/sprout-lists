@@ -12,6 +12,8 @@ namespace Craft;
  */
 class SproutListsService extends BaseApplicationComponent
 {
+	const ERROR = 'sproutListsError';
+
 	public $lists;
 	public $subscriptions;
 	public $subscribers;
@@ -48,5 +50,23 @@ class SproutListsService extends BaseApplicationComponent
 		ksort($classes);
 
 		return $classes;
+	}
+
+	public function addError($message)
+	{
+		craft()->httpSession->add(static::ERROR, $message);
+	}
+
+	public function getError()
+	{
+		$message = craft()->httpSession->get(static::ERROR);
+
+		// Delete after to make it a flash message.
+		if (craft()->httpSession->contains((static::ERROR)))
+		{
+			craft()->httpSession->remove(static::ERROR);
+		}
+
+		return $message;
 	}
 }

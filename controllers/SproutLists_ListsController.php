@@ -4,6 +4,11 @@ namespace Craft;
 
 class SproutLists_ListsController extends BaseController
 {
+	/**
+	 * Allow users who are not logged in to subscribe and unsubscribe from lists
+	 *
+	 * @var array
+	 */
 	protected $allowAnonymous = array('actionSubscribe', 'actionUnsubscribe');
 
 	/**

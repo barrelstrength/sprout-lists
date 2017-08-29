@@ -367,7 +367,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 	/**
 	 * @inheritDoc SproutListsBaseListType::unsubscribe()
 	 *
-	 * @param $criteria
+	 * @param $subscription
 	 *
 	 * @return bool
 	 */

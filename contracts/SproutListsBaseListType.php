@@ -19,7 +19,7 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	/**
 	 * Subscribe a user to a list for this List Type
 	 *
-	 * @param $user
+	 * @param $subscription
 	 *
 	 * @return mixed
 	 */
@@ -28,7 +28,7 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	/**
 	 * Unsubscribe a user from a list for this List Type
 	 *
-	 * @param $user
+	 * @param $subscription
 	 *
 	 * @return mixed
 	 */
@@ -37,7 +37,7 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	/**
 	 * Check if a user is subscribed to a list
 	 *
-	 * @param $criteria
+	 * @param $subscription
 	 *
 	 * @return mixed
 	 */
@@ -46,7 +46,7 @@ abstract class SproutListsBaseListType extends BaseComponentType
 	/**
 	 * Return all lists for a given subscriber.
 	 *
-	 * @param $criteria
+	 * @param $subscriber
 	 *
 	 * @return mixed
 	 */

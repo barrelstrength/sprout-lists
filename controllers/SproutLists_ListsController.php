@@ -4,6 +4,8 @@ namespace Craft;
 
 class SproutLists_ListsController extends BaseController
 {
+	protected $allowAnonymous = array('actionSubscribe', 'actionUnsubscribe');
+
 	/**
 	 * Prepare variables for the List Edit Template
 	 *

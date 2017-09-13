@@ -34,7 +34,7 @@ class SproutLists_SubscriptionModel extends BaseModel
 
 			// Subscriber Info
 			'subscriberId' => AttributeType::Number,
-			'email'        => AttributeType::String,
+			'email'        => AttributeType::Email,
 			'userId'       => AttributeType::Number,
 		);
 	}

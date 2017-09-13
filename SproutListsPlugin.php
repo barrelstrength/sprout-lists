@@ -21,7 +21,7 @@ class SproutListsPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '0.7.0';
+		return '0.7.1';
 	}
 
 	/**

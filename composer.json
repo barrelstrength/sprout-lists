@@ -43,6 +43,6 @@
         "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/email",
         "changelogUrl": "https://raw.githubusercontent.com/BarrelStrength/sprout-lists/master/CHANGELOG.md",
         "downloadUrl": "https://github.com/BarrelStrength/sprout-lists/archive/master.zip",
-        "class": "barrelstrength\\sroutlists\\SproutLists"
+        "class": "barrelstrength\\sproutlists\\SproutLists"
     }
 }

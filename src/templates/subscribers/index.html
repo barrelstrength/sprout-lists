@@ -1,0 +1,16 @@
+{% extends "sprout-lists/_layouts/elementindex" %}
+
+{% set title = "Subscribers"|t %}
+{% set elementType = 'barrelstrength\\sproutlists\\elements\\Subscribers' %}
+
+{% set actionButton %}
+    <div class="buttons">
+        <a class="btn submit add icon"
+           href="{{ url('sprout-lists/subscribers/new') }}">{{ "Add Subscriber"|t }}</a>
+    </div>
+{% endset %}
+
+{% if listHandle is defined %}
+    {% includejs 'window.listHandle = "'~listHandle~'";' %}
+{% endif %}
+

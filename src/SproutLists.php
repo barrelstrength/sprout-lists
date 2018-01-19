@@ -6,6 +6,7 @@ use barrelstrength\dummy\services\App;
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use barrelstrength\sproutlists\models\Settings;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
@@ -65,6 +66,14 @@ class SproutLists extends Plugin
 //                sproutLists()->subscribers->updateUserIdOnDelete($event);
 //            });
         }
+    }
+
+    /**
+     * @return Settings|\craft\base\Model|null
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
     }
 
     /**

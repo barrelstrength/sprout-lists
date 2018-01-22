@@ -54,6 +54,9 @@ class SproutLists extends Plugin
             $event->rules['sprout-lists/subscribers/new']          = 'sprout-lists/subscribers/edit-subscriber-template';
             $event->rules['sprout-lists/edit/<id:\d+>']            = 'sprout-lists/subscribers/edit-subscriber-template';
 
+            $event->rules['sprout-lists/settings'] = 'sprout-base/settings/edit-settings';
+            $event->rules['sprout-lists/settings/<settingsSectionHandle:.*>'] = 'sprout-base/settings/edit-settings';
+
             return $event;
         });
 
@@ -92,12 +95,16 @@ class SproutLists extends Plugin
             'subnav' => [
                 'subscribers' => [
                     'label' => static::t('Subscribers'),
-                    'url' => 'sprout-email/settings/general'
+                    'url' => 'sprout-lists/subscribers'
                 ],
                 'lists' => [
                     'label' => static::t('Lists'),
-                    'url' => 'sprout-lists/settings/general'
+                    'url' => 'sprout-lists/lists'
                 ],
+                'settings' => [
+                    'label' => static::t('Settings'),
+                    'url' => 'sprout-lists/settings/general'
+                ]
             ],
         ];
 

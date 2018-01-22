@@ -1,10 +1,11 @@
-{% extends "sproutlists/_layouts/elementindex" %}
+{% extends "sprout-lists/_layouts/elementindex" %}
 
 {% set title = "Lists"|t %}
-{% set elementType = 'SproutLists_List' %}
+{% set elementType = 'barrelstrength\\sproutlists\\elements\\Lists' %}
 
-{% set extraPageHeaderHtml %}
-	<div class="buttons">
-		<a class="btn submit add icon" href="{{ url('sproutlists/lists/new') }}">{{ "Add List"|t }}</a>
-	</div>
-{% endset %}
+{% block actionButton %}
+    <div class="buttons">
+        <a class="btn submit add icon"
+           href="{{ url('sprout-lists/lists/new') }}">{{ "Add List"|t }}</a>
+    </div>
+{% endblock %}

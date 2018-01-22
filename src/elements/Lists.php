@@ -1,6 +1,6 @@
 <?php
 
-namespace barrelstrength\sproutlists\elements\Lists;
+namespace barrelstrength\sproutlists\elements;
 
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\db\ListsQuery;
@@ -77,7 +77,7 @@ class Lists extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'name'   => ['label' => Craft::t('sprout-lists', 'Notification Name')],
+            'name'   => ['label' => Craft::t('sprout-lists', 'Name')],
             'handle' => ['label' => Craft::t('sprout-lists', 'List Handle')],
             'view'   => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
             'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscribers')],

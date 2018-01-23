@@ -2,11 +2,12 @@
 
 namespace barrelstrength\sproutlists;
 
-use barrelstrength\dummy\services\App;
 use barrelstrength\sproutbase\base\BaseSproutTrait;
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
+use barrelstrength\sproutlists\services\App;
+use barrelstrength\sproutlists\services\Lists;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
@@ -69,6 +70,10 @@ class SproutLists extends Plugin
 //                sproutLists()->subscribers->updateUserIdOnDelete($event);
 //            });
         }
+
+        Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, function(Event $event) {
+            $event->listTypes[] = new SubscriberListType();
+        });
     }
 
     /**

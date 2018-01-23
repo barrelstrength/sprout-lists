@@ -16,22 +16,6 @@ class Lists extends Component
     protected $listTypes = [];
 
     /**
-     * Initializes the application component.
-     *
-     * This method will load all available List Types
-     *
-     * @return null
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->getAllListTypes();
-
-        return null;
-    }
-
-    /**
      * Gets all registered list types.
      *
      * @return array
@@ -65,10 +49,12 @@ class Lists extends Component
      */
     public function getListType($className)
     {
-        if (!isset($this->listTypes[$className])) {
+        $listTypes = $this->getAllListTypes();
+
+        if (!isset($listTypes[$className])) {
             throw new \Exception('Invalid List Type.');
         }
 
-        return new $this->listTypes[$className];
+        return new $listTypes[$className];
     }
 }

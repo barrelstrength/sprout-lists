@@ -19,6 +19,13 @@ class Subscribers extends Component
      * @return bool
      * @throws \Exception
      */
+    /**
+     * @param Event $event
+     *
+     * @return SubscribersElement|bool
+     * @throws \Exception
+     * @throws \Throwable
+     */
     public function updateUserIdOnSave(Event $event)
     {
         $userId = $event->params['user']->id;
@@ -72,30 +79,13 @@ class Subscribers extends Component
     {
         $userId = $event->params['user']->id;
 
-        $subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes([
+        $subscriberElement = SubscribersElement::find()->where([
             'userId' => $userId,
-        ]);
+        ])->one();
 
-        if ($subscriberRecord != null) {
-            $subscriberRecord->userId = null;
+        if ($subscriberElement != null) {
+            $subscriberElement->userId = null;
 
-            $transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
-            try {
-                if ($subscriberRecord->save(false)) {
-                    if ($transaction && $transaction->active) {
-                        $transaction->commit();
-                    }
-
-                    return true;
-                }
-            } catch (\Exception $e) {
-                if ($transaction && $transaction->active) {
-                    $transaction->rollback();
-                }
-
-                throw $e;
-            }
         }
 
         return false;

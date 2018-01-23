@@ -2,7 +2,11 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
+use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
+use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
+use Craft;
 
 class ListsController extends Controller
 {
@@ -20,44 +24,51 @@ class ListsController extends Controller
      *
      * @return null
      */
-    public function actionEditListTemplate($type = null, $listId = null)
+    public function actionEditListTemplate($type = null, $listId = null, $list = null)
     {
-        $type = isset($type) ? $type : 'subscriber';
-        $listType = sproutLists()->lists->getListType($type);
+        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
 
-        if (empty($variables['list'])) {
-            if (isset($variables['listId'])) {
-                $variables['list'] = $listType->getListById($variables['listId']);
+        $type = isset($type) ? $type : $subscriberNamespace;
 
-                $variables['continueEditingUrl'] = 'sproutlists/lists/edit/'.$variables['listId'];
-            } else {
-                $variables['listId'] = null;
-                $variables['list'] = new SproutLists_ListModel();
-                $variables['continueEditingUrl'] = null;
-            }
+        $listType = SproutLists::$app->lists->getListType($type);
+
+        if ($list == null)
+        {
+            $list = new Lists();
         }
 
-        $this->renderTemplate('sproutlists/lists/_edit', [
-            'listId' => $variables['listId'],
-            'list' => $variables['list'],
-            'continueEditingUrl' => $variables['continueEditingUrl']
+        $continueEditingUrl = null;
+
+        if ($list == null AND $listId != null) {
+
+            /**
+             * @var $listType SproutListsBaseListType
+             */
+            $list = $listType->getListById($listId);
+
+            $continueEditingUrl = 'sprout-lists/lists/edit/'.$listId;
+        }
+
+        return $this->renderTemplate('sprout-lists/lists/_edit', [
+            'listId' => $listId,
+            'list'   => $list,
+            'continueEditingUrl' => $continueEditingUrl
         ]);
     }
 
+
     /**
-     * Saves a list
-     *
-     * @return null
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionSaveList()
     {
         $this->requirePostRequest();
 
-        $list = new SproutLists_ListModel();
-        $list->id = craft()->request->getPost('listId');
-        $list->type = craft()->request->getRequiredPost('type', 'subscriber');
-        $list->name = craft()->request->getRequiredPost('name');
-        $list->handle = craft()->request->getRequiredPost('handle');
+        $list = new Lists();
+        $list->id     = Craft::$app->request->getBodyParam('listId');
+        $list->type   = Craft::$app->request->getBodyParam('type', 'subscriber');
+        $list->name   = Craft::$app->request->getBodyParam('name');
+        $list->handle = Craft::$app->request->getBodyParam('handle');
 
         $listType = sproutLists()->lists->getListType($list->type);
 

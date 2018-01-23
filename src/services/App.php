@@ -3,10 +3,7 @@
 namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutbase\base\TemplateTrait;
-use barrelstrength\sproutbase\SproutBase;
 use craft\base\Component;
-use Craft;
-use yii\base\Event;
 
 /**
  * App Service
@@ -27,6 +24,9 @@ class App extends Component
 
     public const ERROR = 'sproutListsError';
 
+    /**
+     * @var $lists Lists
+     */
     public $lists;
     public $subscriptions;
     public $subscribers;
@@ -36,7 +36,7 @@ class App extends Component
         parent::init();
 
         $this->lists       = new Lists();
-        $this->subscribers = Craft::app()->getComponent('sproutLists_subscribers');
+        $this->subscribers = new Subscribers();
     }
 
 }

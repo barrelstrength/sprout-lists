@@ -8,7 +8,7 @@
         <a class="btn submit add icon"
            href="{{ url('sprout-lists/subscribers/new') }}">{{ "Add Subscriber"|t }}</a>
     </div>
-{% endBlock %}
+{% endblock %}
 
 {% if listHandle is defined %}
     {% includejs 'window.listHandle = "'~listHandle~'";' %}

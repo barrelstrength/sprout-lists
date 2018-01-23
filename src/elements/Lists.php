@@ -11,6 +11,13 @@ use craft\helpers\UrlHelper;
 
 class Lists extends Element
 {
+    public $id;
+    public $elementId;
+    public $type;
+    public $name;
+    public $handle;
+    public $totalSubscribers;
+
     public static function displayName(): string
     {
         return Craft::t('', 'Sprout Lists');

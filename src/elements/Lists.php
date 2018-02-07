@@ -2,12 +2,13 @@
 
 namespace barrelstrength\sproutlists\elements;
 
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\db\ListsQuery;
 use craft\base\Element;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
+use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use yii\web\ErrorHandler;
 
 class Lists extends Element
 {
@@ -20,29 +21,13 @@ class Lists extends Element
 
     public static function displayName(): string
     {
-        return Craft::t('', 'Sprout Lists');
+        return Craft::t('sprout-lists', 'Sprout Lists');
     }
 
     /**
      * @inheritdoc
      */
     public static function hasContent(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasTitles(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasUris(): bool
     {
         return true;
     }
@@ -66,6 +51,11 @@ class Lists extends Element
         );
     }
 
+    public static function find(): ElementQueryInterface
+    {
+        return new ListsQuery(static::class);
+    }
+
     protected static function defineSources(string $context = null): array
     {
         $sources = [
@@ -77,6 +67,22 @@ class Lists extends Element
 
         return $sources;
     }
+
+    /**
+     * Use the name as the string representation.
+     *
+     * @return string
+     */
+    /** @noinspection PhpInconsistentReturnPointsInspection */
+    public function __toString()
+    {
+        try {
+            return $this->name;
+        } catch (\Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+        }
+    }
+
 
     /**
      * @inheritdoc
@@ -118,9 +124,10 @@ class Lists extends Element
 
                 if ($this->id && $totalSubscribers > 0)
                 {
-                    return "<a href='" . UrlHelper::cpUrl('sprout-lists/subscribers/' . $this->handle) . "' class='go'>" . Craft::t('View Subscribers') . "</a>";
+                    return "<a href='" . UrlHelper::cpUrl('sprout-lists/subscribers/' . $this->handle) . "' class='go'>" .
+                        Craft::t('sprout-lists', 'View Subscribers') . "</a>";
                 }
-
+                return '';
                 break;
 
         }
@@ -128,16 +135,53 @@ class Lists extends Element
         return parent::getTableAttributeHtml($attribute);
     }
 
-    /**
-     * @return ElementQueryInterface
-     */
-    public static function find(): ElementQueryInterface
-    {
-        return new ListsQuery(static::class);
-    }
-
     public function getFieldLayout()
     {
         return Craft::$app->getFields()->getLayoutByType(static::class);
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        $rules[] = [['name', 'handle'], 'required'];
+
+        return $rules;
+    }
+
+    /**
+     * @param bool $isNew
+     *
+     * @throws \Exception
+     */
+    public function afterSave(bool $isNew)
+    {
+        // Get the list record
+        if (!$isNew) {
+            $record = ListsRecord::findOne($this->id);
+
+            if (!$record) {
+                throw new \Exception('Invalid list ID: '.$this->id);
+            }
+        } else {
+            $record = new ListsRecord();
+            $record->id = $this->id;
+            $record->elementId = $this->id;
+        }
+
+        $record->type   = $this->type;
+        $record->name   = $this->name;
+        $record->handle = $this->handle;
+
+        $record->save(false);
+
+        // Update the entry's descendants, who may be using this entry's URI in their own URIs
+        Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+
+        parent::afterSave($isNew);
     }
 }

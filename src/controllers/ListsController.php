@@ -66,23 +66,31 @@ class ListsController extends Controller
 
         $list = new Lists();
         $list->id     = Craft::$app->request->getBodyParam('listId');
-        $list->type   = Craft::$app->request->getBodyParam('type', 'subscriber');
+        $list->type   = Craft::$app->request->getBodyParam('type',
+            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
         $list->name   = Craft::$app->request->getBodyParam('name');
         $list->handle = Craft::$app->request->getBodyParam('handle');
 
-        $listType = sproutLists()->lists->getListType($list->type);
+        /**
+         * @var $listType SproutListsBaseListType
+         */
+        $listType = SproutLists::$app->lists->getListType($list->type);
 
-        if ($listType->saveList($list)) {
-            craft()->userSession->setNotice(Craft::t('List saved.'));
+        $session = Craft::$app->getSession();
+
+        if ($session AND $listType->saveList($list)) {
+            $session->setNotice(Craft::t('sprout-lists', 'List saved.'));
 
             $this->redirectToPostedUrl();
         } else {
-            craft()->userSession->setError(Craft::t('Unable to save list.'));
+            $session->setError(Craft::t('sprout-lists', 'Unable to save list.'));
 
-            craft()->urlManager->setRouteVariables([
+            Craft::$app->getUrlManager()->setRouteParams([
                 'list' => $list
             ]);
         }
+
+        return null;
     }
 
     /**

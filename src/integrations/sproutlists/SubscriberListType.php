@@ -4,7 +4,6 @@ namespace barrelstrength\sproutlists\integrations\sproutlists;
 
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutlists\elements\Lists;
-use barrelstrength\sproutlists\records\Lists as ListsRecord;
 use Craft;
 
 class SubscriberListType extends SproutListsBaseListType
@@ -131,22 +130,13 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets list with a given id.
-     *
      * @param $listId
      *
-     * @return BaseModel|SproutLists_ListModel
+     * @return \craft\base\ElementInterface|mixed|null
      */
     public function getListById($listId)
     {
-        $list = new SproutLists_ListModel();
-
-        $listRecord = SproutLists_ListRecord::model()->findById($listId);
-
-        if (!empty($listRecord)) {
-            $list = SproutLists_ListModel::populateModel($listRecord);
-        }
-
-        return $list;
+        return Craft::$app->getElements()->getElementById($listId);
     }
 
     /**

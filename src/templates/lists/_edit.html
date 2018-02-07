@@ -33,7 +33,9 @@
 
                 <input type="hidden" name="listId"
                        value="{{ list.id is defined ? list.id : null }}">
-                <input type="hidden" name="type" value="subscriber">
+                <input type="hidden"
+                       name="type"
+                       value="barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType">
 
                 {{ forms.textField({
                     label: "List Name"|t,
@@ -41,10 +43,10 @@
                     id: 'name',
                     name: 'name',
                     value: (list is defined ? list.name : null),
-                autofocus: true,
-                required: true,
-                first: true,
-                errors: (list is defined ? list.getErrors('name') : null)
+                    autofocus: true,
+                    required: true,
+                    first: true,
+                    errors: (list is defined ? list.getErrors('name') : null)
                 }) }}
 
                 {{ forms.textField({

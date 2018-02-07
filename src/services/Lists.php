@@ -4,6 +4,7 @@ namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use craft\base\Component;
+use Craft;
 
 class Lists extends Component
 {

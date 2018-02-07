@@ -51,7 +51,7 @@ class SproutLists extends Plugin
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
 
             $event->rules['sprout-lists/lists/new']                = 'sprout-lists/lists/edit-list-template';
-            $event->rules['sprout-lists/lists/edit/<emailId:\d+>'] = 'sprout-lists/lists/edit-list-template';
+            $event->rules['sprout-lists/lists/edit/<listId:\d+>']  = 'sprout-lists/lists/edit-list-template';
             $event->rules['sprout-lists/subscribers/new']          = 'sprout-lists/subscribers/edit-subscriber-template';
             $event->rules['sprout-lists/edit/<id:\d+>']            = 'sprout-lists/subscribers/edit-subscriber-template';
 
@@ -99,15 +99,15 @@ class SproutLists extends Plugin
         $navigation = [
             'subnav' => [
                 'subscribers' => [
-                    'label' => static::t('Subscribers'),
+                    'label' => Craft::t('sprout-lists', 'Subscribers'),
                     'url' => 'sprout-lists/subscribers'
                 ],
                 'lists' => [
-                    'label' => static::t('Lists'),
+                    'label' => Craft::t('sprout-lists','Lists'),
                     'url' => 'sprout-lists/lists'
                 ],
                 'settings' => [
-                    'label' => static::t('Settings'),
+                    'label' => Craft::t('sprout-lists','Settings'),
                     'url' => 'sprout-lists/settings/general'
                 ]
             ],

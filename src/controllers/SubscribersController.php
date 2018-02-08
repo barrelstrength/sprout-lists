@@ -2,6 +2,8 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
+use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 
 class SubscribersController extends Controller
@@ -13,20 +15,17 @@ class SubscribersController extends Controller
      *
      * @return null
      */
-    public function actionEditSubscriberTemplate(array $variables = [])
+    public function actionEditSubscriberTemplate($id = null, $subscriber = null)
     {
-        $listType = sproutLists()->lists->getListType('subscriber');
+        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
+        $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
         $listTypes[] = $listType;
 
-        $subscriber = new SproutLists_SubscriberModel();
-
-        if (isset($variables['subscriber'])) {
-            $subscriber = $variables['subscriber'];
-        } elseif (isset($variables['id'])) {
-            $subscriber = $listType->getSubscriberById($variables['id']);
+        if ($id != null) {
+            $subscriber = $listType->getSubscriberById($id);
         }
 
-        $this->renderTemplate('sproutlists/subscribers/_edit', [
+        return $this->renderTemplate('sprout-lists/subscribers/_edit', [
             'subscriber' => $subscriber,
             'listTypes' => $listTypes
         ]);

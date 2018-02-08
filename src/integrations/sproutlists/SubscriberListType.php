@@ -4,7 +4,11 @@ namespace barrelstrength\sproutlists\integrations\sproutlists;
 
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\elements\Subscribers;
 use Craft;
+use craft\helpers\Template;
+use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
+use barrelstrength\sproutlists\records\Lists as ListsRecord;
 
 class SubscriberListType extends SproutListsBaseListType
 {
@@ -91,26 +95,30 @@ class SubscriberListType extends SproutListsBaseListType
 
         $subscriberRecord = null;
 
-        if (!empty($subscriber->email) OR !empty($subscriber->userId)) {
+        if ($subscriber != null AND (!empty($subscriber->email) OR !empty($subscriber->userId))) {
             $subscriberAttributes = array_filter([
                 'email' => $subscriber->email,
                 'userId' => $subscriber->userId
             ]);
 
-            $subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($subscriberAttributes);
+            $subscriberRecord = SubscribersRecord::find()->where($subscriberAttributes)->all();
         }
-
+        $listRecords = [];
         if ($subscriberRecord == null) {
             // Only findAll if we are not looking for a specific Subscriber, otherwise we want to return null
             if (empty($subscriber->email)) {
-                $listRecord = SproutLists_ListRecord::model()->findAll();
+                $listRecords =  ListsRecord::find()->all();
             }
         } else {
-            $listRecord = $subscriberRecord->subscriberLists;
+            $listRecords = $subscriberRecord->subscriberLists;
         }
 
-        if (!empty($listRecord)) {
-            $lists = SproutLists_ListModel::populateModels($listRecord);
+        if (!empty($listRecords)) {
+            foreach ($listRecords as $listRecord) {
+                $list = new Lists();
+                $list->setAttributes($listRecord->getAttributes(), false);
+                $lists[] = $list;
+            }
         }
 
         return $lists;
@@ -610,22 +618,13 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets a subscriber with a given id.
-     *
      * @param $id
      *
-     * @return BaseModel|SproutLists_SubscriberModel
+     * @return \craft\base\ElementInterface|null
      */
     public function getSubscriberById($id)
     {
-        $subscriberRecord = SproutLists_SubscriberRecord::model()->findById($id);
-
-        $subscriber = new SproutLists_SubscriberModel();
-
-        if ($subscriberRecord != null) {
-            $subscriber = SproutLists_SubscriberModel::populateModel($subscriberRecord);
-        }
-
-        return $subscriber;
+        return Craft::$app->getElements()->getElementById($id);
     }
 
     /**
@@ -652,18 +651,31 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets the HTML output for the lists sidebar on the Subscriber edit page.
+     * @param $subscriberId
      *
-     * @return mixed
+     * @return \Twig_Markup
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
      */
     public function getSubscriberListsHtml($subscriberId)
     {
         $default = [];
+        $listIds = [];
 
-        $subscriber = $this->getSubscriberById($subscriberId);
+        if ($subscriberId != null) {
 
-        $listIds = $subscriber->getListIds();
+            $subscriber = $this->getSubscriberById($subscriberId);
+
+            if ($subscriber) {
+                /**
+                 * @var $subscriber Subscribers
+                 */
+                $listIds = $subscriber->getListIds();
+            }
+        }
 
         $lists = $this->getLists();
+
         $options = [];
 
         if (count($lists)) {
@@ -679,12 +691,12 @@ class SubscriberListType extends SproutListsBaseListType
             $listIds = $default;
         }
 
-        $html = craft()->templates->render('sproutlists/subscribers/_subscriptionlists', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-lists/subscribers/_subscriptionlists', [
             'options' => $options,
             'values' => $listIds
         ]);
 
-        return TemplateHelper::getRaw($html);
+        return Template::raw($html);
     }
 
     /**

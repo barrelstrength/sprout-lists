@@ -3,14 +3,14 @@
 {% set listnav = {} %}
 
 {% set subnav = listnav|merge({
-	subscribers: {
-		label: "Subscribers"|t,
-		url: url('sproutlists/subscribers')
-	},
-	lists: {
-		label: "Lists"|t,
-		url: url('sproutlists/lists')
-	}
+    subscribers: {
+        label: "Subscribers"|t,
+        url: url('sproutlists/subscribers')
+    },
+    lists: {
+        label: "Lists"|t,
+        url: url('sproutlists/lists')
+    }
 }) %}
 
 {% set selectedSubnavItem = craft.request.segment(2) %}

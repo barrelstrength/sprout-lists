@@ -2,15 +2,20 @@
 
 namespace barrelstrength\sproutlists\elements;
 
+use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\db\ListsQuery;
+use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
+use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 
 class Subscribers extends Element
 {
+    private $subscriberListsIds;
+
     public static function displayName(): string
     {
         return Craft::t('', 'Sprout Subscribers');
@@ -213,5 +218,53 @@ class Subscribers extends Element
         $rules[] = [['subjectLine', 'name'], 'required'];
 
         return $rules;
+    }
+
+    public function getListIds()
+    {
+        if (empty($this->subscriberListsIds))
+        {
+            $subscriberLists = $this->getListsBySubscriberId();
+
+            if (count($subscriberLists))
+            {
+                foreach ($subscriberLists as $list)
+                {
+                    $this->subscriberListsIds[] = $list->id;
+                }
+            }
+        }
+
+        return $this->subscriberListsIds;
+    }
+
+    /**
+     * Gets an array of SproutLists_ListModels to which this subscriber is subscribed.
+     *
+     * @return array
+     */
+    public function getListsBySubscriberId()
+    {
+        $lists    = array();
+
+        $subscriptions = SubscribersRecord::find()->where([
+            'subscriberId' => $this->id
+        ])->all();
+
+        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
+        $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
+
+        if (count($subscriptions))
+        {
+            foreach ($subscriptions as $subscription)
+            {
+                /**
+                 * @var $listType SproutListsBaseListType
+                 */
+                $lists[] = $listType->getListById($subscription->listId);
+            }
+        }
+
+        return $lists;
     }
 }

@@ -32,14 +32,13 @@ class ListsController extends Controller
 
         $listType = SproutLists::$app->lists->getListType($type);
 
-        if ($list == null)
-        {
+        if ($list == null) {
             $list = new Lists();
         }
 
         $continueEditingUrl = null;
 
-        if ($list == null AND $listId != null) {
+        if ($listId != null) {
 
             /**
              * @var $listType SproutListsBaseListType

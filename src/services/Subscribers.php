@@ -4,7 +4,7 @@ namespace barrelstrength\sproutlists\services;
 
 use craft\base\Component;
 use yii\base\Event;
-use barrelstrength\sproutbase\records\sproutemail\Subscribers as SubscribersRecord;
+use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\elements\Subscribers as SubscribersElement;
 use Craft;
 

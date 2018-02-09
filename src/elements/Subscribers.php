@@ -14,6 +14,12 @@ use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 
 class Subscribers extends Element
 {
+    public $id;
+    public $email;
+    public $firstName;
+    public $lastName;
+    public $userId;
+    public $subscriberLists;
     private $subscriberListsIds;
 
     public static function displayName(): string
@@ -25,22 +31,6 @@ class Subscribers extends Element
      * @inheritdoc
      */
     public static function hasContent(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasTitles(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function hasUris(): bool
     {
         return true;
     }
@@ -168,58 +158,9 @@ class Subscribers extends Element
     }
 
     /**
-     * @return array|mixed
-     * @throws \HttpException
+     * @return mixed
+     * @throws \Exception
      */
-    public function route()
-    {
-        // Only expose notification emails that have tokens and allow Live Preview requests
-        if (!Craft::$app->request->getParam(Craft::$app->config->getGeneral()->tokenParam)
-            && !Craft::$app->getRequest()->getIsLivePreview()) {
-            throw new \HttpException(404);
-        }
-        $extension = null;
-
-        if (($type = Craft::$app->request->get('type'))) {
-            $extension = in_array(strtolower($type), ['txt', 'text']) ? '.txt' : null;
-        }
-
-        if (!Craft::$app->getView()->doesTemplateExist($this->template.$extension)) {
-            $templateName = $this->template.$extension;
-
-            SproutEmail::$app->utilities->addError(Craft::t('sprout-email', "The template '{templateName}' could not be found", [
-                'templateName' => $templateName
-            ]));
-        }
-
-        $event = SproutEmail::$app->notificationEmails->getEventById($this->eventId);
-
-        $object = $event ? $event->getMockedParams() : null;
-
-        return [
-            'templates/render', [
-                'template' => $this->template.$extension,
-                'variables' => [
-                    'email' => $this,
-                    'object' => $object
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function rules()
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['subjectLine', 'name'], 'required'];
-
-        return $rules;
-    }
-
     public function getListIds()
     {
         if (empty($this->subscriberListsIds))
@@ -240,8 +181,8 @@ class Subscribers extends Element
 
     /**
      * Gets an array of SproutLists_ListModels to which this subscriber is subscribed.
-     *
      * @return array
+     * @throws \Exception
      */
     public function getListsBySubscriberId()
     {
@@ -266,5 +207,51 @@ class Subscribers extends Element
         }
 
         return $lists;
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        $rules[] = [['email'], 'required'];
+
+        return $rules;
+    }
+
+    /**
+     * @param bool $isNew
+     *
+     * @throws \Exception
+     */
+    public function afterSave(bool $isNew)
+    {
+        // Get the list record
+        if (!$isNew) {
+            $record = SubscribersRecord::findOne($this->id);
+
+            if (!$record) {
+                throw new \Exception('Invalid list ID: '.$this->id);
+            }
+        } else {
+            $record = new SubscribersRecord();
+            $record->id = $this->id;
+        }
+
+        $record->userId    = $this->userId;
+        $record->email     = $this->email;
+        $record->firstName = $this->firstName;
+        $record->lastName  = $this->lastName;
+        $record->firstName = $this->firstName;
+
+        $record->save(false);
+
+        // Update the entry's descendants, who may be using this entry's URI in their own URIs
+        Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+
+        parent::afterSave($isNew);
     }
 }

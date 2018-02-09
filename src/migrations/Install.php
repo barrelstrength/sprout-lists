@@ -3,7 +3,6 @@
 namespace barrelstrength\sproutlists\migrations;
 
 use craft\db\Migration;
-use barrelstrength\sproutbase\migrations\sproutemail\Install as SproutBaseNotificationInstall;
 
 class Install extends Migration
 {

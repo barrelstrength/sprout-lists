@@ -461,79 +461,16 @@ class SubscriberListType extends SproutListsBaseListType
     // =========================================================================
 
     /**
-     * @param SproutLists_SubscriberModel $subscriber
+     * @param Subscribers $subscriber
      *
      * @return bool
-     * @throws \Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
      */
-    public function saveSubscriber(SproutLists_SubscriberModel $subscriber)
+    public function saveSubscriber(Subscribers $subscriber)
     {
-        $settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
-
-        if ($subscriber->id) {
-            $subscriberRecord = SproutLists_SubscriberRecord::model()->findById($subscriber->id);
-        } else {
-            $subscriberRecord = new SproutLists_SubscriberRecord();
-        }
-
-        $user = null;
-
-        // Sync updates with Craft User if User Sync enabled
-        if ($subscriber->email && $settings->enableUserSync) {
-            $user = craft()->users->getUserByUsernameOrEmail($subscriber->email);
-
-            if ($user != null) {
-                $subscriber->userId = $user->id;
-            }
-        }
-
-        $subscriberRecord->userId = $subscriber->userId;
-        $subscriberRecord->email = $subscriber->email;
-        $subscriberRecord->firstName = $subscriber->firstName;
-        $subscriberRecord->lastName = $subscriber->lastName;
-        $subscriberRecord->firstName = $subscriber->firstName;
-
-        $subscriberRecord->validate();
-        $subscriber->addErrors($subscriberRecord->getErrors());
-
-        if (!$subscriber->hasErrors()) {
-            $transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
-            try {
-                if (craft()->elements->saveElement($subscriber)) {
-                    $subscriberRecord->id = $subscriber->id;
-
-                    if ($subscriberRecord->save(false)) {
-                        // Save any related Subscriptions
-                        $this->saveSubscriptions($subscriber);
-
-                        // Sync updates with Craft User if User Sync enabled
-                        if ($subscriberRecord->userId != null && $settings->enableUserSync) {
-                            // If they changed their Subscriber info, update the Craft User info too
-                            $user->email = $subscriberRecord->email;
-                            $user->firstName = $subscriberRecord->firstName;
-                            $user->lastName = $subscriberRecord->lastName;
-
-                            craft()->users->saveUser($user);
-                        }
-
-                        if ($transaction && $transaction->active) {
-                            $transaction->commit();
-                        }
-
-                        return true;
-                    }
-                }
-            } catch (\Exception $e) {
-                if ($transaction && $transaction->active) {
-                    $transaction->rollback();
-                }
-
-                throw $e;
-            }
-        }
-
-        return false;
+       return Craft::$app->getElements()->saveElement($subscriber);
     }
 
     /**

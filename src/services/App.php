@@ -29,6 +29,7 @@ class App extends Component
      */
     public $lists;
     public $subscriptions;
+
     public $subscribers;
 
     public function init()
@@ -38,5 +39,4 @@ class App extends Component
         $this->lists       = new Lists();
         $this->subscribers = new Subscribers();
     }
-
 }

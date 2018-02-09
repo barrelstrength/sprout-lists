@@ -19,10 +19,12 @@ class ListsController extends Controller
 
     /**
      * Prepare variables for the List Edit Template
+     * @param null $type
+     * @param null $listId
+     * @param null $list
      *
-     * @param array $variables
-     *
-     * @return null
+     * @return \yii\web\Response
+     * @throws \Exception
      */
     public function actionEditListTemplate($type = null, $listId = null, $list = null)
     {
@@ -55,8 +57,9 @@ class ListsController extends Controller
         ]);
     }
 
-
     /**
+     * @return null
+     * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSaveList()

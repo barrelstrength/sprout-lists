@@ -26,9 +26,9 @@ class SproutLists extends Plugin
     public $hasSettings = true;
 
     /**
-     * Enable use of SproutEmail::$plugin-> in place of Craft::$app->
+     * Enable use of SproutLists::$plugin-> in place of Craft::$app->
      *
-     * @var \barrelstrength\sproutemail\services\App
+     * @var \barrelstrength\sproutlists\services\App
      */
     public static $app;
     public static $pluginId = 'sprout-lists';

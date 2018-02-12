@@ -8,11 +8,6 @@ use yii\db\ActiveQueryInterface;
 
 class Subscribers extends ActiveRecord
 {
-    public $id;
-    public $email;
-    public $firstName;
-    public $lastName;
-    public $subscriberLists;
     /**
      * @return string
      */

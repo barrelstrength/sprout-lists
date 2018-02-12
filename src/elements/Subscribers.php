@@ -5,6 +5,7 @@ namespace barrelstrength\sproutlists\elements;
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\db\ListsQuery;
+use barrelstrength\sproutlists\elements\db\SubscribersQuery;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
 use Craft;
@@ -72,55 +73,23 @@ class Subscribers extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'name'   => ['label' => Craft::t('sprout-lists', 'Name')],
-            'handle' => ['label' => Craft::t('sprout-lists', 'List Handle')],
-            'view'   => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
-            'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscribers')],
+            'id'   => ['label' => Craft::t('sprout-lists', 'ID')],
+            'email' => ['label' => Craft::t('sprout-lists', 'Email')],
+            'firstName' => ['label' => Craft::t('sprout-lists', 'First Name')],
+            'lastName' => ['label' => Craft::t('sprout-lists', 'Last Name')],
             'dateCreated'      => ['label' => Craft::t('sprout-lists', 'Date Created')],
             'dateUpdated'      => ['label' => Craft::t('sprout-lists', 'Date Updated')]
         ];
 
         return $attributes;
     }
-
-    /**
-     * @param string $attribute
-     *
-     * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     */
-    public function getTableAttributeHtml(string $attribute): string
-    {
-        $totalSubscribers = $this->totalSubscribers;
-
-        switch ($attribute)
-        {
-            case "handle":
-
-                return "<code>" . $this->handle . "</code>";
-
-                break;
-
-            case "view":
-
-                if ($this->id && $totalSubscribers > 0)
-                {
-                    return "<a href='" . UrlHelper::cpUrl('sprout-lists/subscribers/' . $this->handle) . "' class='go'>" . Craft::t('View Subscribers') . "</a>";
-                }
-
-                break;
-        }
-
-        return parent::getTableAttributeHtml($attribute);
-    }
-
+    
     /**
      * @return ElementQueryInterface
      */
     public static function find(): ElementQueryInterface
     {
-        return new ListsQuery(static::class);
+        return new SubscribersQuery(static::class);
     }
 
     public function getFieldLayout()
@@ -229,6 +198,13 @@ class Subscribers extends Element
      */
     public function afterSave(bool $isNew)
     {
+        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
+
+        if ($plugin)
+        {
+            $settings = $plugin->getSettings();
+        }
+
         // Get the list record
         if (!$isNew) {
             $record = SubscribersRecord::findOne($this->id);
@@ -241,11 +217,22 @@ class Subscribers extends Element
             $record->id = $this->id;
         }
 
+        $user = null;
+
+        // Sync updates with Craft User if User Sync enabled
+        if ($record->email && ($settings AND $settings->enableUserSync)) {
+            $user = Craft::$app->users->getUserByUsernameOrEmail($record->email);
+
+            if ($user != null)
+            {
+                $record->userId = $user->id;
+            }
+        }
+
         $record->userId    = $this->userId;
         $record->email     = $this->email;
         $record->firstName = $this->firstName;
         $record->lastName  = $this->lastName;
-        $record->firstName = $this->firstName;
 
         $record->save(false);
 

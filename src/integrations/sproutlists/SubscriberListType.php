@@ -5,6 +5,7 @@ namespace barrelstrength\sproutlists\integrations\sproutlists;
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\records\Subscription;
 use Craft;
 use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
@@ -409,12 +410,10 @@ class SubscriberListType extends SproutListsBaseListType
      * @return bool
      * @throws \Exception
      */
-    public function saveSubscriptions(SproutLists_SubscriberModel $subscriber)
+    public function saveSubscriptions(Subscribers $subscriber)
     {
-        $transaction = craft()->db->getCurrentTransaction() === null ? craft()->db->beginTransaction() : null;
-
         try {
-            SproutLists_SubscriptionRecord::model()->deleteAll('subscriberId = :subscriberId', [
+            Subscription::deleteAll('subscriberId = :subscriberId', [
                 ':subscriberId' => $subscriber->id
             ]);
 
@@ -423,12 +422,12 @@ class SubscriberListType extends SproutListsBaseListType
                     $list = $this->getListById($listId);
 
                     if ($list) {
-                        $subscriptionRecord = new SproutLists_SubscriptionRecord();
+                        $subscriptionRecord = new Subscription();
                         $subscriptionRecord->subscriberId = $subscriber->id;
                         $subscriptionRecord->listId = $list->id;
 
                         if (!$subscriptionRecord->save(false)) {
-                            throw new Exception(print_r($subscriptionRecord->getErrors(), true));
+                            throw new \Exception(print_r($subscriptionRecord->getErrors(), true));
                         }
                     } else {
                         throw new Exception(Craft::t('The Subscriber List with id {listId} does not exists.', [
@@ -439,20 +438,11 @@ class SubscriberListType extends SproutListsBaseListType
                 }
             }
 
-            $this->updateTotalSubscribersCount();
-
-            if ($transaction && $transaction->active) {
-                $transaction->commit();
-            }
+           // $this->updateTotalSubscribersCount();
 
             return true;
         } catch (\Exception $e) {
-            SproutListsPlugin::log($e->getMessage(), LogLevel::Error);
-
-            if ($transaction && $transaction->active) {
-                $transaction->rollback();
-            }
-
+            Craft::error($e->getMessage());
             throw $e;
         }
     }
@@ -470,7 +460,11 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function saveSubscriber(Subscribers $subscriber)
     {
-       return Craft::$app->getElements()->saveElement($subscriber);
+       if (Craft::$app->getElements()->saveElement($subscriber)) {
+           $this->saveSubscriptions($subscriber);
+       }
+
+       return true;
     }
 
     /**
@@ -594,6 +588,14 @@ class SubscriberListType extends SproutListsBaseListType
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
+    /**
+     * @param $subscriberId
+     *
+     * @return \Twig_Markup
+     * @throws \Exception
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
     public function getSubscriberListsHtml($subscriberId)
     {
         $default = [];
@@ -646,16 +648,19 @@ class SubscriberListType extends SproutListsBaseListType
     public function updateTotalSubscribersCount($listId = null)
     {
         if ($listId == null) {
-            $lists = SproutLists_ListRecord::model()->with('subscribers')->findAll();
+            $lists = ListsRecord::find()->all();
         } else {
-            $list = SproutLists_ListRecord::model()->with('subscribers')->findById($listId);
+            $list = ListsRecord::findOne($listId);
 
             $lists = [$list];
         }
 
         if (count($lists)) {
             foreach ($lists as $list) {
-                $count = count($list->subscribers);
+
+                if (!$list) continue;
+
+                $count = count($list->getSubscribers());
 
                 $list->totalSubscribers = $count;
 

@@ -41,8 +41,7 @@
 
                 <input type="hidden" id="action" name="action"
                        value="sprout-lists/subscribers/save-subscriber">
-                <input type="hidden" id="redirect" name="redirect"
-                       value="sproutlists/subscribers/">
+                {{ redirectInput("sprout-lists/subscribers") }}
 
                 {% if subscriber is not null %}
                     <input type="hidden" name="subscriberId"

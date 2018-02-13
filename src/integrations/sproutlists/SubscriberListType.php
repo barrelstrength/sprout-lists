@@ -52,38 +52,6 @@ class SubscriberListType extends SproutListsBaseListType
     }
 
     /**
-     * Deletes a list.
-     *
-     * @param $listId
-     *
-     * @return bool
-     */
-    public function deleteList($listId)
-    {
-        $listRecord = Lists::model()->findById($listId);
-
-        if ($listRecord == null) {
-            return false;
-        }
-
-        if ($listRecord->delete()) {
-            $subscriptions = SproutLists_SubscriptionRecord::model()->findByAttributes([
-                'listId' => $listId
-            ]);
-
-            if ($subscriptions != null) {
-                SproutLists_SubscriptionRecord::model()->deleteAll('listId = :listId', [
-                    ':listId' => $listId
-                ]);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Gets lists.
      *
      * @param null $subscriber
@@ -404,8 +372,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Saves a subscribers subscriptions.
-     *
-     * @param SproutLists_SubscriberModel $subscriber
+     * @param Subscribers $subscriber
      *
      * @return bool
      * @throws \Exception
@@ -430,15 +397,12 @@ class SubscriberListType extends SproutListsBaseListType
                             throw new \Exception(print_r($subscriptionRecord->getErrors(), true));
                         }
                     } else {
-                        throw new Exception(Craft::t('The Subscriber List with id {listId} does not exists.', [
-                                'listId' => $listId
-                            ]
-                        ));
+                        throw new \Exception(Craft::t('The Subscriber List with id {listId} does not exists.',$listId));
                     }
                 }
             }
 
-           // $this->updateTotalSubscribersCount();
+            $this->updateTotalSubscribersCount();
 
             return true;
         } catch (\Exception $e) {
@@ -506,7 +470,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     public function getSubscriberCount($list)
     {
-        $subscribers = $this->getSubscribers($list);
+        $subscribers = $this->getSubscribers($list)->all();
 
         return count($subscribers);
     }
@@ -660,7 +624,7 @@ class SubscriberListType extends SproutListsBaseListType
 
                 if (!$list) continue;
 
-                $count = count($list->getSubscribers());
+                $count = count($list->getSubscribers()->all());
 
                 $list->totalSubscribers = $count;
 

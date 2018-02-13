@@ -3,8 +3,9 @@
 namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
+use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
-use Craft;
+use barrelstrength\sproutlists\records\Lists as ListsRecord;
 
 class Lists extends Component
 {
@@ -57,5 +58,42 @@ class Lists extends Component
         }
 
         return new $listTypes[$className];
+    }
+
+    /**
+     * Deletes a list.
+     * @param $listId
+     *
+     * @return bool
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function deleteList($listId)
+    {
+        $listRecord = ListsRecord::findOne($listId);
+
+        if ($listRecord == null)
+        {
+            return false;
+        }
+
+        if ($listRecord AND $listRecord->delete())
+        {
+            $subscriptions = Subscription::find()->where([
+                'listId' => $listId
+            ]);
+
+            if ($subscriptions != null)
+            {
+                Subscription::deleteAll('listId = :listId', array(
+                    ':listId' => $listId
+                ));
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }

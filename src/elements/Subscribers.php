@@ -4,8 +4,9 @@ namespace barrelstrength\sproutlists\elements;
 
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutbase\SproutBase;
-use barrelstrength\sproutlists\elements\db\ListsQuery;
+use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscribersQuery;
+use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
 use Craft;
@@ -73,12 +74,12 @@ class Subscribers extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'id'   => ['label' => Craft::t('sprout-lists', 'ID')],
-            'email' => ['label' => Craft::t('sprout-lists', 'Email')],
+            'id'        => ['label' => Craft::t('sprout-lists', 'ID')],
+            'email'     => ['label' => Craft::t('sprout-lists', 'Email')],
             'firstName' => ['label' => Craft::t('sprout-lists', 'First Name')],
-            'lastName' => ['label' => Craft::t('sprout-lists', 'Last Name')],
-            'dateCreated'      => ['label' => Craft::t('sprout-lists', 'Date Created')],
-            'dateUpdated'      => ['label' => Craft::t('sprout-lists', 'Date Updated')]
+            'lastName'  => ['label' => Craft::t('sprout-lists', 'Last Name')],
+            'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-lists', 'Date Updated')]
         ];
 
         return $attributes;
@@ -132,14 +133,11 @@ class Subscribers extends Element
      */
     public function getListIds()
     {
-        if (empty($this->subscriberListsIds))
-        {
+        if (empty($this->subscriberListsIds)) {
             $subscriberLists = $this->getListsBySubscriberId();
 
-            if (count($subscriberLists))
-            {
-                foreach ($subscriberLists as $list)
-                {
+            if (count($subscriberLists)) {
+                foreach ($subscriberLists as $list) {
                     $this->subscriberListsIds[] = $list->id;
                 }
             }
@@ -157,17 +155,15 @@ class Subscribers extends Element
     {
         $lists    = array();
 
-        $subscriptions = SubscribersRecord::find()->where([
+        $subscriptions = Subscription::find()->where([
             'subscriberId' => $this->id
         ])->all();
 
         $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
         $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
 
-        if (count($subscriptions))
-        {
-            foreach ($subscriptions as $subscription)
-            {
+        if (count($subscriptions)) {
+            foreach ($subscriptions as $subscription) {
                 /**
                  * @var $listType SproutListsBaseListType
                  */
@@ -240,5 +236,17 @@ class Subscribers extends Element
         Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
 
         parent::afterSave($isNew);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function defineActions(string $source = null): array
+    {
+        $actions = [];
+
+        $actions[] = DeleteSubscriber::class;
+
+        return $actions;
     }
 }

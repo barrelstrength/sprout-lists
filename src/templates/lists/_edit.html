@@ -82,7 +82,7 @@
                                     class="btn small formsubmit"
                                     data-action="sprout-lists/lists/delete-list"
                                     data-confirm="{{ 'Are you sure you want to delete this list?'|t }}"
-                                    data-redirect="sprout-lists/lists"
+                                    data-redirect="{{ "sprout-lists/lists"|hash }}"
                                     value="{{ 'Delete'|t }}">
                         </div>
                     {% endset %}

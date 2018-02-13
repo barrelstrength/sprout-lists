@@ -22,10 +22,12 @@
             <div class="menu">
                 <ul>
                     <li><a class="formsubmit"
-                           data-redirect="sproutlists/subscribers/edit/{id}">{{ "Save and continue editing"|t }}</a>
+                           data-redirect="{{ "sprout-lists/subscribers/edit/{id}"|hash  }}">
+                            {{ "Save and continue editing"|t }}</a>
                     </li>
                     <li><a class="formsubmit"
-                           data-redirect="sproutlists/subscribers/new">{{ "Save and add another"|t }}</a>
+                           data-redirect="{{ "sprout-lists/subscribers/new"|hash }}">
+                            {{ "Save and add another"|t }}</a>
                     </li>
                 </ul>
             </div>
@@ -119,9 +121,9 @@
                                     <input
                                             type="button"
                                             class="btn small formsubmit"
-                                            data-action="sproutLists/subscribers/deleteSubscriber"
+                                            data-action="sprout-lists/subscribers/delete-subscriber"
                                             data-confirm="{{ 'Are you sure you want to delete this subscriber?'|t }}"
-                                            data-redirect="sproutlists/subscribers"
+                                            data-redirect="{{ "sprout-lists/subscribers"|hash }}"
                                             value="{{ 'Delete'|t }}">
                                 </div>
                             {% endset %}

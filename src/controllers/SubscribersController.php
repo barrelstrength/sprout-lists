@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutlists\controllers;
 
 use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\records\Lists;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 use Craft;
@@ -42,8 +43,14 @@ class SubscribersController extends Controller
     {
         $this->requirePostRequest();
 
-        $subscriber                  = new Subscribers();
-        $subscriber->id              = Craft::$app->getRequest()->getBodyParam('subscriberId');
+        $subscriberId = Craft::$app->getRequest()->getBodyParam('subscriberId');
+
+        $subscriber = new Subscribers();
+
+        if ($subscriberId != null) {
+            $subscriber = Craft::$app->getElements()->getElementById($subscriberId);
+        }
+
         $subscriber->email           = Craft::$app->getRequest()->getBodyParam('email');
         $subscriber->firstName       = Craft::$app->getRequest()->getBodyParam('firstName');
         $subscriber->lastName        = Craft::$app->getRequest()->getBodyParam('lastName');
@@ -70,27 +77,31 @@ class SubscribersController extends Controller
 
     /**
      * Deletes a subscriber
-     *
-     * @return null
+     * @return null|\yii\web\Response
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionDeleteSubscriber()
     {
         $this->requirePostRequest();
 
-        $subscriberId = craft()->request->getRequiredPost('subscriberId');
+        $subscriberId = Craft::$app->getRequest()->getBodyParam('subscriberId');
 
-        $listType = craft()->request->getRequiredPost('type');
+        $listType = Craft::$app->getRequest()->getBodyParam('type');
 
-        if ($subscriber = $listType->deleteSubscriberById($subscriberId)) {
-            craft()->userSession->setNotice(Craft::t('Subscriber deleted.'));
+        $session = Craft::$app->getSession();
 
-            $this->redirectToPostedUrl($subscriber);
-        } else {
-            craft()->userSession->setError(Craft::t('Unable to delete subscriber.'));
+        if ($session AND $subscriber = $listType->deleteSubscriberById($subscriberId)) {
+            $session->setNotice(Craft::t('sprout-lists', 'Subscriber deleted.'));
 
-            craft()->urlManager->setRouteVariables([
-                'subscriber' => $subscriber
-            ]);
+            return $this->redirectToPostedUrl($subscriber);
         }
+
+        $session->setError(Craft::t('sprout-lists', 'Unable to delete subscriber.'));
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'subscriber' => $subscriber
+        ]);
+
+        return null;
     }
 }

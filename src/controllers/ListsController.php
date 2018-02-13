@@ -4,6 +4,7 @@ namespace barrelstrength\sproutlists\controllers;
 
 use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 use Craft;
@@ -66,8 +67,13 @@ class ListsController extends Controller
     {
         $this->requirePostRequest();
 
+        $listId = Craft::$app->request->getBodyParam('listId');
         $list = new Lists();
-        $list->id     = Craft::$app->request->getBodyParam('listId');
+
+        if ($listId != null) {
+            $list = Craft::$app->getElements()->getElementById($listId);
+        }
+
         $list->type   = Craft::$app->request->getBodyParam('type',
             'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
         $list->name   = Craft::$app->request->getBodyParam('name');
@@ -97,121 +103,126 @@ class ListsController extends Controller
 
     /**
      * Deletes a list.
-     *
-     * @return null
+     * @return \yii\web\Response
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionDeleteList()
     {
         $this->requirePostRequest();
 
-        $listId = craft()->request->getRequiredPost('listId');
+        $listId = Craft::$app->getRequest()->getBodyParam('listId');
+        $session = Craft::$app->getSession();
 
-        if (sproutLists()->lists->deleteList($listId)) {
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
+        if ($session AND SproutLists::$app->lists->deleteList($listId)) {
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
                     'success' => true
                 ]);
-            } else {
-                craft()->userSession->setNotice(Craft::t('List deleted.'));
-
-                $this->redirectToPostedUrl();
             }
-        } else {
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
-                    'success' => false
-                ]);
-            } else {
-                craft()->userSession->setError(Craft::t('Unable to delete list.'));
 
-                $this->redirectToPostedUrl();
-            }
+            $session->setNotice(Craft::t('sprout-lists', 'List deleted.'));
+
+            return $this->redirectToPostedUrl();
         }
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'success' => false
+            ]);
+        }
+
+        $session->setError(Craft::t('sprout-lists', 'Unable to delete list.'));
+
+        return $this->redirectToPostedUrl();
     }
 
     /**
-     *  Adds a subscriber to a list
-     *
-     * @return boolean true/false if successful
-     * @return array   array of errors if fail
+     * Adds a subscriber to a list
+     * @return \yii\web\Response
+     * @throws \Exception
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionSubscribe()
     {
-        $subscription = new SproutLists_SubscriptionModel();
-        $subscription->listType = craft()->request->getPost('listType', 'subscriber');
-        $subscription->listHandle = craft()->request->getPost('listHandle');
-        $subscription->listId = craft()->request->getPost('listId');
-        $subscription->userId = craft()->request->getPost('userId');
-        $subscription->email = craft()->request->getPost('email');
-        $subscription->elementId = craft()->request->getPost('elementId');
+        $subscription = new Subscription();
+        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',
+            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
+        $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
+        $subscription->listId     = Craft::$app->getRequest()->getBodyParam('listId');
+        $subscription->userId     = Craft::$app->getRequest()->getBodyParam('userId');
+        $subscription->email      = Craft::$app->getRequest()->getBodyParam('email');
+        $subscription->elementId  = Craft::$app->getRequest()->getBodyParam('elementId');
 
-        $listType = sproutLists()->lists->getListType($subscription->listType);
+        $listType = SproutLists::$app->lists->getListType($subscription->listType);
 
         if ($listType->subscribe($subscription)) {
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
                     'success' => true,
                 ]);
-            } else {
-                $this->redirectToPostedUrl();
             }
-        } else {
-            $errors = [Craft::t('Unable to save subscription.')];
 
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
-                    'errors' => $errors,
-                ]);
-            } else {
-                craft()->urlManager->setRouteVariables([
-                    'errors' => $errors
-                ]);
-
-                $this->redirectToPostedUrl();
-            }
+            return $this->redirectToPostedUrl();
         }
+        $errors = [Craft::t('sprout-lists', 'Unable to save subscription.')];
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'errors' => $errors,
+            ]);
+        }
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'errors' => $errors
+        ]);
+
+        return $this->redirectToPostedUrl();
     }
 
     /**
      * Removes a subscriber from a list
-     *
-     * @return boolean true/false if successful
-     * @return array   array of errors if fail
+     * @return \yii\web\Response
+     * @throws \Exception
+     * @throws \yii\web\BadRequestHttpException
      */
     public function actionUnsubscribe()
     {
-        $subscription = new SproutLists_SubscriptionModel();
-        $subscription->listType = craft()->request->getPost('listType', 'subscriber');
-        $subscription->listHandle = craft()->request->getPost('listHandle');
-        $subscription->listId = craft()->request->getPost('listId');
-        $subscription->userId = craft()->request->getPost('userId');
-        $subscription->email = craft()->request->getPost('email');
-        $subscription->elementId = craft()->request->getPost('elementId');
+        $subscription = new Subscription();
+        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',
+            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
+        $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
+        $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
+        $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
+        $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
+        $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
-        $listType = sproutLists()->lists->getListType($subscription->listType);
+        $listType = SproutLists::$app->lists->getListType($subscription->listType);
 
         if ($listType->unsubscribe($subscription)) {
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
                     'success' => true,
                 ]);
-            } else {
-                $this->redirectToPostedUrl();
             }
-        } else {
-            $errors = [Craft::t('Unable to remove subscription.')];
 
-            if (craft()->request->isAjaxRequest()) {
-                $this->returnJson([
-                    'errors' => $errors,
-                ]);
-            } else {
-                craft()->urlManager->setRouteVariables([
-                    'errors' => $errors
-                ]);
-
-                $this->redirectToPostedUrl();
-            }
+            return $this->redirectToPostedUrl();
         }
+
+        $errors = [Craft::t('sprout-lists', 'Unable to remove subscription.')];
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'errors' => $errors,
+            ]);
+        }
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'errors' => $errors
+        ]);
+
+        return  $this->redirectToPostedUrl();
     }
 }

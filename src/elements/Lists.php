@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements;
 
+use barrelstrength\sproutlists\elements\actions\DeleteList;
 use barrelstrength\sproutlists\elements\db\ListsQuery;
 use craft\base\Element;
 use Craft;
@@ -183,5 +184,16 @@ class Lists extends Element
         Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
 
         parent::afterSave($isNew);
+    }
+    /**
+     * @inheritdoc
+     */
+    protected static function defineActions(string $source = null): array
+    {
+        $actions = [];
+
+        $actions[] = DeleteList::class;
+
+        return $actions;
     }
 }

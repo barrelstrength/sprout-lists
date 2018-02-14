@@ -63,7 +63,9 @@ class SubscriberListType extends SproutListsBaseListType
         $lists = [];
 
         $subscriberRecord = null;
-
+        /**
+         * @var $subscriber Subscribers
+         */
         if ($subscriber != null AND (!empty($subscriber->email) OR !empty($subscriber->userId))) {
             $subscriberAttributes = array_filter([
                 'email' => $subscriber->email,
@@ -78,8 +80,6 @@ class SubscriberListType extends SproutListsBaseListType
             if (empty($subscriber->email)) {
                 $listRecords =  ListsRecord::find()->all();
             }
-        } else {
-            $listRecords = $subscriberRecord->subscriberLists;
         }
 
         if (!empty($listRecords)) {
@@ -123,27 +123,18 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function getListsWithSubscribers()
     {
-        $records = SproutLists_SubscriberRecord::model()->with('subscriberLists')->findAll();
-        $ids = [];
         $lists = [];
-
+        $records = ListsRecord::find()->all();
         if ($records) {
             foreach ($records as $record) {
-                $ids[] = $record->id;
-            }
+                /**
+                 * @var $record ListsRecord
+                 */
+                $subscribers = $record->getSubscribers()->all();
 
-            $query = craft()->db->createCommand()
-                ->select('listId')
-                ->where(['in', 'subscriberId', $ids])
-                ->from('sproutlists_subscriptions')
-                ->group('listId');
+                if (empty($subscribers)) continue;
 
-            $results = $query->queryAll();
-
-            if (!empty($results)) {
-                foreach ($results as $result) {
-                    $lists[] = $this->getListById($result['listId']);
-                }
+                $lists[] = $record;
             }
         }
 

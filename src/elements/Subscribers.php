@@ -10,6 +10,7 @@ use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
 use Craft;
+use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
@@ -56,6 +57,12 @@ class Subscribers extends Element
         );
     }
 
+    /**
+     * @param string|null $context
+     *
+     * @return array
+     * @throws \Exception
+     */
     protected static function defineSources(string $context = null): array
     {
         $sources = [
@@ -64,6 +71,28 @@ class Subscribers extends Element
                 'label' => Craft::t('sprout-lists', 'All Lists')
             ]
         ];
+        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
+
+        $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
+
+        $lists = $listType->getListsWithSubscribers();
+
+        if (!empty($lists)) {
+            $sources[] = [
+                'heading'   => $listType->getName()
+            ];
+
+            foreach ($lists as $list) {
+                $source = [
+                    'key' => 'lists:' . $list->id,
+                    'label'    => $list->name,
+                    'data'     => array('handle' => $list->handle),
+                    'criteria' => array('listId' => $list->id)
+                ];
+
+                $sources[] = $source;
+            }
+        }
 
         return $sources;
     }

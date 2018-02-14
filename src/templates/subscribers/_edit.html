@@ -2,7 +2,7 @@
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-    { label: "Subscribers"|t, url: url('sproutlists/subscribers') }
+    { label: "Subscribers"|t, url: url('sprout-lists/subscribers') }
 ] %}
 
 {% set title = subscriber is not null ? 'Edit Subscriber'|t : 'New Subscriber'|t %}
@@ -11,7 +11,7 @@
 {% set subscriberId = subscriber is not null ? subscriber.id : null  %}
 {% set fullPageForm = true %}
 
-{% set saveShortcutRedirect = subscriber is not null ? 'sproutlists/subscribers/edit/' ~ subscriberId : '' %}
+{% set saveShortcutRedirect = subscriber is not null ? 'sprout-lists/subscribers/edit/' ~ subscriberId : '' %}
 
 {% block actionButton %}
     <div class="buttons">

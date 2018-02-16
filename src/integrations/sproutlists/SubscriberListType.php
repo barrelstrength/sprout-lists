@@ -238,15 +238,16 @@ class SubscriberListType extends SproutListsBaseListType
     public function unsubscribe($subscription)
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
-        $settings = $plugin->getSettings();
+
+        $settings = (isset($plugin))? $plugin->getSettings() : null;
 
         if ($subscription->id) {
-            $list = SproutLists_ListRecord::model()->findById($subscription->id);
+            $list = ListsRecord::findOne($subscription->id);
         } else {
-            $list = SproutLists_ListRecord::model()->findByAttributes([
+            $list = ListsRecord::find()->where([
                 'type' => $subscription->listType,
                 'handle' => $subscription->listHandle
-            ]);
+            ])->one();
         }
 
         if (!$list) {
@@ -254,16 +255,16 @@ class SubscriberListType extends SproutListsBaseListType
         }
 
         // Determine the subscriber that we will un-subscribe
-        $subscriberRecord = new SproutLists_SubscriberRecord();
+        $subscriberRecord = new SubscribersRecord();
 
-        if (!empty($subscription->userId) && $settings->enableUserSync) {
-            $subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes([
+        if (!empty($subscription->userId) && ($settings AND $settings->enableUserSync)) {
+            $subscriberRecord = SubscribersRecord::find()->where([
                 'userId' => $subscription->userId
-            ]);
+            ])->one();
         } elseif (!empty($subscription->email)) {
-            $subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes([
+            $subscriberRecord = SubscribersRecord::find()->where([
                 'email' => $subscription->email
-            ]);
+            ])->one();
         }
 
         if (!isset($subscriberRecord->id)) {
@@ -271,7 +272,7 @@ class SubscriberListType extends SproutListsBaseListType
         }
 
         // Delete the subscription that matches the List and Subscriber IDs
-        $subscriptions = SproutLists_SubscriptionRecord::model()->deleteAllByAttributes([
+        $subscriptions = SubscribersRecord::deleteAll([
             'listId' => $list->id,
             'subscriberId' => $subscriberRecord->id
         ]);
@@ -294,25 +295,27 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function isSubscribed($subscription)
     {
-        $settings = craft()->plugins->getPlugin('sproutLists')->getSettings();
+        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
+
+        $settings = (isset($plugin))? $plugin->getSettings() : null;
 
         if (empty($subscription->listHandle)) {
-            throw new Exception(Craft::t('Missing argument: `listHandle` is required by the isSubscribed variable'));
+            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
         }
 
         // We need a user ID or an email, however, if User Sync is not enabled, we need an email
         if ((empty($subscription->userId) && empty($subscription->email)) OR
-            ($settings->enableUserSync == false) && empty($subscription->email)
+            ($settings AND $settings->enableUserSync == false) && empty($subscription->email)
         ) {
-            throw new Exception(Craft::t('Missing argument: `userId` or `email` are required by the isSubscribed variable'));
+            throw new \Exception(Craft::t('sprout-lists','Missing argument: `userId` or `email` are required by the isSubscribed variable'));
         }
 
         $listId = null;
         $subscriberId = null;
 
-        $listRecord = SproutLists_ListRecord::model()->findByAttributes([
+        $listRecord = ListsRecord::find()->where([
             'handle' => $subscription->listHandle
-        ]);
+        ])->one();
 
         if ($listRecord) {
             $listId = $listRecord->id;
@@ -323,17 +326,17 @@ class SubscriberListType extends SproutListsBaseListType
             'userId' => $subscription->userId
         ]);
 
-        $subscriberRecord = SproutLists_SubscriberRecord::model()->findByAttributes($attributes);
+        $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
         if ($subscriberRecord) {
             $subscriberId = $subscriberRecord->id;
         }
 
         if ($listId != null && $subscriberId != null) {
-            $subscriptionRecord = SproutLists_SubscriptionRecord::model()->findByAttributes([
+            $subscriptionRecord = SubscriptionRecord::find()->where([
                 'subscriberId' => $subscriberId,
                 'listId' => $listId
-            ]);
+            ])->one();
 
             if ($subscriptionRecord) {
                 return true;
@@ -463,6 +466,9 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function deleteSubscriberById($id)
     {
+        /**
+         * @var $subscriber SubscriptionRecord
+         */
         $subscriber = $this->getSubscriberById($id);
 
         if ($subscriber AND ($subscriber AND $subscriber != null)) {

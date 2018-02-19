@@ -23,6 +23,7 @@ class Subscribers extends Element
     public $lastName;
     public $userId;
     public $subscriberLists;
+    public $listType;
     private $subscriberListsIds;
 
     public static function displayName(): string
@@ -71,9 +72,8 @@ class Subscribers extends Element
                 'label' => Craft::t('sprout-lists', 'All Lists')
             ]
         ];
-        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
 
-        $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
+        $listType = SproutLists::$app->lists->getListType(SproutLists::$defaultSubscriber);
 
         $lists = $listType->getListsWithSubscribers();
 
@@ -188,8 +188,7 @@ class Subscribers extends Element
             'subscriberId' => $this->id
         ])->all();
 
-        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
-        $listType = SproutLists::$app->lists->getListType($subscriberNamespace);
+        $listType = SproutLists::$app->lists->getListType(SproutLists::$defaultSubscriber);
 
         if (count($subscriptions)) {
             foreach ($subscriptions as $subscription) {

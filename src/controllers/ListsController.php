@@ -29,9 +29,7 @@ class ListsController extends Controller
      */
     public function actionEditListTemplate($type = null, $listId = null, $list = null)
     {
-        $subscriberNamespace = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
-
-        $type = isset($type) ? $type : $subscriberNamespace;
+        $type = isset($type) ? $type : SproutLists::$defaultSubscriber;
 
         $listType = SproutLists::$app->lists->getListType($type);
 
@@ -74,8 +72,7 @@ class ListsController extends Controller
             $list = Craft::$app->getElements()->getElementById($listId);
         }
 
-        $list->type   = Craft::$app->request->getBodyParam('type',
-            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
+        $list->type   = Craft::$app->request->getBodyParam('type',SproutLists::$defaultSubscriber);
         $list->name   = Craft::$app->request->getBodyParam('name');
         $list->handle = Craft::$app->request->getBodyParam('handle');
 
@@ -147,9 +144,10 @@ class ListsController extends Controller
      */
     public function actionSubscribe()
     {
+        $this->requirePostRequest();
+
         $subscription = new Subscription();
-        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',
-            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
+        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',SproutLists::$defaultSubscriber);
         $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
         $subscription->listId     = Craft::$app->getRequest()->getBodyParam('listId');
         $subscription->userId     = Craft::$app->getRequest()->getBodyParam('userId');
@@ -190,9 +188,10 @@ class ListsController extends Controller
      */
     public function actionUnsubscribe()
     {
+        $this->requirePostRequest();
+
         $subscription = new Subscription();
-        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',
-            'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType');
+        $subscription->listType = Craft::$app->getRequest()->getBodyParam('listType',SproutLists::$defaultSubscriber);
         $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
         $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
         $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');

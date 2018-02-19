@@ -8,9 +8,11 @@ use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\services\App;
 use barrelstrength\sproutlists\services\Lists;
+use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use yii\base\Event;
 
@@ -32,6 +34,7 @@ class SproutLists extends Plugin
      */
     public static $app;
     public static $pluginId = 'sprout-lists';
+    public static $defaultSubscriber = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
 
     public function init()
     {
@@ -60,6 +63,13 @@ class SproutLists extends Plugin
 
             return $event;
         });
+
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+            $variable = $event->sender;
+
+            $variable->set('sproutLists', SproutListsVariable::class);
+        });
+
 
         if ($this->getSettings()->enableUserSync) {
 //            craft()->on('users.saveUser', function(Event $event) {

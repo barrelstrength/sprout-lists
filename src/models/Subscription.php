@@ -10,4 +10,9 @@ class Subscription extends Model
     public $subscriberId;
     public $dateCreated;
     public $dateUpdated;
+    public $listType;
+    public $listHandle;
+    public $elementId;
+    public $userId;
+    public $email;
 }

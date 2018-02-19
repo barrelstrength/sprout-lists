@@ -7,6 +7,7 @@ use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
+use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
@@ -162,7 +163,7 @@ class SubscriberListType extends SproutListsBaseListType
             $list = Craft::$app->getElements()->getElementById($listRecord->id);
         } else {
 
-            $list->type = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
+            $list->type = SproutLists::$defaultSubscriber;
             $list->elementId = $subscription->elementId;
             $list->name = $subscription->listHandle;
             $list->handle = $subscription->listHandle;
@@ -217,6 +218,7 @@ class SubscriberListType extends SproutListsBaseListType
 
                 // Create a criteria between our List Element and Subscriber Element
                 if ($subscriptionRecord->save(false)) {
+
                     $this->updateTotalSubscribersCount($subscriptionRecord->listId);
                 }
             }
@@ -272,7 +274,7 @@ class SubscriberListType extends SproutListsBaseListType
         }
 
         // Delete the subscription that matches the List and Subscriber IDs
-        $subscriptions = SubscribersRecord::deleteAll([
+        $subscriptions = SubscriptionRecord::deleteAll([
             'listId' => $list->id,
             'subscriberId' => $subscriberRecord->id
         ]);
@@ -427,7 +429,7 @@ class SubscriberListType extends SproutListsBaseListType
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
         if (!empty($subscriberRecord)) {
-            $subscriber = Craft::$app->getElements();
+            $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
         }
 
         // If no Subscriber was found, create one

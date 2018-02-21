@@ -10,10 +10,10 @@ use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
 use Craft;
-use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
+use yii\validators\UniqueValidator;
 
 class Subscribers extends Element
 {
@@ -206,26 +206,33 @@ class Subscribers extends Element
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
-        $rules = parent::rules();
-
-        $rules[] = [['email'], 'required'];
-
-        return $rules;
+        return [
+            [['email'], 'required'],
+            [['email'], UniqueValidator::class,
+                'targetClass' => SubscribersRecord::class
+            ],
+            [['email'], 'email']
+        ];
     }
 
     /**
      * @param bool $isNew
      *
      * @throws \Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
      */
     public function afterSave(bool $isNew)
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
-        if ($plugin)
-        {
+        if ($plugin) {
             $settings = $plugin->getSettings();
         }
 
@@ -244,12 +251,11 @@ class Subscribers extends Element
         $user = null;
 
         // Sync updates with Craft User if User Sync enabled
-        if ($record->email && ($settings AND $settings->enableUserSync)) {
-            $user = Craft::$app->users->getUserByUsernameOrEmail($record->email);
+        if ($this->email && ($settings AND $settings->enableUserSync)) {
+            $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
 
-            if ($user != null)
-            {
-                $record->userId = $user->id;
+            if ($user != null) {
+                $this->userId = $user->id;
             }
         }
 
@@ -258,10 +264,21 @@ class Subscribers extends Element
         $record->firstName = $this->firstName;
         $record->lastName  = $this->lastName;
 
-        $record->save(false);
+        $result = $record->save(false);
 
-        // Update the entry's descendants, who may be using this entry's URI in their own URIs
-        Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+        if ($result) {
+            // Sync updates with Craft User if User Sync enabled
+            if (($user AND $record->userId != null) && $settings->enableUserSync) {
+                // If they changed their Subscriber info, update the Craft User info too
+                $user->email = $record->email;
+                $user->firstName = $record->firstName;
+                $user->lastName = $record->lastName;
+
+                Craft::$app->elements->saveElement($user);
+            }
+             // Update the entry's descendants, who may be using this entry's URI in their own URIs
+            Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+        }
 
         parent::afterSave($isNew);
     }

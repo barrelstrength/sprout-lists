@@ -402,11 +402,15 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function saveSubscriber(Subscribers $subscriber)
     {
-       if (Craft::$app->getElements()->saveElement($subscriber)) {
-           $this->saveSubscriptions($subscriber);
-       }
+      if ($subscriber->validate()) {
+          if (Craft::$app->getElements()->saveElement($subscriber)) {
+              $this->saveSubscriptions($subscriber);
+          }
 
-       return true;
+          return true;
+      }
+
+       return false;
     }
 
     /**

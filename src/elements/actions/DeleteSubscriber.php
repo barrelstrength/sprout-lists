@@ -5,6 +5,7 @@ namespace barrelstrength\sproutlists\elements\actions;
 use Craft;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
+use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 
 /**
  * Class DeleteSubscriber
@@ -26,13 +27,29 @@ class DeleteSubscriber extends Delete
     /**
      *  Performs the action on any elements that match the given criteria.
      *  return Whether the action was performed successfully.
+     *
      * @param ElementQueryInterface $query
      *
      * @return bool
+     * @throws \Throwable
      */
     public function performAction(ElementQueryInterface $query): bool
     {
-        parent::performAction($query);
+        $subscribers = $query->all();
+
+        // Delete the users
+        foreach ($subscribers as $subscriber) {
+            $id = $subscriber->id;
+
+            $result = Craft::$app->getElements()->deleteElement($subscriber);
+
+            if ($result) {
+                $record = SubscribersRecord::findOne($id);
+                if ($record) {
+                    $record->delete();
+                }
+            }
+        }
 
         $this->setMessage(Craft::t('app', 'Subscriber(s) deleted.'));
 

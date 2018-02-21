@@ -11,7 +11,7 @@
 {% set subscriberId = subscriber is not null ? subscriber.id : null  %}
 {% set fullPageForm = true %}
 
-{% set saveShortcutRedirect = subscriber is not null ? 'sprout-lists/subscribers/edit/' ~ subscriberId : '' %}
+{% set saveShortcutRedirect = url('sprout-lists/subscribers/edit/{id}') %}
 
 {% block actionButton %}
     <div class="buttons">
@@ -22,7 +22,7 @@
             <div class="menu">
                 <ul>
                     <li><a class="formsubmit"
-                           data-redirect="{{ "sprout-lists/subscribers/edit/{id}"|hash  }}">
+                           data-redirect="{{ saveShortcutRedirect|hash }}">
                             {{ "Save and continue editing"|t }}</a>
                     </li>
                     <li><a class="formsubmit"

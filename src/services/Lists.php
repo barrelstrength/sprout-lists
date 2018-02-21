@@ -9,7 +9,7 @@ use barrelstrength\sproutlists\records\Lists as ListsRecord;
 
 class Lists extends Component
 {
-    public const EVENT_REGISTER_LIST_TYPES = 'registerSproutListsListTypes';
+    const EVENT_REGISTER_LIST_TYPES = 'registerSproutListsListTypes';
     /**
      * Registered List Types
      *

@@ -68,7 +68,7 @@ class SubscribersController extends Controller
 
         $session->setError(Craft::t('sprout-lists','Unable to save subscriber.'));
 
-        return Craft::$app->getUrlManager()->setRouteParams([
+       return Craft::$app->getUrlManager()->setRouteParams([
             'subscriber' => $subscriber
         ]);
     }

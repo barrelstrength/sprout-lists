@@ -23,10 +23,6 @@
 
 {% block content %}
 
-    <div class="grid">
-        <div class="item" data-position="left" data-min-colspan="2"
-             data-max-cols="3">
-            <div class="pane">
                 <input type="hidden" name="action"
                        value="sprout-lists/lists/save-list">
                 {{ redirectInput("sprout-lists/lists") }}
@@ -59,12 +55,11 @@
                 errors: (list is defined ? list.getErrors('handle') : null)
                 }) }}
 
-            </div>
-        </div>
-
+{% endblock  %}
+{% block details %}
         {% if list.id is not null %}
-            <div class="item" data-position="right" data-colspan="1">
-                <div class="pane meta">
+
+                <div class="meta">
 
                     <div class="field">
                         <div class="heading">
@@ -91,10 +86,9 @@
                         label: '<span class="info">Deleting a List will delete all Subscriptions to the List. No Subscribers will be deleted.</span>'|t,
                     }, statusInput) }}
 
-                </div>
+
 
                 {% if list.dateCreated is not null %}
-                    <div class="pane lightpane meta">
                         <div class="data">
                             <h5 class="heading">{{ "Date Created"|t }}</h5>
                             <div class="value">{{ list.dateCreated.localeDate() }} {{ list.dateCreated.localeTime() }}</div>
@@ -103,12 +97,12 @@
                             <h5 class="heading">{{ "Date Updated"|t }}</h5>
                             <div class="value">{{ list.dateUpdated.localeDate() }} {{ list.dateUpdated.localeTime() }}</div>
                         </div>
-                    </div>
+
                 {% endif %}
-            </div>
+                </div>
         {% endif %}
 
-    </div>
+
 
 {% endblock %}
 

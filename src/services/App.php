@@ -22,7 +22,7 @@ class App extends Component
 {
     use TemplateTrait;
 
-    public const ERROR = 'sproutListsError';
+    const ERROR = 'sproutListsError';
 
     /**
      * @var $lists Lists

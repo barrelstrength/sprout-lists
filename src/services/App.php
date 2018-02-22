@@ -30,6 +30,9 @@ class App extends Component
     public $lists;
     public $subscriptions;
 
+    /**
+     * @var $subscribers Subscribers
+     */
     public $subscribers;
 
     public function init()

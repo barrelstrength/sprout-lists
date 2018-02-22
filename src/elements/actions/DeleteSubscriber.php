@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
+use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
@@ -36,19 +37,12 @@ class DeleteSubscriber extends Delete
     public function performAction(ElementQueryInterface $query): bool
     {
         $subscribers = $query->all();
-
+        $listType = SproutLists::$app->lists->getListType(SproutLists::$defaultSubscriber);
         // Delete the users
         foreach ($subscribers as $subscriber) {
             $id = $subscriber->id;
 
-            $result = Craft::$app->getElements()->deleteElement($subscriber);
-
-            if ($result) {
-                $record = SubscribersRecord::findOne($id);
-                if ($record) {
-                    $record->delete();
-                }
-            }
+            $listType->deleteSubscriberById($id);
         }
 
         $this->setMessage(Craft::t('app', 'Subscriber(s) deleted.'));

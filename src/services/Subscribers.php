@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\services;
 
+use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
 use yii\base\Event;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
@@ -89,5 +90,18 @@ class Subscribers extends Component
         }
 
         return false;
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Throwable
+     */
+    public function deleteSubscribers($id)
+    {
+        if (Craft::$app->getElements()->deleteElementById($id)) {
+            SubscribersRecord::deleteAll('id = :subscriberId', [':subscriberId' => $id]);
+            Subscription::deleteAll('subscriberId = :subscriberId', [':subscriberId' => $id]);
+        }
     }
 }

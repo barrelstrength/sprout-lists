@@ -402,7 +402,7 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function saveSubscriber(Subscribers $subscriber)
     {
-      if ($subscriber->validate()) {
+      if ($subscriber->validate(null, false)) {
           if (Craft::$app->getElements()->saveElement($subscriber)) {
               $this->saveSubscriptions($subscriber);
           }
@@ -478,9 +478,7 @@ class SubscriberListType extends SproutListsBaseListType
         $subscriber = $this->getSubscriberById($id);
 
         if ($subscriber AND ($subscriber AND $subscriber != null)) {
-            if (Craft::$app->getElements()->deleteElementById($id)) {
-                SubscribersRecord::deleteAll('subscriberId = :subscriberId', [':subscriberId' => $subscriber->id]);
-            }
+            SproutLists::$app->subscribers->deleteSubscribers($id);
         }
 
         $this->updateTotalSubscribersCount();

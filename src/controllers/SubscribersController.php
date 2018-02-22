@@ -22,7 +22,7 @@ class SubscribersController extends Controller
         $listType = SproutLists::$app->lists->getListType(SproutLists::$defaultSubscriber);
         $listTypes[] = $listType;
 
-        if ($id != null) {
+        if ($id != null AND $subscriber == null) {
             $subscriber = $listType->getSubscriberById($id);
         }
 
@@ -76,6 +76,7 @@ class SubscribersController extends Controller
     /**
      * Deletes a subscriber
      * @return null|\yii\web\Response
+     * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionDeleteSubscriber()
@@ -84,7 +85,9 @@ class SubscribersController extends Controller
 
         $subscriberId = Craft::$app->getRequest()->getBodyParam('subscriberId');
 
-        $listType = Craft::$app->getRequest()->getBodyParam('type');
+        $listTypeParam = Craft::$app->getRequest()->getBodyParam('type');
+
+        $listType = SproutLists::$app->lists->getListType($listTypeParam);
 
         $session = Craft::$app->getSession();
 

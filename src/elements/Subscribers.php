@@ -13,7 +13,7 @@ use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
-use yii\validators\UniqueValidator;
+use craft\validators\UniqueValidator;
 
 class Subscribers extends Element
 {
@@ -249,10 +249,11 @@ class Subscribers extends Element
         }
 
         $user = null;
-
         // Sync updates with Craft User if User Sync enabled
         if ($this->email && ($settings AND $settings->enableUserSync)) {
             $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
+            // Set to null when updating un matched email
+            $this->userId = null;
 
             if ($user != null) {
                 $this->userId = $user->id;

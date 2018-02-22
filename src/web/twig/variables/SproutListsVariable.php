@@ -71,11 +71,11 @@ class SproutListsVariable
     public function getSubscribers($criteria = [])
     {
         $list = new Lists();
-        $list->type = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
+        $listTypeParam = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
         $list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 
-        $listType = SproutLists::$app->lists->getListType($list->type);
-
+        $listType = SproutLists::$app->lists->getListType($listTypeParam);
+        $list->type = get_class($listType);
         return $listType->getSubscribers($list);
     }
 
@@ -113,10 +113,11 @@ class SproutListsVariable
     public function getSubscriberCount($criteria)
     {
         $list = new Lists();
-        $list->type = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
+        $listTypeParam = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
         $list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
 
-        $listType = SproutLists::$app->lists->getListType($list->type);
+        $listType = SproutLists::$app->lists->getListType($listTypeParam);
+        $list->type = get_class($listType);
 
         return $listType->getSubscriberCount($list);
     }

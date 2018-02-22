@@ -34,7 +34,7 @@ class SproutLists extends Plugin
      */
     public static $app;
     public static $pluginId = 'sprout-lists';
-    public static $defaultSubscriber = 'barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType';
+    public static $defaultSubscriber = 'subscriber';
 
     public function init()
     {

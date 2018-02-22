@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
+use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
@@ -24,17 +25,24 @@ class DeleteList extends Delete
     public $successMessage = 'Subscriber(s) deleted.';
 
     /**
-     *  Performs the action on any elements that match the given criteria.
-     *  return Whether the action was performed successfully.
      * @param ElementQueryInterface $query
      *
      * @return bool
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function performAction(ElementQueryInterface $query): bool
     {
-        parent::performAction($query);
+        $lists = $query->all();
+        // Delete the users
+        foreach ($lists as $list) {
+            $id = $list->id;
 
-        $this->setMessage(Craft::t('app', 'Subscriber(s) deleted.'));
+            SproutLists::$app->lists->deleteList($id);
+        }
+
+        $this->setMessage(Craft::t('app', 'List(s) deleted.'));
 
         return true;
     }

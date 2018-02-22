@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\services;
 
+use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
@@ -34,8 +35,10 @@ class Lists extends Component
 
         if (!empty($listTypes)) {
             foreach ($listTypes as $listType) {
-                $namespace = get_class($listType);
-                $this->listTypes[$namespace] = $listType;
+                /**
+                 * @var $listType SproutListsBaseListType
+                 */
+                $this->listTypes[$listType->getHandle()] = $listType;
             }
         }
 

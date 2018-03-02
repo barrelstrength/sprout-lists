@@ -8,6 +8,7 @@ use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\services\App;
 use barrelstrength\sproutlists\services\Lists;
+use barrelstrength\sproutlists\web\twig\TwigExtensions;
 use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
@@ -50,6 +51,8 @@ class SproutLists extends Plugin
         self::$app = $this->get('app');
 
         Craft::setAlias('@sproutlists', $this->getBasePath());
+
+        Craft::$app->view->twig->addExtension(new TwigExtensions());
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
 

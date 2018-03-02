@@ -61,6 +61,10 @@ class SproutLists extends Plugin
             $event->rules['sprout-lists/settings'] = 'sprout-base/settings/edit-settings';
             $event->rules['sprout-lists/settings/<settingsSectionHandle:.*>'] = 'sprout-base/settings/edit-settings';
 
+            $event->rules['sprout-lists/subscribers/<listHandle:.*>'] = [
+                'template' => 'sprout-lists/subscribers'
+            ];
+
             return $event;
         });
 

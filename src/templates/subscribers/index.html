@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% if listHandle is defined %}
-    {% includejs 'window.listHandle = "'~listHandle~'";' %}
+    {% js %}
+        window.defaultSectionHandle = '{{ listHandle }}';
+    {% endjs %}
 {% endif %}
-

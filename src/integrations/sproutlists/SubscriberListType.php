@@ -510,7 +510,6 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function getSubscriberListsHtml($subscriberId)
     {
-        $default = [];
         $listIds = [];
 
         if ($subscriberId != null) {
@@ -538,8 +537,10 @@ class SubscriberListType extends SproutListsBaseListType
             }
         }
 
-        if (!empty($default)) {
-            $listIds = $default;
+        // Return a blank template if we have no lists
+        if (empty($options))
+        {
+            return '';
         }
 
         $html = Craft::$app->getView()->renderTemplate('sprout-lists/subscribers/_subscriptionlists', [

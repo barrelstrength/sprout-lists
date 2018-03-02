@@ -87,28 +87,35 @@
 
 <div class="meta">
 
-    <div class="field">
-        <div class="heading">
-            <label>{{ "Lists"|t }}</label>
-        </div>
-        <div class="input">
+    {% for listType in listTypes %}
 
-            {% if listTypes|length %}
+        {% set subscriberListsHtml = listType.getSubscriberListsHtml(subscriberId) %}
 
-                {% for listType in listTypes %}
-                    {{ listType.getSubscriberListsHtml(subscriberId) }}
-                {% endfor %}
+        {% if subscriberListsHtml != '' %}
 
-            {% else %}
+            <h2>{{ listType.name }}</h2>
 
-                {{ "Add a <a href='{newListUrl}'>Subscriber List</a>."|t({
-                    newListUrl: cpUrl('sproutlists/lists/new')
-                })|raw }}
+            {{ subscriberListsHtml }}
 
-            {% endif %}
+        {% else %}
+
+            <p>{{ "Setup your Lists and they will display below."|t('sprout-lists') }}</p>
+
+            <ul>
+                <li><input type="checkbox" class="checkbox" disabled>
+                    <label>{{ "List One"|t('sprout-lists') }}</label></li>
+                <li><input type="checkbox" class="checkbox" disabled>
+                    <label>{{ "List Two"|t('sprout-lists') }}</label></li>
+                <li><input type="checkbox" class="checkbox" disabled>
+                    <label>{{ "List Three"|t('sprout-lists') }}</label></li>
+            </ul>
+
+        {% endif %}
 
         </div>
     </div>
+
+    {% endfor %}
 
 </div>
 

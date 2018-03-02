@@ -91,12 +91,12 @@ class Lists extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'name'   => ['label' => Craft::t('sprout-lists', 'Name')],
+            'name' => ['label' => Craft::t('sprout-lists', 'Name')],
             'handle' => ['label' => Craft::t('sprout-lists', 'List Handle')],
-            'view'   => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
+            'view' => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
             'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscribers')],
-            'dateCreated'      => ['label' => Craft::t('sprout-lists', 'Date Created')],
-            'dateUpdated'      => ['label' => Craft::t('sprout-lists', 'Date Updated')]
+            'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')],
+            'dateUpdated' => ['label' => Craft::t('sprout-lists', 'Date Updated')]
         ];
 
         return $attributes;
@@ -113,24 +113,21 @@ class Lists extends Element
     {
         $totalSubscribers = $this->totalSubscribers;
 
-        switch ($attribute)
-        {
+        switch ($attribute) {
             case "handle":
 
-                return "<code>" . $this->handle . "</code>";
+                return "<code>".$this->handle."</code>";
 
                 break;
 
             case "view":
 
-                if ($this->id && $totalSubscribers > 0)
-                {
-                    return "<a href='" . UrlHelper::cpUrl('sprout-lists/subscribers/' . $this->handle) . "' class='go'>" .
-                        Craft::t('sprout-lists', 'View Subscribers') . "</a>";
+                if ($this->id && $totalSubscribers > 0) {
+                    return "<a href='".UrlHelper::cpUrl('sprout-lists/subscribers/'.$this->handle)."' class='go'>".
+                        Craft::t('sprout-lists', 'View Subscribers')."</a>";
                 }
                 return '';
                 break;
-
         }
 
         return parent::getTableAttributeHtml($attribute);
@@ -174,8 +171,8 @@ class Lists extends Element
             $record->elementId = $this->id;
         }
 
-        $record->type   = $this->type;
-        $record->name   = $this->name;
+        $record->type = $this->type;
+        $record->name = $this->name;
         $record->handle = $this->handle;
 
         $record->save(false);
@@ -185,6 +182,7 @@ class Lists extends Element
 
         parent::afterSave($isNew);
     }
+
     /**
      * @inheritdoc
      */

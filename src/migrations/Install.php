@@ -15,38 +15,38 @@ class Install extends Migration
         $this->createTable($this->listsTable,
             [
                 'id' => $this->primaryKey(),
-                'elementId'        => $this->integer()->notNull(),
-                'type'             => $this->string(),
-                'name'             => $this->string(),
-                'handle'           => $this->string(),
+                'elementId' => $this->integer()->notNull(),
+                'type' => $this->string(),
+                'name' => $this->string(),
+                'handle' => $this->string(),
                 'totalSubscribers' => $this->integer(),
-                'dateCreated'  => $this->dateTime()->notNull(),
-                'dateUpdated'  => $this->dateTime()->notNull(),
-                'uid'          => $this->uid()
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid()
             ]
         );
 
         $this->createTable($this->subscribersTable,
             [
                 'id' => $this->primaryKey(),
-                'userId'       => $this->integer(),
-                'email'        => $this->string(),
-                'firstName'    => $this->string(),
-                'lastName'     => $this->string(),
-                'dateCreated'  => $this->dateTime()->notNull(),
-                'dateUpdated'  => $this->dateTime()->notNull(),
-                'uid'          => $this->uid()
+                'userId' => $this->integer(),
+                'email' => $this->string(),
+                'firstName' => $this->string(),
+                'lastName' => $this->string(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid()
             ]
         );
 
         $this->createTable($this->subscriptionsTable,
             [
                 'id' => $this->primaryKey(),
-                'listId'       => $this->integer(),
+                'listId' => $this->integer(),
                 'subscriberId' => $this->integer(),
-                'dateCreated'  => $this->dateTime()->notNull(),
-                'dateUpdated'  => $this->dateTime()->notNull(),
-                'uid'          => $this->uid()
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid()
             ]
         );
     }

@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutlists\models;
 
 use craft\base\Model;
+
 class Subscription extends Model
 {
     public $id;

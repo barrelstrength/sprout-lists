@@ -79,15 +79,15 @@ class Subscribers extends Element
 
         if (!empty($lists)) {
             $sources[] = [
-                'heading'   => $listType->getName()
+                'heading' => $listType->getName()
             ];
 
             foreach ($lists as $list) {
                 $source = [
-                    'key' => 'lists:' . $list->id,
-                    'label'    => $list->name,
-                    'data'     => array('handle' => $list->handle),
-                    'criteria' => array('listId' => $list->id)
+                    'key' => 'lists:'.$list->id,
+                    'label' => $list->name,
+                    'data' => ['handle' => $list->handle],
+                    'criteria' => ['listId' => $list->id]
                 ];
 
                 $sources[] = $source;
@@ -103,17 +103,17 @@ class Subscribers extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'id'        => ['label' => Craft::t('sprout-lists', 'ID')],
-            'email'     => ['label' => Craft::t('sprout-lists', 'Email')],
+            'id' => ['label' => Craft::t('sprout-lists', 'ID')],
+            'email' => ['label' => Craft::t('sprout-lists', 'Email')],
             'firstName' => ['label' => Craft::t('sprout-lists', 'First Name')],
-            'lastName'  => ['label' => Craft::t('sprout-lists', 'Last Name')],
+            'lastName' => ['label' => Craft::t('sprout-lists', 'Last Name')],
             'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')],
             'dateUpdated' => ['label' => Craft::t('sprout-lists', 'Date Updated')]
         ];
 
         return $attributes;
     }
-    
+
     /**
      * @return ElementQueryInterface
      */
@@ -150,7 +150,7 @@ class Subscribers extends Element
     public function getUrl()
     {
         if ($this->uri !== null) {
-            return  UrlHelper::siteUrl($this->uri, null, null);
+            return UrlHelper::siteUrl($this->uri, null, null);
         }
 
         return null;
@@ -177,12 +177,13 @@ class Subscribers extends Element
 
     /**
      * Gets an array of SproutLists_ListModels to which this subscriber is subscribed.
+     *
      * @return array
      * @throws \Exception
      */
     public function getListsBySubscriberId()
     {
-        $lists    = array();
+        $lists = [];
 
         $subscriptions = Subscription::find()->where([
             'subscriberId' => $this->id
@@ -213,7 +214,8 @@ class Subscribers extends Element
     {
         return [
             [['email'], 'required'],
-            [['email'], UniqueValidator::class,
+            [
+                ['email'], UniqueValidator::class,
                 'targetClass' => SubscribersRecord::class
             ],
             [['email'], 'email']
@@ -260,10 +262,10 @@ class Subscribers extends Element
             }
         }
 
-        $record->userId    = $this->userId;
-        $record->email     = $this->email;
+        $record->userId = $this->userId;
+        $record->email = $this->email;
         $record->firstName = $this->firstName;
-        $record->lastName  = $this->lastName;
+        $record->lastName = $this->lastName;
 
         $result = $record->save(false);
 
@@ -277,7 +279,7 @@ class Subscribers extends Element
 
                 Craft::$app->elements->saveElement($user);
             }
-             // Update the entry's descendants, who may be using this entry's URI in their own URIs
+            // Update the entry's descendants, who may be using this entry's URI in their own URIs
             Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
         }
 

@@ -39,7 +39,7 @@ class App extends Component
     {
         parent::init();
 
-        $this->lists       = new Lists();
+        $this->lists = new Lists();
         $this->subscribers = new Subscribers();
     }
 }

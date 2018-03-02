@@ -86,7 +86,6 @@ class Subscribers extends Component
 
         if ($subscriberElement != null) {
             $subscriberElement->userId = null;
-
         }
 
         return false;

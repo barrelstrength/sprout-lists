@@ -11,6 +11,7 @@ class SubscribersController extends Controller
 {
     /**
      * Prepare variables for Subscriber Edit Template
+     *
      * @param null $id
      * @param null $subscriber
      *
@@ -34,6 +35,7 @@ class SubscribersController extends Controller
 
     /**
      *  Saves a subscriber
+     *
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
      */
@@ -49,9 +51,9 @@ class SubscribersController extends Controller
             $subscriber = Craft::$app->getElements()->getElementById($subscriberId);
         }
 
-        $subscriber->email           = Craft::$app->getRequest()->getBodyParam('email');
-        $subscriber->firstName       = Craft::$app->getRequest()->getBodyParam('firstName');
-        $subscriber->lastName        = Craft::$app->getRequest()->getBodyParam('lastName');
+        $subscriber->email = Craft::$app->getRequest()->getBodyParam('email');
+        $subscriber->firstName = Craft::$app->getRequest()->getBodyParam('firstName');
+        $subscriber->lastName = Craft::$app->getRequest()->getBodyParam('lastName');
         $subscriber->subscriberLists = Craft::$app->getRequest()->getBodyParam('sproutlists.subscriberLists');
 
         $type = Craft::$app->getRequest()->getBodyParam('type');
@@ -66,15 +68,16 @@ class SubscribersController extends Controller
             return $this->redirectToPostedUrl($subscriber);
         }
 
-        $session->setError(Craft::t('sprout-lists','Unable to save subscriber.'));
+        $session->setError(Craft::t('sprout-lists', 'Unable to save subscriber.'));
 
-       return Craft::$app->getUrlManager()->setRouteParams([
+        return Craft::$app->getUrlManager()->setRouteParams([
             'subscriber' => $subscriber
         ]);
     }
 
     /**
      * Deletes a subscriber
+     *
      * @return null|\yii\web\Response
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException

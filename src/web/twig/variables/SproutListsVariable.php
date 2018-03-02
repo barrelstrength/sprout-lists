@@ -11,6 +11,7 @@ class SproutListsVariable
 {
     /**
      * Checks if a user is subscribed to a given list.
+     *
      * @param $criteria
      *
      * @return mixed
@@ -63,6 +64,7 @@ class SproutListsVariable
 
     /**
      * Return all subscribers on a given list.
+     *
      * @param array $criteria
      *
      * @return mixed
@@ -84,6 +86,7 @@ class SproutListsVariable
 
     /**
      * Return total subscriptions for a given subscriber.
+     *
      * @param array $criteria
      *
      * @return mixed
@@ -105,6 +108,7 @@ class SproutListsVariable
 
     /**
      * Return total subscriber count on a given list.
+     *
      * @param $criteria
      *
      * @return mixed

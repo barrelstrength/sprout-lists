@@ -80,7 +80,7 @@ class SubscriberListType extends SproutListsBaseListType
         if ($subscriberRecord == null) {
             // Only findAll if we are not looking for a specific Subscriber, otherwise we want to return null
             if (empty($subscriber->email)) {
-                $listRecords =  ListsRecord::find()->all();
+                $listRecords = ListsRecord::find()->all();
             }
         }
 
@@ -109,6 +109,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets list with a given id.
+     *
      * @param $listId
      *
      * @return \craft\base\ElementInterface|mixed|null
@@ -134,7 +135,9 @@ class SubscriberListType extends SproutListsBaseListType
                  */
                 $subscribers = $record->getSubscribers()->all();
 
-                if (empty($subscribers)) continue;
+                if (empty($subscribers)) {
+                    continue;
+                }
 
                 $lists[] = $record;
             }
@@ -224,7 +227,6 @@ class SubscriberListType extends SproutListsBaseListType
             }
 
             return true;
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -241,7 +243,7 @@ class SubscriberListType extends SproutListsBaseListType
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
-        $settings = (isset($plugin))? $plugin->getSettings() : null;
+        $settings = (isset($plugin)) ? $plugin->getSettings() : null;
 
         if ($subscription->id) {
             $list = ListsRecord::findOne($subscription->id);
@@ -299,7 +301,7 @@ class SubscriberListType extends SproutListsBaseListType
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
-        $settings = (isset($plugin))? $plugin->getSettings() : null;
+        $settings = (isset($plugin)) ? $plugin->getSettings() : null;
 
         if (empty($subscription->listHandle)) {
             throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
@@ -309,7 +311,7 @@ class SubscriberListType extends SproutListsBaseListType
         if ((empty($subscription->userId) && empty($subscription->email)) OR
             ($settings AND $settings->enableUserSync == false) && empty($subscription->email)
         ) {
-            throw new \Exception(Craft::t('sprout-lists','Missing argument: `userId` or `email` are required by the isSubscribed variable'));
+            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `userId` or `email` are required by the isSubscribed variable'));
         }
 
         $listId = null;
@@ -350,6 +352,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Saves a subscribers subscriptions.
+     *
      * @param Subscribers $subscriber
      *
      * @return bool
@@ -375,7 +378,7 @@ class SubscriberListType extends SproutListsBaseListType
                             throw new \Exception(print_r($subscriptionRecord->getErrors(), true));
                         }
                     } else {
-                        throw new \Exception(Craft::t('The Subscriber List with id {listId} does not exists.',$listId));
+                        throw new \Exception(Craft::t('The Subscriber List with id {listId} does not exists.', $listId));
                     }
                 }
             }
@@ -402,15 +405,15 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function saveSubscriber(Subscribers $subscriber)
     {
-      if ($subscriber->validate(null, false)) {
-          if (Craft::$app->getElements()->saveElement($subscriber)) {
-              $this->saveSubscriptions($subscriber);
-          }
+        if ($subscriber->validate(null, false)) {
+            if (Craft::$app->getElements()->saveElement($subscriber)) {
+                $this->saveSubscriptions($subscriber);
+            }
 
-          return true;
-      }
+            return true;
+        }
 
-       return false;
+        return false;
     }
 
     /**
@@ -454,6 +457,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets a subscriber with a given id.
+     *
      * @param $id
      *
      * @return \craft\base\ElementInterface|null
@@ -465,6 +469,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Deletes a subscriber.
+     *
      * @param $id
      *
      * @return \craft\base\ElementInterface|null
@@ -488,6 +493,7 @@ class SubscriberListType extends SproutListsBaseListType
 
     /**
      * Gets the HTML output for the lists sidebar on the Subscriber edit page.
+     *
      * @param $subscriberId
      *
      * @return \Twig_Markup
@@ -564,7 +570,9 @@ class SubscriberListType extends SproutListsBaseListType
         if (count($lists)) {
             foreach ($lists as $list) {
 
-                if (!$list) continue;
+                if (!$list) {
+                    continue;
+                }
 
                 $count = count($list->getSubscribers()->all());
 
@@ -600,33 +608,29 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function getSubscribers($list)
     {
-        if (empty($list->type))
-        {
+        if (empty($list->type)) {
             throw new \Exception(Craft::t("sprout-lists", "Missing argument: 'type' is required by the getSubscribers variable."));
         }
 
-        if (empty($list->handle))
-        {
-            throw new \Exception(Craft::t("sprout-lists","Missing argument: 'listHandle' is required by the getSubscribers variable."));
+        if (empty($list->handle)) {
+            throw new \Exception(Craft::t("sprout-lists", "Missing argument: 'listHandle' is required by the getSubscribers variable."));
         }
 
         $subscribers = [];
 
-        if (empty($list))
-        {
+        if (empty($list)) {
             return $subscribers;
         }
 
         $listRecord = ListsRecord::find()->where([
-            'type'   => $list->type,
+            'type' => $list->type,
             'handle' => $list->handle
         ])->one();
 
         /**
          * @var $listRecord ListsRecord
          */
-        if ($listRecord != null)
-        {
+        if ($listRecord != null) {
             $subscribers = $listRecord->getSubscribers()->all();
 
             return $subscribers;

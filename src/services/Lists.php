@@ -47,6 +47,7 @@ class Lists extends Component
 
     /**
      * Returns a new List Type Class for the given List Type
+     *
      * @param $className
      *
      * @return mixed
@@ -65,6 +66,7 @@ class Lists extends Component
 
     /**
      * Deletes a list.
+     *
      * @param $listId
      *
      * @return bool
@@ -76,22 +78,19 @@ class Lists extends Component
     {
         $listRecord = ListsRecord::findOne($listId);
 
-        if ($listRecord == null)
-        {
+        if ($listRecord == null) {
             return false;
         }
 
-        if ($listRecord AND $listRecord->delete())
-        {
+        if ($listRecord AND $listRecord->delete()) {
             $subscriptions = Subscription::find()->where([
                 'listId' => $listId
             ]);
 
-            if ($subscriptions != null)
-            {
-                Subscription::deleteAll('listId = :listId', array(
+            if ($subscriptions != null) {
+                Subscription::deleteAll('listId = :listId', [
                     ':listId' => $listId
-                ));
+                ]);
             }
 
             return true;

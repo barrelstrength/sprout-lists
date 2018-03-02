@@ -20,6 +20,7 @@ class ListsController extends Controller
 
     /**
      * Prepare variables for the List Edit Template
+     *
      * @param null $type
      * @param null $listId
      * @param null $list
@@ -51,7 +52,7 @@ class ListsController extends Controller
 
         return $this->renderTemplate('sprout-lists/lists/_edit', [
             'listId' => $listId,
-            'list'   => $list,
+            'list' => $list,
             'continueEditingUrl' => $continueEditingUrl
         ]);
     }
@@ -72,8 +73,8 @@ class ListsController extends Controller
             $list = Craft::$app->getElements()->getElementById($listId);
         }
 
-        $listTypeParam   = Craft::$app->request->getBodyParam('type',SproutLists::$defaultSubscriber);
-        $list->name   = Craft::$app->request->getBodyParam('name');
+        $listTypeParam = Craft::$app->request->getBodyParam('type', SproutLists::$defaultSubscriber);
+        $list->name = Craft::$app->request->getBodyParam('name');
         $list->handle = Craft::$app->request->getBodyParam('handle');
 
         /**
@@ -100,6 +101,7 @@ class ListsController extends Controller
 
     /**
      * Deletes a list.
+     *
      * @return \yii\web\Response
      * @throws \Exception
      * @throws \Throwable
@@ -138,6 +140,7 @@ class ListsController extends Controller
 
     /**
      * Adds a subscriber to a list
+     *
      * @return \yii\web\Response
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
@@ -147,13 +150,13 @@ class ListsController extends Controller
         $this->requirePostRequest();
 
         $subscription = new Subscription();
-        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType',SproutLists::$defaultSubscriber);
+        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType', SproutLists::$defaultSubscriber);
 
         $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
-        $subscription->listId     = Craft::$app->getRequest()->getBodyParam('listId');
-        $subscription->userId     = Craft::$app->getRequest()->getBodyParam('userId');
-        $subscription->email      = Craft::$app->getRequest()->getBodyParam('email');
-        $subscription->elementId  = Craft::$app->getRequest()->getBodyParam('elementId');
+        $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
+        $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
+        $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
+        $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
         $listType = SproutLists::$app->lists->getListType($listTypeParam);
 
@@ -185,6 +188,7 @@ class ListsController extends Controller
 
     /**
      * Removes a subscriber from a list
+     *
      * @return \yii\web\Response
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
@@ -194,7 +198,7 @@ class ListsController extends Controller
         $this->requirePostRequest();
 
         $subscription = new Subscription();
-        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType',SproutLists::$defaultSubscriber);
+        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType', SproutLists::$defaultSubscriber);
         $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
         $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
         $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
@@ -227,6 +231,6 @@ class ListsController extends Controller
             'errors' => $errors
         ]);
 
-        return  $this->redirectToPostedUrl();
+        return $this->redirectToPostedUrl();
     }
 }

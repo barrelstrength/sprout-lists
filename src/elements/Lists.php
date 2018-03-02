@@ -95,8 +95,7 @@ class Lists extends Element
             'handle' => ['label' => Craft::t('sprout-lists', 'List Handle')],
             'view' => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
             'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscribers')],
-            'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')],
-            'dateUpdated' => ['label' => Craft::t('sprout-lists', 'Date Updated')]
+            'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')]
         ];
 
         return $attributes;

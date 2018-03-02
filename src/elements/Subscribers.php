@@ -26,6 +26,17 @@ class Subscribers extends Element
     public $listType;
     private $subscriberListsIds;
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->email;
+    }
+
+    /**
+     * @return string
+     */
     public static function displayName(): string
     {
         return Craft::t('', 'Sprout Subscribers');
@@ -103,7 +114,6 @@ class Subscribers extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [
-            'id' => ['label' => Craft::t('sprout-lists', 'ID')],
             'email' => ['label' => Craft::t('sprout-lists', 'Email')],
             'firstName' => ['label' => Craft::t('sprout-lists', 'First Name')],
             'lastName' => ['label' => Craft::t('sprout-lists', 'Last Name')],
@@ -122,6 +132,9 @@ class Subscribers extends Element
         return new SubscribersQuery(static::class);
     }
 
+    /**
+     * @return \craft\models\FieldLayout|null
+     */
     public function getFieldLayout()
     {
         return Craft::$app->getFields()->getLayoutByType(static::class);
@@ -138,6 +151,9 @@ class Subscribers extends Element
         return SproutBase::$app->mailers->getRecipients($element, $this);
     }
 
+    /**
+     * @return null|string
+     */
     public function getUriFormat()
     {
         return 'sprout-lists/{slug}';

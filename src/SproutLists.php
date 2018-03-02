@@ -71,6 +71,7 @@ class SproutLists extends Plugin
         });
 
 
+        // @todo - sort out enableUserSync
         if ($this->getSettings()->enableUserSync) {
 //            craft()->on('users.saveUser', function(Event $event) {
 //                sproutLists()->subscribers->updateUserIdOnSave($event);

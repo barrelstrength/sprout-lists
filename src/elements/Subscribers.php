@@ -140,7 +140,7 @@ class Subscribers extends Element
 
     public function getUriFormat()
     {
-        return "sprout-lists/{slug}";
+        return 'sprout-lists/{slug}';
     }
 
     /**

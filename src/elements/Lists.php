@@ -78,7 +78,7 @@ class Lists extends Element
     public function __toString()
     {
         try {
-            return $this->name;
+            return (string)$this->name;
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
         }
@@ -106,25 +106,23 @@ class Lists extends Element
      * @param string $attribute
      *
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      */
     public function getTableAttributeHtml(string $attribute): string
     {
         $totalSubscribers = $this->totalSubscribers;
 
         switch ($attribute) {
-            case "handle":
+            case 'handle':
 
-                return "<code>".$this->handle."</code>";
+                return '<code>'.$this->handle.'</code>';
 
                 break;
 
-            case "view":
+            case 'view':
 
                 if ($this->id && $totalSubscribers > 0) {
-                    return "<a href='".UrlHelper::cpUrl('sprout-lists/subscribers/'.$this->handle)."' class='go'>".
-                        Craft::t('sprout-lists', 'View Subscribers')."</a>";
+                    return '<a href="'.UrlHelper::cpUrl('sprout-lists/subscribers/'.$this->handle).'" class="go">'.
+                        Craft::t('sprout-lists', 'View Subscribers').'</a>';
                 }
                 return '';
                 break;

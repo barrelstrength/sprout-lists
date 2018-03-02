@@ -243,7 +243,7 @@ class SubscriberListType extends SproutListsBaseListType
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
-        $settings = (isset($plugin)) ? $plugin->getSettings() : null;
+        $settings = isset($plugin) ? $plugin->getSettings() : null;
 
         if ($subscription->id) {
             $list = ListsRecord::findOne($subscription->id);
@@ -301,7 +301,7 @@ class SubscriberListType extends SproutListsBaseListType
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
-        $settings = (isset($plugin)) ? $plugin->getSettings() : null;
+        $settings = isset($plugin) ? $plugin->getSettings() : null;
 
         if (empty($subscription->listHandle)) {
             throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
@@ -441,7 +441,7 @@ class SubscriberListType extends SproutListsBaseListType
 
         // If no Subscriber was found, create one
         if (!$subscriber->id) {
-            if (isset($subscriber->userId)) {
+            if ($subscriber->userId !== null) {
                 $user = Craft::$app->users->getUserById($subscriber->userId);
 
                 if ($user) {
@@ -472,7 +472,7 @@ class SubscriberListType extends SproutListsBaseListType
      *
      * @param $id
      *
-     * @return \craft\base\ElementInterface|null
+     * @return SubscriptionRecord
      * @throws \Throwable
      */
     public function deleteSubscriberById($id)
@@ -609,11 +609,11 @@ class SubscriberListType extends SproutListsBaseListType
     public function getSubscribers($list)
     {
         if (empty($list->type)) {
-            throw new \Exception(Craft::t("sprout-lists", "Missing argument: 'type' is required by the getSubscribers variable."));
+            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: "type" is required by the getSubscribers variable.'));
         }
 
         if (empty($list->handle)) {
-            throw new \Exception(Craft::t("sprout-lists", "Missing argument: 'listHandle' is required by the getSubscribers variable."));
+            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: "listHandle" is required by the getSubscribers variable.'));
         }
 
         $subscribers = [];

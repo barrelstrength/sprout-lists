@@ -11,7 +11,6 @@ class SproutListsVariable
 {
     /**
      * Checks if a user is subscribed to a given list.
-     *
      * @param $criteria
      *
      * @return mixed
@@ -20,12 +19,12 @@ class SproutListsVariable
     public function getIsSubscribed($criteria)
     {
         $subscription = new Subscription();
-        $subscription->listType = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
-        $subscription->listHandle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
-        $subscription->listId = isset($criteria['listId']) ? $criteria['listId'] : null;
-        $subscription->elementId = isset($criteria['elementId']) ? $criteria['elementId'] : null;
-        $subscription->userId = isset($criteria['userId']) ? $criteria['userId'] : null;
-        $subscription->email = isset($criteria['email']) ? $criteria['email'] : null;
+        $subscription->listType = $criteria['listType'] ?? SproutLists::$defaultSubscriber;
+        $subscription->listHandle = $criteria['listHandle'] ?? null;
+        $subscription->listId = $criteria['listId'] ?? null;
+        $subscription->elementId = $criteria['elementId'] ?? null;
+        $subscription->userId = $criteria['userId'] ?? null;
+        $subscription->email = $criteria['email'] ?? null;
 
         $listType = SproutLists::$app->lists->getListType($subscription->listType);
 
@@ -51,11 +50,11 @@ class SproutListsVariable
     public function getLists($criteria = [])
     {
         $subscriber = new Subscribers();
-        $subscriber->listType = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
-        $subscriber->email = isset($criteria['email']) ? $criteria['email'] : null;
-        $subscriber->userId = isset($criteria['userId']) ? $criteria['userId'] : null;
-        $subscriber->firstName = isset($criteria['firstName']) ? $criteria['firstName'] : null;
-        $subscriber->lastName = isset($criteria['lastName']) ? $criteria['lastName'] : null;
+        $subscriber->listType = $criteria['listType'] ?? SproutLists::$defaultSubscriber;
+        $subscriber->email = $criteria['email'] ?? null;
+        $subscriber->userId = $criteria['userId'] ?? null;
+        $subscriber->firstName = $criteria['firstName'] ?? null;
+        $subscriber->lastName = $criteria['lastName'] ?? null;
 
         $listType = SproutLists::$app->lists->getListType($subscriber->listType);
 
@@ -64,7 +63,6 @@ class SproutListsVariable
 
     /**
      * Return all subscribers on a given list.
-     *
      * @param array $criteria
      *
      * @return mixed
@@ -73,8 +71,8 @@ class SproutListsVariable
     public function getSubscribers($criteria = [])
     {
         $list = new Lists();
-        $listTypeParam = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
-        $list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
+        $listTypeParam = $criteria['listType'] ?? SproutLists::$defaultSubscriber;
+        $list->handle = $criteria['listHandle'] ?? null;
 
         $listType = SproutLists::$app->lists->getListType($listTypeParam);
         $list->type = get_class($listType);
@@ -86,7 +84,6 @@ class SproutListsVariable
 
     /**
      * Return total subscriptions for a given subscriber.
-     *
      * @param array $criteria
      *
      * @return mixed
@@ -95,11 +92,11 @@ class SproutListsVariable
     public function getListCount($criteria = [])
     {
         $subscriber = new Subscribers();
-        $subscriber->listType = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
-        $subscriber->email = isset($criteria['email']) ? $criteria['email'] : null;
-        $subscriber->userId = isset($criteria['userId']) ? $criteria['userId'] : null;
-        $subscriber->firstName = isset($criteria['firstName']) ? $criteria['firstName'] : null;
-        $subscriber->lastName = isset($criteria['lastName']) ? $criteria['lastName'] : null;
+        $subscriber->listType = $criteria['listType'] ?? SproutLists::$defaultSubscriber;
+        $subscriber->email = $criteria['email'] ?? null;
+        $subscriber->userId = $criteria['userId'] ?? null;
+        $subscriber->firstName = $criteria['firstName'] ?? null;
+        $subscriber->lastName = $criteria['lastName'] ?? null;
 
         $listType = SproutLists::$app->lists->getListType($subscriber->listType);
 
@@ -108,7 +105,6 @@ class SproutListsVariable
 
     /**
      * Return total subscriber count on a given list.
-     *
      * @param $criteria
      *
      * @return mixed
@@ -117,8 +113,8 @@ class SproutListsVariable
     public function getSubscriberCount($criteria)
     {
         $list = new Lists();
-        $listTypeParam = isset($criteria['listType']) ? $criteria['listType'] : SproutLists::$defaultSubscriber;
-        $list->handle = isset($criteria['listHandle']) ? $criteria['listHandle'] : null;
+        $listTypeParam = $criteria['listType'] ?? SproutLists::$defaultSubscriber;
+        $list->handle = $criteria['listHandle'] ?? null;
 
         $listType = SproutLists::$app->lists->getListType($listTypeParam);
         $list->type = get_class($listType);

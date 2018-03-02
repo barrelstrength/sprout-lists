@@ -30,7 +30,7 @@ class ListsController extends Controller
      */
     public function actionEditListTemplate($type = null, $listId = null, $list = null)
     {
-        $type = isset($type) ? $type : SproutLists::$defaultSubscriber;
+        $type = $type !== null ? $type : SproutLists::$defaultSubscriber;
 
         $listType = SproutLists::$app->lists->getListType($type);
 

@@ -6,7 +6,6 @@ use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
 use craft\elements\db\ElementQueryInterface;
-use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 
 /**
  * Class DeleteSubscriber

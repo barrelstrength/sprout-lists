@@ -30,6 +30,10 @@
                             {{ "Save and add another"|t }}</a>
                     </li>
                 </ul>
+                <hr>
+                <ul>
+                    <li><a class="formsubmit error" data-action="sprout-lists/subscribers/delete-subscriber" data-confirm="Are you sure you want to delete this Subscriber?" data-redirect="{{ 'sprout-lists/subscribers'|hash }}">{{ "Delete"|t('sprout-lists') }}</a></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -103,29 +107,6 @@
 
             {% endif %}
 
-        </div>
-    </div>
-
-    <div class="field">
-        <div class="heading">&nbsp;</div>
-        <div class="input">
-            {% if subscriber is not null %}
-                {% set statusInput %}
-                    <div class="right">
-                        <input
-                                type="button"
-                                class="btn small formsubmit"
-                                data-action="sprout-lists/subscribers/delete-subscriber"
-                                data-confirm="{{ 'Are you sure you want to delete this subscriber?'|t }}"
-                                data-redirect="{{ "sprout-lists/subscribers"|hash }}"
-                                value="{{ 'Delete'|t }}">
-                    </div>
-                {% endset %}
-
-                {{ forms.field({
-                    label: '&nbsp;'
-                }, statusInput) }}
-            {% endif %}
         </div>
     </div>
 

@@ -18,13 +18,44 @@ use craft\validators\UniqueValidator;
 
 class Subscribers extends Element
 {
+    /**
+     * @var int
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $email;
+
+    /**
+     * @var string
+     */
     public $firstName;
+
+    /**
+     * @var string
+     */
     public $lastName;
+
+    /**
+     * @var int
+     */
     public $userId;
+
+    /**
+     * @var array
+     */
     public $subscriberLists;
+
+    /**
+     * @var BaseListType
+     */
     public $listType;
+
+    /**
+     * @var array
+     */
     private $subscriberListsIds;
 
     /**
@@ -222,10 +253,6 @@ class Subscribers extends Element
 
     /**
      * @return array
-     * @throws \yii\base\InvalidConfigException
-     */
-    /**
-     * @inheritdoc
      */
     public function rules()
     {

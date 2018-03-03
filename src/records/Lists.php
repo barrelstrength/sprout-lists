@@ -26,6 +26,9 @@ class Lists extends ActiveRecord
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
 
+    /**
+     * @return ActiveQueryInterface
+     */
     public function getSubscribers(): ActiveQueryInterface
     {
         return $this->hasMany(Subscribers::class, ['id' => 'subscriberId'])

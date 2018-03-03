@@ -13,13 +13,39 @@ use yii\web\ErrorHandler;
 
 class Lists extends Element
 {
+    /**
+     * @var int
+     */
     public $id;
+
+    /**
+     * @var int
+     */
     public $elementId;
+
+    /**
+     * @var string
+     */
     public $type;
+
+    /**
+     * @var string
+     */
     public $name;
+
+    /**
+     * @var string
+     */
     public $handle;
+
+    /**
+     * @var int
+     */
     public $totalSubscribers;
 
+    /**
+     * @return string
+     */
     public static function displayName(): string
     {
         return Craft::t('sprout-lists', 'Sprout Lists');
@@ -52,11 +78,19 @@ class Lists extends Element
         );
     }
 
+    /**
+     * @return ElementQueryInterface
+     */
     public static function find(): ElementQueryInterface
     {
         return new ListsQuery(static::class);
     }
 
+    /**
+     * @param string|null $context
+     *
+     * @return array
+     */
     protected static function defineSources(string $context = null): array
     {
         $sources = [
@@ -130,6 +164,9 @@ class Lists extends Element
         return parent::getTableAttributeHtml($attribute);
     }
 
+    /**
+     * @return \craft\models\FieldLayout|null
+     */
     public function getFieldLayout()
     {
         return Craft::$app->getFields()->getLayoutByType(static::class);

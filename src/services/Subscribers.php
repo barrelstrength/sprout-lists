@@ -92,11 +92,13 @@ class Subscribers extends Component
     }
 
     /**
+     * Delete a subscriber and all related subscriptions
+     *
      * @param $id
      *
      * @throws \Throwable
      */
-    public function deleteSubscribers($id)
+    public function deleteSubscriberById($id)
     {
         if (Craft::$app->getElements()->deleteElementById($id)) {
             SubscribersRecord::deleteAll('id = :subscriberId', [':subscriberId' => $id]);

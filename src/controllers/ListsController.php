@@ -59,6 +59,8 @@ class ListsController extends Controller
     }
 
     /**
+     * Saves a list
+     *
      * @return null
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
@@ -102,7 +104,7 @@ class ListsController extends Controller
     }
 
     /**
-     * Deletes a list.
+     * Deletes a list
      *
      * @return \yii\web\Response
      * @throws \Exception
@@ -160,8 +162,7 @@ class ListsController extends Controller
 
         $listType = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
 
-        if ($listType === null)
-        {
+        if ($listType === null) {
             $listType = new SubscriberListType();
         }
 
@@ -212,7 +213,7 @@ class ListsController extends Controller
         $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
         $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
-        $listType  = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
+        $listType = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
 
         $subscription->listType = get_class($listType);
 

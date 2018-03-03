@@ -7,10 +7,15 @@ use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use yii\base\Exception;
 
 class Lists extends Component
 {
+    /**
+     * @event RegisterListTypesEvent
+     */
     const EVENT_REGISTER_LIST_TYPES = 'registerSproutListsListTypes';
+
     /**
      * Registered List Types
      *
@@ -34,11 +39,13 @@ class Lists extends Component
         $listTypes = $event->listTypes;
 
         if (!empty($listTypes)) {
-            foreach ($listTypes as $listType) {
+            foreach ($listTypes as $listTypeClass) {
                 /**
                  * @var $listType BaseListType
                  */
-                $this->listTypes[$listType] = new $listType;
+                $listType = new $listTypeClass;
+
+                $this->listTypes[$listTypeClass] = $listType;
             }
         }
 
@@ -58,7 +65,7 @@ class Lists extends Component
         $listTypes = $this->getAllListTypes();
 
         if (!isset($listTypes[$className])) {
-            throw new \Exception('Invalid List Type.');
+            throw new Exception('Invalid List Type.');
         }
 
         return new $listTypes[$className];

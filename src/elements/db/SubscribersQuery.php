@@ -6,6 +6,9 @@ use craft\elements\db\ElementQuery;
 
 class SubscribersQuery extends ElementQuery
 {
+    /**
+     * @var int
+     */
     public $listId;
 
     /**

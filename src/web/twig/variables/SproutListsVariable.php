@@ -13,12 +13,13 @@ class SproutListsVariable
 {
     /**
      * Checks if a user is subscribed to a given list.
+     *
      * @param $criteria
      *
      * @return mixed
      * @throws \Exception
      */
-    public function getIsSubscribed($criteria)
+    public function getIsSubscribed(array $criteria = [])
     {
         $subscription = new Subscription();
         $subscription->listType = $criteria['listType'] ?? SubscriberListType::class;
@@ -33,9 +34,6 @@ class SproutListsVariable
         return $listType->isSubscribed($subscription);
     }
 
-    // Subscriptions
-    // =========================================================================
-
     /**
      * Returns all lists for a given subscriber.
      *
@@ -49,7 +47,7 @@ class SproutListsVariable
      * @return mixed
      * @throws \Exception
      */
-    public function getLists($criteria = [])
+    public function getLists(array $criteria = [])
     {
         $subscriber = new Subscribers();
         $subscriber->listType = $criteria['listType'] ?? SubscriberListType::class;
@@ -63,15 +61,15 @@ class SproutListsVariable
 
     /**
      * Return all subscribers on a given list.
+     *
      * @param array $criteria
      *
      * @return mixed
      * @throws \Exception
      */
-    public function getSubscribers($criteria = [])
+    public function getSubscribers(array $criteria = [])
     {
-        if (!isset($criteria['listHandle']))
-        {
+        if (!isset($criteria['listHandle'])) {
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'The `listHandle` parameter is required.'));
         }
 
@@ -90,12 +88,13 @@ class SproutListsVariable
 
     /**
      * Return total subscriptions for a given subscriber.
+     *
      * @param array $criteria
      *
      * @return mixed
      * @throws \Exception
      */
-    public function getListCount($criteria = [])
+    public function getListCount(array $criteria = [])
     {
         $subscriber = new Subscribers();
         $subscriber->listType = $criteria['listType'] ?? SubscriberListType::class;
@@ -111,12 +110,13 @@ class SproutListsVariable
 
     /**
      * Return total subscriber count on a given list.
+     *
      * @param $criteria
      *
      * @return mixed
      * @throws \Exception
      */
-    public function getSubscriberCount($criteria)
+    public function getSubscriberCount(array $criteria = [])
     {
         $list = new Lists();
         $list->handle = $criteria['listHandle'] ?? null;
@@ -126,13 +126,5 @@ class SproutListsVariable
         $list->type = get_class($listType);
 
         return $listType->getSubscriberCount($list);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getErrors()
-    {
-        return SproutLists::$app->getErrors();
     }
 }

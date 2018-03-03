@@ -12,6 +12,7 @@ use Craft;
 use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use yii\base\Exception;
 
 class SubscriberListType extends BaseListType
 {
@@ -75,9 +76,7 @@ class SubscriberListType extends BaseListType
             if (empty($subscriber->email)) {
                 $listRecords = ListsRecord::find()->all();
             }
-        }
-        else
-        {
+        } else {
             $listRecords = $subscriberRecord->getLists()->all();
         }
 
@@ -94,6 +93,8 @@ class SubscriberListType extends BaseListType
     }
 
     /**
+     * Get the total number of lists for a given subscriber
+     *
      * @param null $subscriber
      *
      * @return int
@@ -179,7 +180,7 @@ class SubscriberListType extends BaseListType
     // =========================================================================
 
     /**
-     * @inheritDoc SproutListsBaseListType::subscribe()
+     * @inheritDoc BaseListType::subscribe()
      *
      * @param $criteria
      *
@@ -232,7 +233,7 @@ class SubscriberListType extends BaseListType
     }
 
     /**
-     * @inheritDoc SproutListsBaseListType::unsubscribe()
+     * @inheritDoc BaseListType::unsubscribe()
      *
      * @param $subscription
      *
@@ -290,7 +291,7 @@ class SubscriberListType extends BaseListType
     }
 
     /**
-     * @inheritDoc SproutListsBaseListType::isSubscribed()
+     * @inheritDoc BaseListType::isSubscribed()
      *
      * @param $criteria
      *
@@ -299,19 +300,19 @@ class SubscriberListType extends BaseListType
     public function isSubscribed($subscription)
     {
         if (empty($subscription->listHandle)) {
-            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
+            throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
         }
 
         // We need a user ID or an email
         if ($subscription->userId === null && $subscription->email === null) {
-            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `userId` or `email` are required by the isSubscribed variable'));
+            throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `userId` or `email` are required by the isSubscribed variable'));
         }
 
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // however, if User Sync is not enabled, we need an email
         if ($settings->enableUserSync === true && $subscription->email === null) {
-            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `email` is required by the isSubscribed variable with User Sync is enabled.'));
+            throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `email` is required by the isSubscribed variable with User Sync is enabled.'));
         }
 
         $listId = null;
@@ -351,7 +352,7 @@ class SubscriberListType extends BaseListType
     }
 
     /**
-     * Saves a subscribers subscriptions.
+     * Saves a subscription
      *
      * @param Subscribers $subscriber
      *
@@ -375,10 +376,15 @@ class SubscriberListType extends BaseListType
                         $subscriptionRecord->listId = $list->id;
 
                         if (!$subscriptionRecord->save(false)) {
-                            throw new \Exception(print_r($subscriptionRecord->getErrors(), true));
+
+                            SproutLists::error($subscriptionRecord->getErrors());
+
+                            throw new Exception(Craft::t('sprout-lists', 'Unable to save subscription.'));
                         }
                     } else {
-                        throw new \Exception(Craft::t('The Subscriber List with id {listId} does not exists.', $listId));
+                        throw new Exception(Craft::t('sprout-lists', 'The Subscriber List with id {listId} does not exists.', [
+                            'listId' => $listId
+                        ]));
                     }
                 }
             }
@@ -396,6 +402,8 @@ class SubscriberListType extends BaseListType
     // =========================================================================
 
     /**
+     * Saves a subscriber
+     *
      * @param Subscribers $subscriber
      *
      * @return bool
@@ -483,7 +491,7 @@ class SubscriberListType extends BaseListType
         $subscriber = $this->getSubscriberById($id);
 
         if ($subscriber AND ($subscriber AND $subscriber != null)) {
-            SproutLists::$app->subscribers->deleteSubscribers($id);
+            SproutLists::$app->subscribers->deleteSubscriberById($id);
         }
 
         $this->updateTotalSubscribersCount();
@@ -538,8 +546,7 @@ class SubscriberListType extends BaseListType
         }
 
         // Return a blank template if we have no lists
-        if (empty($options))
-        {
+        if (empty($options)) {
             return '';
         }
 
@@ -610,11 +617,11 @@ class SubscriberListType extends BaseListType
     public function getSubscribers($list)
     {
         if (empty($list->type)) {
-            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: "type" is required by the getSubscribers variable.'));
+            throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: "type" is required by the getSubscribers variable.'));
         }
 
         if (empty($list->handle)) {
-            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: "listHandle" is required by the getSubscribers variable.'));
+            throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: "listHandle" is required by the getSubscribers variable.'));
         }
 
         $subscribers = [];

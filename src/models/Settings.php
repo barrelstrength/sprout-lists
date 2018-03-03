@@ -7,6 +7,9 @@ use Craft;
 
 class Settings extends Model
 {
+    /**
+     * @var bool
+     */
     public $enableUserSync;
 
     public function getSettingsNavItems()

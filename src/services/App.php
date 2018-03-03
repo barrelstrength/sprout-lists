@@ -22,13 +22,10 @@ class App extends Component
 {
     use TemplateTrait;
 
-    const ERROR = 'sproutListsError';
-
     /**
      * @var $lists Lists
      */
     public $lists;
-    public $subscriptions;
 
     /**
      * @var $subscribers Subscribers

@@ -8,6 +8,11 @@ use Craft;
 class Settings extends Model
 {
     /**
+     * @var string
+     */
+    public $pluginNameOverride;
+
+    /**
      * @var bool
      */
     public $enableUserSync;

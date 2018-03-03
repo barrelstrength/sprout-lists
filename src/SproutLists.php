@@ -13,6 +13,7 @@ use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\UrlHelper;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use yii\base\Event;
@@ -41,7 +42,12 @@ class SproutLists extends Plugin
     /**
      * @var bool
      */
-    public $hasSettings = true;
+    public $hasCpSection = true;
+
+    /**
+     * @var bool
+     */
+    public $hasCpSettings = true;
 
     public function init()
     {
@@ -53,13 +59,9 @@ class SproutLists extends Plugin
             'app' => App::class
         ]);
 
-        $this->hasCpSection = true;
-
         self::$app = $this->get('app');
 
         Craft::setAlias('@sproutlists', $this->getBasePath());
-
-        Craft::$app->view->twig->addExtension(new TwigExtensions());
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
 
@@ -84,6 +86,8 @@ class SproutLists extends Plugin
             $variable->set('sproutLists', SproutListsVariable::class);
         });
 
+        Craft::$app->view->twig->addExtension(new TwigExtensions());
+
         // @todo - sort out enableUserSync
         if ($this->getSettings()->enableUserSync) {
 //            craft()->on('users.saveUser', function(Event $event) {
@@ -101,7 +105,7 @@ class SproutLists extends Plugin
     }
 
     /**
-     * @return Settings|\craft\base\Model|null
+     * @inheritdoc
      */
     protected function createSettingsModel()
     {
@@ -109,16 +113,28 @@ class SproutLists extends Plugin
     }
 
     /**
-     * @return string
+     * Redirect to Sprout Lists settings
+     *
+     * @inheritdoc
      */
-    public function getName()
+    public function getSettingsResponse()
     {
-        return 'Sprout Lists';
+        $url = UrlHelper::cpUrl('sprout-lists/settings');
+
+        return Craft::$app->getResponse()->redirect($url);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getCpNavItem()
     {
         $parent = parent::getCpNavItem();
+
+        // Allow user to override plugin name in sidebar
+        if ($this->getSettings()->pluginNameOverride) {
+            $parent['label'] = $this->getSettings()->pluginNameOverride;
+        }
 
         $navigation = [
             'subnav' => [

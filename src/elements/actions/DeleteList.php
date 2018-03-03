@@ -17,12 +17,12 @@ class DeleteList extends Delete
     /**
      * @var string|null The confirmation message that should be shown before the elements get deleted
      */
-    public $confirmationMessage = Craft::t('sprout-lists', 'Are you sure you want to delete this list(s)?');
+    public $confirmationMessage = 'Are you sure you want to delete this list(s)?';
 
     /**
      * @var string|null The message that should be shown after the elements get deleted
      */
-    public $successMessage = Craft::t('sprout-lists', 'List(s) deleted.');
+    public $successMessage = 'List(s) deleted.';
 
     /**
      * @param ElementQueryInterface $query
@@ -42,7 +42,7 @@ class DeleteList extends Delete
             SproutLists::$app->lists->deleteList($id);
         }
 
-        $this->setMessage($successMessage);
+        $this->setMessage(Craft::t('sprout-lists', 'List(s) deleted.'));
 
         return true;
     }

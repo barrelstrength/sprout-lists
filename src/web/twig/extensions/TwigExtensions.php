@@ -1,6 +1,6 @@
 <?php
 
-namespace barrelstrength\sproutlists\web\twig;
+namespace barrelstrength\sproutlists\web\twig\extensions;
 
 use Craft;
 use craft\helpers\StringHelper;
@@ -20,7 +20,7 @@ class TwigExtensions extends Twig_Extension
     /**
      * Makes the filters available to the template context
      *
-     * @return array
+     * @return array|\Twig_Filter[]
      */
     public function getFilters()
     {
@@ -40,9 +40,9 @@ class TwigExtensions extends Twig_Extension
     {
         $subscriptionIds = $this->buildArrayOfIds($subscriptions, 'userId');
 
-        $subscriptionIds = array_values(array_unique($subscriptionIds));
+        $subscriptionIds = array_keys(array_count_values($subscriptionIds));
 
-        return StringHelper::arrayToString($subscriptionIds);
+        return StringHelper::toString($subscriptionIds);
     }
 
     /**

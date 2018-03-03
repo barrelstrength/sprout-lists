@@ -4,6 +4,7 @@ namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
+use craft\elements\User;
 use yii\base\Event;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\elements\Subscribers as SubscribersElement;
@@ -29,37 +30,40 @@ class Subscribers extends Component
      */
     public function updateUserIdOnSave(Event $event)
     {
-        $userId = $event->params['user']->id;
-        $email = $event->params['user']->email;
+        /**
+         * @var $user User
+         */
+        $user = $event->element;
 
-        $subscriberRecord = SubscribersRecord::find()->where(['userId' => $userId])->one();
+        $subscriberRecord = SubscribersRecord::find()->where(['userId' => $user->id])->one();
 
         // If that doesn't work, try to find a user with a matching email address
-        if ($subscriberRecord == null) {
+        if ($subscriberRecord === null) {
 
             $subscriberRecord = SubscribersRecord::find()
-                ->where(['userId' => $userId, 'email' => $email])
+                ->where([
+                    'userId' => null,
+                    'email' => $user->email
+                ])
                 ->one();
 
             if ($subscriberRecord) {
                 // Assign the user ID to the subscriber with the matching email address
-                $subscriberRecord->userId = $event->params['user']->id;
+                $subscriberRecord->userId = $user->id;
             }
         }
 
-        if ($subscriberRecord != null) {
-            // If the user has updated their email, let's also update it for our Subscriber
-            $subscriberRecord->email = $event->params['user']->email;
-            $subscriberRecord->firstName = $event->params['user']->firstName;
-            $subscriberRecord->lastName = $event->params['user']->lastName;
+        if ($subscriberRecord !== null) {
 
-            $subscriberElement = new SubscribersElement;
-            $subscriberElement->setAttributes($subscriberRecord->getAttributes());
+            // If the user has updated their email, let's also update it for our Subscriber
+            $subscriberRecord->email = $user->email;
+            $subscriberRecord->firstName = $user->firstName;
+            $subscriberRecord->lastName = $user->lastName;
 
             try {
-                if (Craft::$app->getElements()->saveElement($subscriberElement)) {
-                    return $subscriberElement;
-                }
+                $subscriberRecord->save(false);
+
+                return true;
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -69,23 +73,41 @@ class Subscribers extends Component
     }
 
     /**
-     * Remove any relationships between Sprout Lists Subscribers and Users who are deleted
+     * Remove any relationships between Sprout Lists Subscribers and Users who are deleted.
+     * Deleting a Craft User does not delete the matching Subscriber. It simply removes
+     * the relationship to any Craft User ID from the Subscriber table.
      *
      * @param Event $event
      *
      * @return bool
      * @throws \Exception
+     * @throws \Throwable
      */
     public function updateUserIdOnDelete(Event $event)
     {
-        $userId = $event->params['user']->id;
+        /**
+         * @var $user User
+         */
+        $user = $event->element;
 
-        $subscriberElement = SubscribersElement::find()->where([
-            'userId' => $userId,
+        $subscriberRecord = SubscribersRecord::find()->where([
+            'userId' => $user->id,
         ])->one();
 
-        if ($subscriberElement != null) {
-            $subscriberElement->userId = null;
+        if ($subscriberRecord !== null) {
+
+            $subscriberRecord->userId = null;
+
+            try
+            {
+                $subscriberRecord->save();
+
+                return true;
+            }
+            catch (\Exception $e)
+            {
+                throw $e;
+            }
         }
 
         return false;

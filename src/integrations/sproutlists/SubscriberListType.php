@@ -414,6 +414,7 @@ class SubscriberListType extends BaseListType
     public function saveSubscriber(Subscribers $subscriber)
     {
         if ($subscriber->validate(null, false)) {
+
             if (Craft::$app->getElements()->saveElement($subscriber)) {
                 $this->saveSubscriptions($subscriber);
             }

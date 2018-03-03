@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
+use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
@@ -59,6 +60,9 @@ class SubscribersController extends Controller
 
         $type = Craft::$app->getRequest()->getBodyParam('type');
 
+        /**
+         * @var $listType BaseListType
+         */
         $listType = SproutLists::$app->lists->getListType($type);
 
         $session = Craft::$app->getSession();

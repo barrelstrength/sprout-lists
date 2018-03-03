@@ -295,8 +295,10 @@ class Subscribers extends Element
         }
 
         $user = null;
+
         // Sync updates with Craft User if User Sync enabled
         if ($this->email && ($settings AND $settings->enableUserSync)) {
+
             $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
             // Set to null when updating un matched email
             $this->userId = null;

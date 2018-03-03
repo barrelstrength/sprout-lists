@@ -8,6 +8,7 @@ use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
 use yii\base\Exception;
+use Craft;
 
 class Lists extends Component
 {
@@ -75,12 +76,20 @@ class Lists extends Component
      * @param $listHandle
      *
      * @return mixed
+     * @throws Exception
      */
     public function getListTypeByHandle($listHandle)
     {
         $list = ListsRecord::find()->where([
             'handle' => $listHandle
         ])->one();
+
+        if ($list === null)
+        {
+            throw new Exception(Craft::t('sprout-lists','No list could be found with the handle `{listHandle}"', [
+                'listHandle' => $listHandle
+            ]));
+        }
 
         return new $list->type;
     }

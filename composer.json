@@ -1,7 +1,7 @@
 {
   "name": "barrelstrength/sprout-lists",
   "description": "Subscribe and unsubscribe to things.",
-  "version": "3.0.0",
+  "version": "1.0.0-beta",
   "type": "craft-plugin",
   "keywords": [
     "craft",
@@ -10,7 +10,7 @@
     "lists",
     "sprout lists"
   ],
-  "license": "Barrel Strength Design LLC",
+  "license": "proprietary",
   "authors": [
     {
       "name": "Barrel Strength",
@@ -36,10 +36,10 @@
   "extra": {
     "name": "Sprout Lists",
     "handle": "sprout-lists",
-    "schemaVersion": "3.0.0",
+    "schemaVersion": "1.0.0",
     "developer": "Barrel Strength",
     "developerUrl": "https://barrelstrengthdesign.com",
-    "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/email",
+    "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/lists",
     "changelogUrl": "https://raw.githubusercontent.com/BarrelStrength/sprout-lists/master/CHANGELOG.md",
     "downloadUrl": "https://github.com/BarrelStrength/sprout-lists/archive/master.zip",
     "class": "barrelstrength\\sproutlists\\SproutLists"

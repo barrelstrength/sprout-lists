@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\services;
 
-use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
+use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
@@ -36,9 +36,9 @@ class Lists extends Component
         if (!empty($listTypes)) {
             foreach ($listTypes as $listType) {
                 /**
-                 * @var $listType SproutListsBaseListType
+                 * @var $listType BaseListType
                  */
-                $this->listTypes[$listType->getHandle()] = $listType;
+                $this->listTypes[$listType] = new $listType;
             }
         }
 
@@ -62,6 +62,20 @@ class Lists extends Component
         }
 
         return new $listTypes[$className];
+    }
+
+    /**
+     * @param $listHandle
+     *
+     * @return mixed
+     */
+    public function getListTypeByHandle($listHandle)
+    {
+        $list = ListsRecord::find()->where([
+            'handle' => $listHandle
+        ])->one();
+
+        return new $list->type;
     }
 
     /**

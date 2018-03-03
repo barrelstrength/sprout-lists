@@ -8,7 +8,7 @@ use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\services\App;
 use barrelstrength\sproutlists\services\Lists;
-use barrelstrength\sproutlists\web\twig\TwigExtensions;
+use barrelstrength\sproutlists\web\twig\extensions\TwigExtensions;
 use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
@@ -26,20 +26,27 @@ class SproutLists extends Plugin
 {
     use BaseSproutTrait;
 
-    public $hasSettings = true;
-
     /**
      * Enable use of SproutLists::$plugin-> in place of Craft::$app->
      *
      * @var \barrelstrength\sproutlists\services\App
      */
     public static $app;
+
+    /**
+     * @var string
+     */
     public static $pluginId = 'sprout-lists';
-    public static $defaultSubscriber = 'subscriber';
+
+    /**
+     * @var bool
+     */
+    public $hasSettings = true;
 
     public function init()
     {
         parent::init();
+
         SproutBaseHelper::registerModule();
 
         $this->setComponents([
@@ -77,7 +84,6 @@ class SproutLists extends Plugin
             $variable->set('sproutLists', SproutListsVariable::class);
         });
 
-
         // @todo - sort out enableUserSync
         if ($this->getSettings()->enableUserSync) {
 //            craft()->on('users.saveUser', function(Event $event) {
@@ -90,7 +96,7 @@ class SproutLists extends Plugin
         }
 
         Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, function(Event $event) {
-            $event->listTypes[] = new SubscriberListType();
+            $event->listTypes[] = SubscriberListType::class;
         });
     }
 

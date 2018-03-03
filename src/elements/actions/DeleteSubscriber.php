@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
+use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
@@ -36,7 +37,7 @@ class DeleteSubscriber extends Delete
     public function performAction(ElementQueryInterface $query): bool
     {
         $subscribers = $query->all();
-        $listType = SproutLists::$app->lists->getListType(SproutLists::$defaultSubscriber);
+        $listType = SproutLists::$app->lists->getListType(SubscriberListType::class);
         // Delete the users
         foreach ($subscribers as $subscriber) {
             $id = $subscriber->id;

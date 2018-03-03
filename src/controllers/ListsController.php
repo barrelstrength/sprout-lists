@@ -2,8 +2,9 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
-use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
+use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
 use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
@@ -30,7 +31,7 @@ class ListsController extends Controller
      */
     public function actionEditListTemplate($type = null, $listId = null, $list = null)
     {
-        $type = $type !== null ? $type : SproutLists::$defaultSubscriber;
+        $type = $type !== null ? $type : SubscriberListType::class;
 
         $listType = SproutLists::$app->lists->getListType($type);
 
@@ -43,7 +44,7 @@ class ListsController extends Controller
         if ($listId != null) {
 
             /**
-             * @var $listType SproutListsBaseListType
+             * @var $listType BaseListType
              */
             $list = $listType->getListById($listId);
 
@@ -67,24 +68,25 @@ class ListsController extends Controller
         $this->requirePostRequest();
 
         $listId = Craft::$app->request->getBodyParam('listId');
+
         $list = new Lists();
 
         if ($listId != null) {
             $list = Craft::$app->getElements()->getElementById($listId);
         }
 
-        $listTypeParam = Craft::$app->request->getBodyParam('type', SproutLists::$defaultSubscriber);
         $list->name = Craft::$app->request->getBodyParam('name');
         $list->handle = Craft::$app->request->getBodyParam('handle');
+        $list->type = Craft::$app->request->getRequiredBodyParam('type');
 
         /**
-         * @var $listType SproutListsBaseListType
+         * @var $listType BaseListType
          */
-        $listType = SproutLists::$app->lists->getListType($listTypeParam);
+        $listType = SproutLists::$app->lists->getListType($list->type);
         $list->type = get_class($listType);
         $session = Craft::$app->getSession();
 
-        if ($session AND $listType->saveList($list)) {
+        if ($session && $listType->saveList($list)) {
             $session->setNotice(Craft::t('sprout-lists', 'List saved.'));
 
             $this->redirectToPostedUrl();
@@ -115,7 +117,7 @@ class ListsController extends Controller
         $listId = Craft::$app->getRequest()->getBodyParam('listId');
         $session = Craft::$app->getSession();
 
-        if ($session AND SproutLists::$app->lists->deleteList($listId)) {
+        if ($session && SproutLists::$app->lists->deleteList($listId)) {
             if (Craft::$app->getRequest()->getIsAjax()) {
                 return $this->asJson([
                     'success' => true
@@ -150,15 +152,18 @@ class ListsController extends Controller
         $this->requirePostRequest();
 
         $subscription = new Subscription();
-        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType', SproutLists::$defaultSubscriber);
-
-        $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
+        $subscription->listHandle = Craft::$app->getRequest()->getRequiredBodyParam('listHandle');
         $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
         $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
         $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
         $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
-        $listType = SproutLists::$app->lists->getListType($listTypeParam);
+        $listType = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
+
+        if ($listType === null)
+        {
+            $listType = new SubscriberListType();
+        }
 
         $subscription->listType = get_class($listType);
 
@@ -171,7 +176,10 @@ class ListsController extends Controller
 
             return $this->redirectToPostedUrl();
         }
-        $errors = [Craft::t('sprout-lists', 'Unable to save subscription.')];
+
+        $errors = [
+            Craft::t('sprout-lists', 'Unable to save subscription.')
+        ];
 
         if (Craft::$app->getRequest()->getIsAjax()) {
             return $this->asJson([
@@ -198,14 +206,13 @@ class ListsController extends Controller
         $this->requirePostRequest();
 
         $subscription = new Subscription();
-        $listTypeParam = Craft::$app->getRequest()->getBodyParam('listType', SproutLists::$defaultSubscriber);
         $subscription->listHandle = Craft::$app->getRequest()->getBodyParam('listHandle');
         $subscription->listId = Craft::$app->getRequest()->getBodyParam('listId');
         $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
         $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
         $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
-        $listType = SproutLists::$app->lists->getListType($listTypeParam);
+        $listType  = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
 
         $subscription->listType = get_class($listType);
 

@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\integrations\sproutlists;
 
-use barrelstrength\sproutbase\contracts\sproutlists\SproutListsBaseListType;
+use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\models\Subscription;
@@ -13,7 +13,7 @@ use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
 
-class SubscriberListType extends SproutListsBaseListType
+class SubscriberListType extends BaseListType
 {
     /**
      * @return string
@@ -21,16 +21,6 @@ class SubscriberListType extends SproutListsBaseListType
     public function getName()
     {
         return Craft::t('sprout-lists', 'Subscriber Lists');
-    }
-
-    /**
-     * The handle that refers to this list. Used as the 'type' when submitting forms.
-     *
-     * @return string
-     */
-    public function getHandle()
-    {
-        return 'subscriber';
     }
 
     // Lists
@@ -65,6 +55,7 @@ class SubscriberListType extends SproutListsBaseListType
         $lists = [];
 
         $subscriberRecord = null;
+
         /**
          * @var $subscriber Subscribers
          */
@@ -74,17 +65,24 @@ class SubscriberListType extends SproutListsBaseListType
                 'userId' => $subscriber->userId
             ]);
 
-            $subscriberRecord = SubscribersRecord::find()->where($subscriberAttributes)->all();
+            $subscriberRecord = SubscribersRecord::find()->where($subscriberAttributes)->one();
         }
+
         $listRecords = [];
+
         if ($subscriberRecord == null) {
             // Only findAll if we are not looking for a specific Subscriber, otherwise we want to return null
             if (empty($subscriber->email)) {
                 $listRecords = ListsRecord::find()->all();
             }
         }
+        else
+        {
+            $listRecords = $subscriberRecord->getLists()->all();
+        }
 
         if (!empty($listRecords)) {
+
             foreach ($listRecords as $listRecord) {
                 $list = new Lists();
                 $list->setAttributes($listRecord->getAttributes(), false);
@@ -161,12 +159,12 @@ class SubscriberListType extends SproutListsBaseListType
         $listRecord = ListsRecord::find()->where(['handle' => $subscription->listHandle])->one();
 
         $list = new Lists();
+
         // If no List exists, dynamically create one
         if ($listRecord) {
             $list = Craft::$app->getElements()->getElementById($listRecord->id);
         } else {
-
-            $list->type = SproutLists::$defaultSubscriber;
+            $list->type = SubscriberListType::class;
             $list->elementId = $subscription->elementId;
             $list->name = $subscription->listHandle;
             $list->handle = $subscription->listHandle;
@@ -193,6 +191,7 @@ class SubscriberListType extends SproutListsBaseListType
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
         $settings = null;
+
         if ($plugin) {
             $settings = $plugin->getSettings();
         }
@@ -203,7 +202,7 @@ class SubscriberListType extends SproutListsBaseListType
             $subscriber->email = $subscription->email;
         }
 
-        if (!empty($subscription->userId) && ($settings AND $settings->enableUserSync)) {
+        if ($subscription->userId !== null && $settings->enableUserSync) {
             $subscriber->userId = $subscription->userId;
         }
 
@@ -215,13 +214,13 @@ class SubscriberListType extends SproutListsBaseListType
             $subscriber = $this->getSubscriber($subscriber);
 
             $subscriptionRecord = new SubscriptionRecord();
+
             if ($list) {
                 $subscriptionRecord->listId = $list->id;
                 $subscriptionRecord->subscriberId = $subscriber->id;
 
                 // Create a criteria between our List Element and Subscriber Element
                 if ($subscriptionRecord->save(false)) {
-
                     $this->updateTotalSubscribersCount($subscriptionRecord->listId);
                 }
             }
@@ -299,19 +298,20 @@ class SubscriberListType extends SproutListsBaseListType
      */
     public function isSubscribed($subscription)
     {
-        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
-
-        $settings = isset($plugin) ? $plugin->getSettings() : null;
-
         if (empty($subscription->listHandle)) {
             throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
         }
 
-        // We need a user ID or an email, however, if User Sync is not enabled, we need an email
-        if ((empty($subscription->userId) && empty($subscription->email)) OR
-            ($settings AND $settings->enableUserSync == false) && empty($subscription->email)
-        ) {
+        // We need a user ID or an email
+        if ($subscription->userId === null && $subscription->email === null) {
             throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `userId` or `email` are required by the isSubscribed variable'));
+        }
+
+        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
+
+        // however, if User Sync is not enabled, we need an email
+        if ($settings->enableUserSync === true && $subscription->email === null) {
+            throw new \Exception(Craft::t('sprout-lists', 'Missing argument: `email` is required by the isSubscribed variable with User Sync is enabled.'));
         }
 
         $listId = null;

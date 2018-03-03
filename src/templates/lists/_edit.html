@@ -24,13 +24,19 @@
         <div class="btngroup submit">
             <input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
 
-            <div class="btn submit menubtn"></div>
-            <div class="menu">
-                <hr>
-                <ul>
-                    <li><a class="formsubmit error" data-action="sprout-lists/lists/delete-list" data-confirm="{{ 'Are you sure you want to delete this List?'|t('sprout-lists') }}" data-redirect="{{ 'sprout-lists/lists'|hash }}">{{ "Delete"|t('sprout-lists') }}</a></li>
-                </ul>
-            </div>
+            {% if list.id %}
+                <div class="btn submit menubtn"></div>
+                <div class="menu">
+                    <hr>
+                    <ul>
+                        <li><a class="formsubmit error"
+                               data-action="sprout-lists/lists/delete-list"
+                               data-confirm="{{ 'Are you sure you want to delete this List?'|t('sprout-lists') }}"
+                               data-redirect="{{ 'sprout-lists/lists'|hash }}">{{ "Delete"|t('sprout-lists') }}</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
@@ -39,15 +45,11 @@
 
 {% block content %}
 
-    <input type="hidden" name="action"
-           value="sprout-lists/lists/save-list">
+    <input type="hidden" name="action" value="sprout-lists/lists/save-list">
     {{ redirectInput("sprout-lists/lists") }}
 
-    <input type="hidden" name="listId"
-           value="{{ list.id is defined ? list.id : null }}">
-    <input type="hidden"
-           name="type"
-           value="subscriber">
+    <input type="hidden" name="listId" value="{{ list.id is defined ? list.id : null }}">
+    <input type="hidden" name="type" value="barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType">
 
     {{ forms.textField({
         label: "List Name"|t,
@@ -67,11 +69,11 @@
         id: 'handle',
         name: 'handle',
         value: (list is defined ? list.handle : null),
-    required: true,
-    errors: (list is defined ? list.getErrors('handle') : null)
+        required: true,
+        errors: (list is defined ? list.getErrors('handle') : null)
     }) }}
 
-{% endblock  %}
+{% endblock %}
 
 {% block details %}
 

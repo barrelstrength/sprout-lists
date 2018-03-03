@@ -2,13 +2,13 @@
 {% import '_includes/forms' as forms %}
 
 {% set crumbs = [
-    { label: "Subscribers"|t, url: url('sprout-lists/subscribers') }
+    { label: "Subscribers"|t('sprout-lists'), url: url('sprout-lists/subscribers') }
 ] %}
 
-{% set title = subscriber is not null ? 'Edit Subscriber'|t : 'New Subscriber'|t %}
+{% set title = subscriber is not null ? 'Edit Subscriber'|t('sprout-lists') : 'New Subscriber'|t('sprout-lists') %}
 
 {% set selectedTab    = 'lists' %}
-{% set subscriberId = subscriber is not null ? subscriber.id : null  %}
+{% set subscriberId = subscriber is not null ? subscriber.id : null %}
 {% set fullPageForm = true %}
 
 {% set saveShortcutRedirect = url('sprout-lists/subscribers/edit/{id}') %}
@@ -16,23 +16,27 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('sprout-lists') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li><a class="formsubmit"
                            data-redirect="{{ saveShortcutRedirect|hash }}">
-                            {{ "Save and continue editing"|t }}</a>
+                            {{ "Save and continue editing"|t('sprout-lists') }}</a>
                     </li>
                     <li><a class="formsubmit"
                            data-redirect="{{ "sprout-lists/subscribers/new"|hash }}">
-                            {{ "Save and add another"|t }}</a>
+                            {{ "Save and add another"|t('sprout-lists') }}</a>
                     </li>
                 </ul>
                 <hr>
                 <ul>
-                    <li><a class="formsubmit error" data-action="sprout-lists/subscribers/delete-subscriber" data-confirm="Are you sure you want to delete this Subscriber?" data-redirect="{{ 'sprout-lists/subscribers'|hash }}">{{ "Delete"|t('sprout-lists') }}</a></li>
+                    <li><a class="formsubmit error"
+                           data-action="sprout-lists/subscribers/delete-subscriber"
+                           data-confirm="Are you sure you want to delete this Subscriber?"
+                           data-redirect="{{ 'sprout-lists/subscribers'|hash }}">{{ "Delete"|t('sprout-lists') }}</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -41,51 +45,51 @@
 
 {% block content %}
 
-<input type="hidden" id="action" name="action"
-       value="sprout-lists/subscribers/save-subscriber">
-{{ redirectInput("sprout-lists/subscribers") }}
+    <input type="hidden" id="action" name="action"
+           value="sprout-lists/subscribers/save-subscriber">
+    {{ redirectInput("sprout-lists/subscribers") }}
 
-{% if subscriber is not null %}
-    <input type="hidden" name="subscriberId"
-           value="{{ subscriberId }}">
-{% endif %}
+    {% if subscriber is not null %}
+        <input type="hidden" name="subscriberId"
+               value="{{ subscriberId }}">
+    {% endif %}
 
-<input type="hidden" name="type"
-       value="subscriber">
+    <input type="hidden" name="type"
+           value="subscriber">
 
-<section id="default-fields">
+    <section id="default-fields">
 
-    {{ forms.textField({
-        label: "Email"|t,
-        name: 'email',
-        id: 'email',
-        required: true,
-        autofocus: true,
-        value: subscriber is not null ? subscriber.email : null,
-        errors: subscriber is not null and subscriber.hasErrors('email') ? subscriber.getErrors('email') : null
-    }) }}
+        {{ forms.textField({
+            label: "Email"|t('sprout-lists'),
+            name: 'email',
+            id: 'email',
+            required: true,
+            autofocus: true,
+            value: subscriber is not null ? subscriber.email : null,
+            errors: subscriber is not null and subscriber.hasErrors('email') ? subscriber.getErrors('email') : null
+        }) }}
 
-    {{ forms.textField({
-        label: "First Name"|t,
-        name: 'firstName',
-        id: 'firstName',
-        value: subscriber is not null ? subscriber.firstName : null,
-        errors: subscriber is not null and subscriber.hasErrors('firstName') ? subscriber.getErrors('firstName') : null
-    }) }}
+        {{ forms.textField({
+            label: "First Name"|t('sprout-lists'),
+            name: 'firstName',
+            id: 'firstName',
+            value: subscriber is not null ? subscriber.firstName : null,
+            errors: subscriber is not null and subscriber.hasErrors('firstName') ? subscriber.getErrors('firstName') : null
+        }) }}
 
-    {{ forms.textField({
-        label: "Last Name"|t,
-        name: 'lastName',
-        id: 'lastName',
-        value: subscriber is not null ? subscriber.lastName : null,
-        errors: subscriber is not null and subscriber.hasErrors('lastName') ? subscriber.getErrors('lastName') : null
-    }) }}
+        {{ forms.textField({
+            label: "Last Name"|t('sprout-lists'),
+            name: 'lastName',
+            id: 'lastName',
+            value: subscriber is not null ? subscriber.lastName : null,
+            errors: subscriber is not null and subscriber.hasErrors('lastName') ? subscriber.getErrors('lastName') : null
+        }) }}
 
-</section>
+    </section>
 {% endblock %}
 {% block details %}
 
-<div class="meta">
+    <div class="meta">
 
     {% for listType in listTypes %}
 
@@ -113,10 +117,10 @@
         {% endif %}
 
         </div>
-    </div>
+        </div>
 
     {% endfor %}
 
-</div>
+    </div>
 
 {% endblock %}

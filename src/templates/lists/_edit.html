@@ -1,28 +1,22 @@
 {% extends "sprout-lists/_layouts/base" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "Edit List"|t %}
+{% set title = "Edit List"|t('sprout-lists') %}
 
 {% if craft.request.getSegment(3) == 'new' %}
-    {% set title = "New List"|t %}
+    {% set title = "New List"|t('sprout-lists') %}
 {% endif %}
 
 {% set crumbs = [
-    { label: "Lists"|t, url: url('sprout-lists/lists') },
+    { label: "Lists"|t('sprout-lists'), url: url('sprout-lists/lists') },
 ] %}
 
 {% set fullPageForm = true %}
 
-{#{% block actionButton %}#}
-    {#<div class="btngroup submit first">#}
-        {#<input type="submit" class="btn submit" value="{{ 'Save List'|t }}">#}
-    {#</div>#}
-{#{% endblock %}#}
-
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save List'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save List'|t('sprout-lists') }}">
 
             {% if list.id %}
                 <div class="btn submit menubtn"></div>
@@ -48,12 +42,14 @@
     <input type="hidden" name="action" value="sprout-lists/lists/save-list">
     {{ redirectInput("sprout-lists/lists") }}
 
-    <input type="hidden" name="listId" value="{{ list.id is defined ? list.id : null }}">
-    <input type="hidden" name="type" value="barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType">
+    <input type="hidden" name="listId"
+           value="{{ list.id is defined ? list.id : null }}">
+    <input type="hidden" name="type"
+           value="barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType">
 
     {{ forms.textField({
-        label: "List Name"|t,
-        instructions: "The name of your list that will be visible to users."|t,
+        label: "List Name"|t('sprout-lists'),
+        instructions: "The name of your list that will be visible to users."|t('sprout-lists'),
         id: 'name',
         name: 'name',
         value: (list is defined ? list.name : null),
@@ -64,8 +60,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "List Handle"|t,
-        instructions: "How you’ll refer to this list in your templates."|t,
+        label: "List Handle"|t('sprout-lists'),
+        instructions: "How you’ll refer to this list in your templates."|t('sprout-lists'),
         id: 'handle',
         name: 'handle',
         value: (list is defined ? list.handle : null),
@@ -83,10 +79,10 @@
 
             <div class="field">
                 <div class="heading">
-                    <label>{{ "List Type"|t }}</label>
+                    <label>{{ "List Type"|t('sprout-lists') }}</label>
                 </div>
                 <div class="input">
-                    <h6>{{ "Recipients"|t }}</h6>
+                    <h6>{{ "Recipients"|t('sprout-lists') }}</h6>
                 </div>
             </div>
 
@@ -95,11 +91,11 @@
         <div class="meta read-only">
 
             <div class="data">
-                <h5 class="heading">{{ "Date Created"|t }}</h5>
+                <h5 class="heading">{{ "Date Created"|t('sprout-lists') }}</h5>
                 <div class="value">{{ list.dateCreated.localeDate() }} {{ list.dateCreated.localeTime() }}</div>
             </div>
             <div class="data">
-                <h5 class="heading">{{ "Date Updated"|t }}</h5>
+                <h5 class="heading">{{ "Date Updated"|t('sprout-lists') }}</h5>
                 <div class="value">{{ list.dateUpdated.localeDate() }} {{ list.dateUpdated.localeTime() }}</div>
             </div>
 

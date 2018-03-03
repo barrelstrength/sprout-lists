@@ -550,7 +550,7 @@ class SubscriberListType extends BaseListType
             return '';
         }
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-lists/subscribers/_subscriptionlists', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-lists/subscribers/_subscriberlists', [
             'options' => $options,
             'values' => $listIds
         ]);

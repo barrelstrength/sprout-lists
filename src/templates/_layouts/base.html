@@ -4,11 +4,11 @@
 
 {% set subnav = listnav|merge({
     subscribers: {
-        label: "Subscribers"|t,
+        label: "Subscribers"|t('sprout-lists'),
         url: url('sprout-lists/subscribers')
     },
     lists: {
-        label: "Lists"|t,
+        label: "Lists"|t('sprout-lists'),
         url: url('sprout-lists/lists')
     }
 }) %}

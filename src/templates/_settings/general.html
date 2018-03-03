@@ -5,8 +5,8 @@
     <div id="settings-cp">
         {{ forms.lightswitchField({
             first: true,
-            label: "Enable User Sync"|t,
-            instructions: "When you enable this setting Sprout Lists will create a relationship between Sprout Lists Subscribers and Craft Users, based on the email address. When Craft User emails are updated, they will also be updated in Sprout Lists Subscriber Lists. When emails are updated in Sprout Lists Subscriber Lists, they will also be updated in the matching Craft User Profiles. When Users are deleted the relationship in the Sprout Lists Subscriber List will be removed."|t,
+            label: "Enable User Sync"|t('sprout-lists'),
+            instructions: "When you enable this setting Sprout Lists will create a relationship between Sprout Lists Subscribers and Craft Users, based on the email address. When Craft User emails are updated, they will also be updated in Sprout Lists Subscriber Lists. When emails are updated in Sprout Lists Subscriber Lists, they will also be updated in the matching Craft User Profiles. When Users are deleted the relationship in the Sprout Lists Subscriber List will be removed."|t('sprout-lists'),
             name: 'enableUserSync',
             on: settings.enableUserSync
         }) }}

@@ -95,21 +95,13 @@ class SproutLists extends Plugin
             $event->listTypes[] = SubscriberListType::class;
         });
 
-
         if ($this->getSettings()->enableUserSync) {
-
-            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function(Event $event) {
-                if ($event->element instanceof User)
-                {
-                    SproutLists::$app->subscribers->updateUserIdOnSave($event);
-                }
+            Event::on(User::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function(Event $event) {
+                SproutLists::$app->subscribers->updateUserIdOnSave($event);
             });
 
-            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, function(Event $event) {
-                if ($event->element instanceof User)
-                {
-                    SproutLists::$app->subscribers->updateUserIdOnDelete($event);
-                }
+            Event::on(User::class, Elements::EVENT_AFTER_DELETE_ELEMENT, function(Event $event) {
+                SproutLists::$app->subscribers->updateUserIdOnDelete($event);
             });
         }
     }

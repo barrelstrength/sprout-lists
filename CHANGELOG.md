@@ -1,6 +1,16 @@
 # Changelog
 
-## 1.0.0-beta - 2018-03-03
+## 1.0.0-beta.3 - 2018-04-03
+
+## Changed
+- Fixed potential conflicts with svg icon styles
+
+## 1.0.0-beta.2 - 2018-03-05
+
+## Changed
+- Updated Events to use more specific User::class
+
+## 1.0.0-beta.1 - 2018-03-03
 
 ### Added
 - Initial Craft 3 release

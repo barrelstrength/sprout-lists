@@ -36,7 +36,6 @@
   "extra": {
     "name": "Sprout Lists",
     "handle": "sprout-lists",
-    "schemaVersion": "1.0.0",
     "developer": "Barrel Strength",
     "developerUrl": "https://barrelstrengthdesign.com",
     "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/lists",

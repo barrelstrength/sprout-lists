@@ -52,6 +52,11 @@ class SproutLists extends Plugin
      */
     public $hasCpSettings = true;
 
+    /**
+     * @var string
+     */
+    public $schemaVersion = '4.0.0';
+
     public function init()
     {
         parent::init();

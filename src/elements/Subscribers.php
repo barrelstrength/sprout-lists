@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements;
 
-use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
+use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscribersQuery;

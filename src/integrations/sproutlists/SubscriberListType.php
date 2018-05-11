@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\integrations\sproutlists;
 
-use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
+use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\models\Subscription;

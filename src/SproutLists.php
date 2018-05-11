@@ -73,8 +73,8 @@ class SproutLists extends Plugin
             $event->rules['sprout-lists/subscribers/new'] = 'sprout-lists/subscribers/edit-subscriber-template';
             $event->rules['sprout-lists/subscribers/edit/<id:\d+>'] = 'sprout-lists/subscribers/edit-subscriber-template';
 
-            $event->rules['sprout-lists/settings'] = 'sprout-base/settings/edit-settings';
-            $event->rules['sprout-lists/settings/<settingsSectionHandle:.*>'] = 'sprout-base/settings/edit-settings';
+            $event->rules['sprout-lists/settings'] = 'sprout-base/sprout-base-settings/edit-settings';
+            $event->rules['sprout-lists/settings/<settingsSectionHandle:.*>'] = 'sprout-base/sprout-base-settings/edit-settings';
 
             $event->rules['sprout-lists/subscribers/<listHandle:.*>'] = [
                 'template' => 'sprout-lists/subscribers'
@@ -99,7 +99,6 @@ class SproutLists extends Plugin
             Event::on(User::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function(Event $event) {
                 SproutLists::$app->subscribers->updateUserIdOnSave($event);
             });
-
             Event::on(User::class, Elements::EVENT_AFTER_DELETE_ELEMENT, function(Event $event) {
                 SproutLists::$app->subscribers->updateUserIdOnDelete($event);
             });

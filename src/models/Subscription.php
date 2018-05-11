@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\models;
 
-use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
+use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
 use craft\base\Model;
 use DateTime;
 

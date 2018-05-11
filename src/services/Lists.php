@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\services;
 
-use barrelstrength\sproutbase\contracts\sproutlists\BaseListType;
+use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
@@ -59,7 +59,7 @@ class Lists extends Component
      * @param $className
      *
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function getListType($className)
     {

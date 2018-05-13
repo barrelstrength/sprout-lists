@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
-use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;

@@ -2,9 +2,9 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
-use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Subscribers;
-use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 use Craft;
@@ -29,7 +29,7 @@ class SubscribersController extends Controller
             $subscriber = $listType->getSubscriberById($id);
         }
 
-        return $this->renderTemplate('sprout-lists/subscribers/_edit', [
+        return $this->renderTemplate('sprout-base-lists/subscribers/_edit', [
             'subscriber' => $subscriber,
             'listTypes' => $listTypes
         ]);
@@ -61,7 +61,7 @@ class SubscribersController extends Controller
         $type = Craft::$app->getRequest()->getBodyParam('type');
 
         /**
-         * @var $listType BaseListType
+         * @var $listType ListType
          */
         $listType = SproutLists::$app->lists->getListType($type);
 

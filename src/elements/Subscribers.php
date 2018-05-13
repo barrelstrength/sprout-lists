@@ -2,11 +2,11 @@
 
 namespace barrelstrength\sproutlists\elements;
 
-use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscribersQuery;
-use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
@@ -49,7 +49,7 @@ class Subscribers extends Element
     public $subscriberLists;
 
     /**
-     * @var BaseListType
+     * @var ListType
      */
     public $listType;
 
@@ -242,7 +242,7 @@ class Subscribers extends Element
         if (count($subscriptions)) {
             foreach ($subscriptions as $subscription) {
                 /**
-                 * @var $listType BaseListType
+                 * @var $listType ListType
                  */
                 $lists[] = $listType->getListById($subscription->listId);
             }

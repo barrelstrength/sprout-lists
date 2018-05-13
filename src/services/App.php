@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutlists\services;
 
-use barrelstrength\sproutbase\base\TemplateTrait;
 use craft\base\Component;
 
 /**
@@ -20,8 +19,6 @@ use craft\base\Component;
  */
 class App extends Component
 {
-    use TemplateTrait;
-
     /**
      * @var $lists Lists
      */

@@ -4,7 +4,7 @@ namespace barrelstrength\sproutlists\web\twig\variables;
 
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
-use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;

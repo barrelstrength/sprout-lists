@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\models;
 
-use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use craft\base\Model;
 use DateTime;
 
@@ -34,7 +34,7 @@ class Subscription extends Model
     public $dateUpdated;
 
     /**
-     * @var BaseListType
+     * @var ListType
      */
     public $listType;
 

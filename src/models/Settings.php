@@ -27,7 +27,7 @@ class Settings extends Model
                 'label' => Craft::t('sprout-lists', 'General'),
                 'url' => 'sprout-lists/settings/general',
                 'selected' => 'general',
-                'template' => 'sprout-lists/_settings/general'
+                'template' => 'sprout-base-lists/settings/general'
             ]
         ];
     }

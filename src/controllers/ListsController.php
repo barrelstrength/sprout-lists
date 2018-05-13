@@ -2,9 +2,9 @@
 
 namespace barrelstrength\sproutlists\controllers;
 
-use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
-use barrelstrength\sproutlists\integrations\sproutlists\SubscriberListType;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
@@ -44,14 +44,14 @@ class ListsController extends Controller
         if ($listId != null) {
 
             /**
-             * @var $listType BaseListType
+             * @var $listType ListType
              */
             $list = $listType->getListById($listId);
 
             $continueEditingUrl = 'sprout-lists/lists/edit/'.$listId;
         }
 
-        return $this->renderTemplate('sprout-lists/lists/_edit', [
+        return $this->renderTemplate('sprout-base-lists/lists/_edit', [
             'listId' => $listId,
             'list' => $list,
             'continueEditingUrl' => $continueEditingUrl
@@ -82,7 +82,7 @@ class ListsController extends Controller
         $list->type = Craft::$app->request->getRequiredBodyParam('type');
 
         /**
-         * @var $listType BaseListType
+         * @var $listType ListType
          */
         $listType = SproutLists::$app->lists->getListType($list->type);
         $list->type = get_class($listType);

@@ -1,8 +1,8 @@
 <?php
 
-namespace barrelstrength\sproutlists\integrations\sproutlists;
+namespace barrelstrength\sproutlists\listtypes;
 
-use barrelstrength\sproutbase\app\lists\contracts\BaseListType;
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\models\Subscription;
@@ -14,7 +14,7 @@ use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
 use yii\base\Exception;
 
-class SubscriberListType extends BaseListType
+class SubscriberListType extends ListType
 {
     /**
      * @return string
@@ -180,7 +180,7 @@ class SubscriberListType extends BaseListType
     // =========================================================================
 
     /**
-     * @inheritDoc BaseListType::subscribe()
+     * @inheritDoc ListType::subscribe()
      *
      * @param $criteria
      *
@@ -233,7 +233,7 @@ class SubscriberListType extends BaseListType
     }
 
     /**
-     * @inheritDoc BaseListType::unsubscribe()
+     * @inheritDoc ListType::unsubscribe()
      *
      * @param $subscription
      *
@@ -291,7 +291,7 @@ class SubscriberListType extends BaseListType
     }
 
     /**
-     * @inheritDoc BaseListType::isSubscribed()
+     * @inheritDoc ListType::isSubscribed()
      *
      * @param $criteria
      *
@@ -551,7 +551,7 @@ class SubscriberListType extends BaseListType
             return '';
         }
 
-        $html = Craft::$app->getView()->renderTemplate('sprout-lists/subscribers/_subscriberlists', [
+        $html = Craft::$app->getView()->renderTemplate('sprout-base-lists/subscribers/_subscriberlists', [
             'options' => $options,
             'values' => $listIds
         ]);

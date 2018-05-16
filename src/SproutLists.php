@@ -40,7 +40,7 @@ class SproutLists extends Plugin
     /**
      * @var string
      */
-    public static $pluginId = 'sprout-lists';
+    public static $pluginHandle = 'sprout-lists';
 
     /**
      * @var bool
@@ -56,6 +56,11 @@ class SproutLists extends Plugin
      * @var string
      */
     public $schemaVersion = '4.0.0';
+
+    /**
+     * @var string
+     */
+    public $minVersionRequired = '0.7.1';
 
     /**
      * @throws \yii\base\InvalidConfigException

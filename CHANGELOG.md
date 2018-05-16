@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0-beta.6 - 2018-05-15
+
+### Added
+- Added Sprout Lists v0.7.1 as minVersionRequired
+
+### Changed
+- Renamed BaseListType => ListType
+- Updated application folder structure
+- Moved all templates to Sprout Base
+- Moved schema and component definitions to Plugin class
+- Updated Sprout Base requirement to v2.0.0 
+- Updated Craft requirement to v3.0.0
+
 ## 1.0.0-beta.4 - 2018-04-05
 
 ### Fixed

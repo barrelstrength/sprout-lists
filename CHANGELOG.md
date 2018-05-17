@@ -2,6 +2,8 @@
 
 ## 1.0.0-beta.6 - 2018-05-15
 
+{warning} If you have more than one Sprout Plugin installed, to avoid errors use the 'Update All' option.
+
 ### Added
 - Added Sprout Lists v0.7.1 as minVersionRequired
 

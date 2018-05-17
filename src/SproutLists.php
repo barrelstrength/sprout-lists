@@ -82,7 +82,7 @@ class SproutLists extends Plugin
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
 
             $event->rules['sprout-lists'] = [ 'template' => 'sprout-base-lists/index'];
-            $event->rules['sprout-lists/lists'] = [ 'template' => 'sprout-base-lists/index'];
+            $event->rules['sprout-lists/lists'] = [ 'template' => 'sprout-base-lists/lists/index'];
             $event->rules['sprout-lists/lists/new'] = 'sprout-lists/lists/edit-list-template';
             $event->rules['sprout-lists/lists/edit/<listId:\d+>'] = 'sprout-lists/lists/edit-list-template';
 

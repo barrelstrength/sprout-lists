@@ -1,6 +1,6 @@
 <?php
 
-namespace barrelstrength\sproutforms\migrations;
+namespace barrelstrength\sproutlists\migrations;
 
 use craft\db\Migration;
 

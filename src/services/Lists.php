@@ -4,6 +4,7 @@ namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
+use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
@@ -86,9 +87,7 @@ class Lists extends Component
 
         if ($list === null)
         {
-            throw new Exception(Craft::t('sprout-lists','No list could be found with the handle `{listHandle}"', [
-                'listHandle' => $listHandle
-            ]));
+            return new SubscriberListType();
         }
 
         return new $list->type;

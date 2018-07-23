@@ -202,12 +202,12 @@ class Lists extends Element
         } else {
             $record = new ListsRecord();
             $record->id = $this->id;
-            $record->elementId = $this->id;
         }
 
-        $record->type = $this->type;
-        $record->name = $this->name;
-        $record->handle = $this->handle;
+        $record->elementId = $this->elementId;
+        $record->type      = $this->type;
+        $record->name      = $this->name;
+        $record->handle    = $this->handle;
 
         $record->save(false);
 

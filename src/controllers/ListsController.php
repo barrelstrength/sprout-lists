@@ -144,9 +144,9 @@ class ListsController extends Controller
 
     /**
      * Adds a subscriber to a list
-     *
      * @return \yii\web\Response
-     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSubscribe()
@@ -161,10 +161,6 @@ class ListsController extends Controller
         $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
 
         $listType = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
-
-        if ($listType === null) {
-            $listType = new SubscriberListType();
-        }
 
         $subscription->listType = get_class($listType);
 

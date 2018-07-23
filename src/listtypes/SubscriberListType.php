@@ -32,7 +32,7 @@ class SubscriberListType extends ListType
      *
      * @param Lists $list
      *
-     * @return bool
+     * @return bool|mixed
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
@@ -163,7 +163,15 @@ class SubscriberListType extends ListType
 
         // If no List exists, dynamically create one
         if ($listRecord) {
+            /**
+             * @var $list Lists
+             */
             $list = Craft::$app->getElements()->getElementById($listRecord->id);
+
+            if ($subscription->elementId) {
+                $list->elementId = $subscription->elementId;
+                $this->saveList($list);
+            }
         } else {
             $list->type = SubscriberListType::class;
             $list->elementId = $subscription->elementId;
@@ -180,12 +188,10 @@ class SubscriberListType extends ListType
     // =========================================================================
 
     /**
-     * @inheritDoc ListType::subscribe()
+     * @param $subscription
      *
-     * @param $criteria
-     *
-     * @return bool
-     * @throws \Exception
+     * @return bool|mixed
+     * @throws \Throwable
      */
     public function subscribe($subscription)
     {
@@ -245,17 +251,30 @@ class SubscriberListType extends ListType
 
         $settings = isset($plugin) ? $plugin->getSettings() : null;
 
+        $listAttributes = [
+            'type' => $subscription->listType,
+            'handle' => $subscription->listHandle
+        ];
+
+        if ($subscription->elementId) {
+            $listAttributes['elementId'] = $subscription->elementId;
+        }
+
         if ($subscription->id) {
             $list = ListsRecord::findOne($subscription->id);
         } else {
-            $list = ListsRecord::find()->where([
-                'type' => $subscription->listType,
-                'handle' => $subscription->listHandle
-            ])->one();
+            $list = ListsRecord::find()
+                ->where($listAttributes)
+                ->one();
         }
 
         if (!$list) {
             return false;
+        }
+
+        if ($subscription->elementId) {
+            $list->elementId = $list->id;
+            $list->save();
         }
 
         // Determine the subscriber that we will un-subscribe
@@ -318,9 +337,15 @@ class SubscriberListType extends ListType
         $listId = null;
         $subscriberId = null;
 
-        $listRecord = ListsRecord::find()->where([
-            'handle' => $subscription->listHandle
-        ])->one();
+        $listAttributes = [
+            'handle'    => $subscription->listHandle
+        ];
+
+        if ($subscription->elementId) {
+            $listAttributes['elementId'] = $subscription->elementId;
+        }
+
+        $listRecord = ListsRecord::find()->where($listAttributes)->one();
 
         if ($listRecord) {
             $listId = $listRecord->id;
@@ -502,20 +527,11 @@ class SubscriberListType extends ListType
 
     /**
      * Gets the HTML output for the lists sidebar on the Subscriber edit page.
-     *
      * @param $subscriberId
      *
-     * @return \Twig_Markup
+     * @return string|\Twig_Markup
+     * @throws Exception
      * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
-     */
-    /**
-     * @param $subscriberId
-     *
-     * @return \Twig_Markup
-     * @throws \Exception
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
      */
     public function getSubscriberListsHtml($subscriberId)
     {

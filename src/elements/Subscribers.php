@@ -71,7 +71,7 @@ class Subscribers extends Element
      */
     public static function displayName(): string
     {
-        return Craft::t('', 'Sprout Subscribers');
+        return Craft::t('sprout-lists', 'Sprout Subscribers');
     }
 
     /**

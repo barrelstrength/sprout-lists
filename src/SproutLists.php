@@ -106,7 +106,7 @@ class SproutLists extends Plugin
             $variable->set('sproutLists', SproutListsVariable::class);
         });
 
-        Craft::$app->view->twig->addExtension(new TwigExtensions());
+        Craft::$app->view->registerTwigExtension(new TwigExtensions());
 
         Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, function(Event $event) {
             $event->listTypes[] = SubscriberListType::class;

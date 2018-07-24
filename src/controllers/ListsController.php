@@ -174,21 +174,9 @@ class ListsController extends Controller
             return $this->redirectToPostedUrl();
         }
 
-        $errors = [
-            Craft::t('sprout-lists', 'Unable to save subscription.')
-        ];
-
-        if (Craft::$app->getRequest()->getIsAjax()) {
-            return $this->asJson([
-                'errors' => $errors,
-            ]);
-        }
-
-        Craft::$app->getUrlManager()->setRouteParams([
-            'errors' => $errors
+        return Craft::$app->getUrlManager()->setRouteParams([
+            'subscription' => $subscription
         ]);
-
-        return $this->redirectToPostedUrl();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace barrelstrength\sproutlists\listtypes;
 use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use barrelstrength\sproutlists\SproutLists;
@@ -160,6 +161,10 @@ class SubscriberListType extends ListType
         $listRecord = ListsRecord::find()->where(['handle' => $subscription->listHandle])->one();
 
         $list = new Lists();
+        /**
+         * @var $settings Settings
+         */
+        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // If no List exists, dynamically create one
         if ($listRecord) {
@@ -172,13 +177,18 @@ class SubscriberListType extends ListType
                 $list->elementId = $subscription->elementId;
                 $this->saveList($list);
             }
-        } else {
+        } elseif ($settings->enableAutoList) {
             $list->type = SubscriberListType::class;
             $list->elementId = $subscription->elementId;
             $list->name = $subscription->listHandle;
             $list->handle = $subscription->listHandle;
 
             $this->saveList($list);
+        } else {
+            /**
+             * @var $subscription Subscription
+             */
+            $subscription->addError('missing-list', 'List cannot be found.');
         }
 
         return $list;
@@ -216,6 +226,10 @@ class SubscriberListType extends ListType
         try {
             // If our List doesn't exist, create a List Element on the fly
             $list = $this->getOrCreateList($subscription);
+
+            if ($subscription->getErrors()) {
+                return false;
+            }
 
             // If our Subscriber doesn't exist, create a Subscriber Element on the fly
             $subscriber = $this->getSubscriber($subscriber);
@@ -327,6 +341,9 @@ class SubscriberListType extends ListType
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `userId` or `email` are required by the isSubscribed variable'));
         }
 
+        /**
+         * @var $settings Settings
+         */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // however, if User Sync is not enabled, we need an email
@@ -349,6 +366,11 @@ class SubscriberListType extends ListType
 
         if ($listRecord) {
             $listId = $listRecord->id;
+        } elseif (!$settings->enableAutoList) {
+            /**
+             * @var $subscription Subscription
+             */
+            $subscription->addError('missing-list', 'List cannot be found.');
         }
 
         $attributes = array_filter([

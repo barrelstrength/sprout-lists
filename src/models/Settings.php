@@ -17,6 +17,11 @@ class Settings extends Model
      */
     public $enableUserSync;
 
+    /**
+     * @var bool
+     */
+    public $enableAutoList;
+
     public function getSettingsNavItems()
     {
         return [

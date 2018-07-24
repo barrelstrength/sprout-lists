@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\web\twig\variables;
 
+use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
@@ -50,13 +51,19 @@ class SproutListsVariable
     public function getLists(array $criteria = [])
     {
         $subscriber = new Subscribers();
-        $subscriber->listType = $criteria['listType'] ?? SubscriberListType::class;
+        $listType = $criteria['listType'] ?? SubscriberListType::class;
+        $subscriber->listType = $listType;
         $subscriber->email = $criteria['email'] ?? null;
         $subscriber->userId = $criteria['userId'] ?? null;
         $subscriber->firstName = $criteria['firstName'] ?? null;
         $subscriber->lastName = $criteria['lastName'] ?? null;
 
-        return $listType->getLists($subscriber);
+        /**
+         * @var $listTypeObject ListType
+         */
+        $listTypeObject = new $listType;
+
+        return $listTypeObject->getLists($subscriber);
     }
 
     /**
@@ -126,5 +133,22 @@ class SproutListsVariable
         $list->type = get_class($listType);
 
         return $listType->getSubscriberCount($list);
+    }
+
+    public function getErrors()
+    {
+        $routeParams = Craft::$app->getUrlManager()->getRouteParams();
+
+        $subscription = $routeParams['subscription'] ?? null;
+
+        $errors = [];
+        /**
+         * @var $subscription Subscription
+         */
+        if ($subscription && $subscription->hasErrors()) {
+            $errors = $subscription->getErrorSummary(true);
+        }
+
+        return $errors;
     }
 }

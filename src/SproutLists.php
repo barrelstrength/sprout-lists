@@ -4,19 +4,21 @@ namespace barrelstrength\sproutlists;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\services\App;
 use barrelstrength\sproutlists\services\Lists;
 use barrelstrength\sproutlists\web\twig\extensions\TwigExtensions;
 use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
-use craft\base\Element;
+
 use craft\base\Plugin;
 use Craft;
 use craft\elements\User;
+use craft\events\ModelEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
-use craft\services\Elements;
+
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use yii\base\Event;
@@ -108,15 +110,15 @@ class SproutLists extends Plugin
 
         Craft::$app->view->registerTwigExtension(new TwigExtensions());
 
-        Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, function(Event $event) {
+        Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, function(RegisterListTypesEvent $event) {
             $event->listTypes[] = SubscriberListType::class;
         });
 
         if ($this->getSettings()->enableUserSync) {
-            Event::on(User::class, User::EVENT_AFTER_SAVE, function(Event $event) {
+            Event::on(User::class, User::EVENT_AFTER_SAVE, function(ModelEvent $event) {
                 SproutLists::$app->subscribers->updateUserIdOnSave($event);
             });
-            Event::on(User::class, User::EVENT_AFTER_SAVE, function(Event $event) {
+            Event::on(User::class, User::EVENT_AFTER_SAVE, function(ModelEvent $event) {
                 SproutLists::$app->subscribers->updateUserIdOnDelete($event);
             });
         }

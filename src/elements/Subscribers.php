@@ -288,11 +288,20 @@ class Subscribers extends Element
         // Sync updates with Craft User if User Sync enabled
         if ($this->email && ($settings AND $settings->enableUserSync)) {
 
-            $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
-            // Set to null when updating un matched email
-            $this->userId = null;
+            // Get an existing matched User by Element ID if we have them
+            if ($this->userId) {
+                $user = Craft::$app->users->getUserById($this->userId);
+            }
 
-            if ($user != null) {
+            if ($user === null) {
+                // If we don't have a match, see if we can find a matching user by email
+                $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
+
+                // Set to null when updating un matched email
+                $this->userId = null;
+            }
+
+            if ($user !== null) {
                 $this->userId = $user->id;
             }
         }
@@ -306,7 +315,7 @@ class Subscribers extends Element
 
         if ($result) {
             // Sync updates with Craft User if User Sync enabled
-            if (($user AND $record->userId != null) && $settings->enableUserSync) {
+            if (($user AND $record->userId !== null) && $settings->enableUserSync) {
                 // If they changed their Subscriber info, update the Craft User info too
                 $user->email = $record->email;
                 $user->firstName = $record->firstName;
@@ -315,7 +324,7 @@ class Subscribers extends Element
                 Craft::$app->elements->saveElement($user);
             }
             // Update the entry's descendants, who may be using this entry's URI in their own URIs
-            Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+            // Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
         }
 
         parent::afterSave($isNew);

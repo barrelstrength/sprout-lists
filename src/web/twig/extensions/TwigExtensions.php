@@ -58,7 +58,9 @@ class TwigExtensions extends Twig_Extension
         $ids = [];
 
         foreach ($subscriptions as $subscription) {
-            $ids[] = $subscription[$attribute];
+            if ($subscription[$attribute] !== null) {
+                $ids[] = $subscription[$attribute];
+            }
         }
 
         return $ids;

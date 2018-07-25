@@ -48,11 +48,11 @@ class SubscriberListType extends ListType
     /**
      * Gets lists.
      *
-     * @param null $subscriber
+     * @param Subscribers $subscriber
      *
      * @return array
      */
-    public function getLists($subscriber = null)
+    public function getLists(Subscribers $subscriber = null)
     {
         $lists = [];
 
@@ -96,11 +96,11 @@ class SubscriberListType extends ListType
     /**
      * Get the total number of lists for a given subscriber
      *
-     * @param null $subscriber
+     * @param Subscribers $subscriber
      *
      * @return int
      */
-    public function getListCount($subscriber = null)
+    public function getListCount(Subscribers $subscriber = null)
     {
         $lists = $this->getLists($subscriber);
 
@@ -110,11 +110,11 @@ class SubscriberListType extends ListType
     /**
      * Gets list with a given id.
      *
-     * @param $listId
+     * @param int $listId
      *
      * @return \craft\base\ElementInterface|mixed|null
      */
-    public function getListById($listId)
+    public function getListById(int $listId)
     {
         return Craft::$app->getElements()->getElementById($listId);
     }
@@ -203,7 +203,7 @@ class SubscriberListType extends ListType
      * @return bool|mixed
      * @throws \Throwable
      */
-    public function subscribe($subscription)
+    public function subscribe(Subscription $subscription)
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
@@ -255,11 +255,11 @@ class SubscriberListType extends ListType
     /**
      * @inheritDoc ListType::unsubscribe()
      *
-     * @param $subscription
+     * @param Subscription $subscription
      *
      * @return bool
      */
-    public function unsubscribe($subscription)
+    public function unsubscribe(Subscription $subscription)
     {
         $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
 
@@ -330,7 +330,7 @@ class SubscriberListType extends ListType
      *
      * @return bool
      */
-    public function isSubscribed($subscription)
+    public function isSubscribed(Subscription $subscription)
     {
         if (empty($subscription->listHandle)) {
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `listHandle` is required by the isSubscribed variable'));
@@ -640,7 +640,7 @@ class SubscriberListType extends ListType
      * @return int|mixed
      * @throws \Exception
      */
-    public function getSubscriberCount($list)
+    public function getSubscriberCount(Lists $list)
     {
         $subscribers = $this->getSubscribers($list);
 
@@ -653,7 +653,7 @@ class SubscriberListType extends ListType
      * @return array|mixed
      * @throws \Exception
      */
-    public function getSubscribers($list)
+    public function getSubscribers(Lists $list)
     {
         if (empty($list->type)) {
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: "type" is required by the getSubscribers variable.'));

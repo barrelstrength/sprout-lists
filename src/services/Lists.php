@@ -43,9 +43,9 @@ class Lists extends Component
         if (!empty($listTypes)) {
             foreach ($listTypes as $listTypeClass) {
                 /**
-                 * @var $listType ListType
+                 * @var ListType $listType
                  */
-                $listType = new $listTypeClass;
+                $listType = new $listTypeClass();
 
                 $this->listTypes[$listTypeClass] = $listType;
             }

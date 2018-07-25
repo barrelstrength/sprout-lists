@@ -3,10 +3,11 @@
 namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\records\Subscription;
-use barrelstrength\sproutlists\SproutLists;
+
 use craft\base\Component;
 use craft\elements\User;
-use craft\events\ModelEvent;
+use craft\events\ElementEvent;
+
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use barrelstrength\sproutlists\elements\Subscribers as SubscribersElement;
 use Craft;
@@ -17,18 +18,18 @@ class Subscribers extends Component
     /**
      * Sync SproutLists subscriber to craft_users if same email is found on save.
      *
-     * @param ModelEvent $event
+     * @param ElementEvent $event
      *
      * @return SubscribersElement|bool
      * @throws \Exception
      * @throws \Throwable
      */
-    public function updateUserIdOnSave(ModelEvent $event)
+    public function updateUserIdOnSave(ElementEvent $event)
     {
         /**
          * @var User $user
          */
-        $user = $event->sender;
+        $user = $event->element;
 
         /**
          * @var SubscribersRecord $subscriberRecord
@@ -55,14 +56,14 @@ class Subscribers extends Component
 
         if ($subscriberRecord !== null) {
 
-            // If the user has updated their email, let's also update it for our Subscriber
-            $subscriberRecord->userId = $user->id;
+            // Sync updates with existing Craft User if User Sync enabled
             $subscriberRecord->email = $user->email;
             $subscriberRecord->firstName = $user->firstName;
             $subscriberRecord->lastName = $user->lastName;
 
             try {
-                $subscriberRecord->save(false);
+
+                $subscriberRecord->update(false);
 
                 return true;
             } catch (\Exception $e) {
@@ -78,19 +79,22 @@ class Subscribers extends Component
      * Deleting a Craft User does not delete the matching Subscriber. It simply removes
      * the relationship to any Craft User ID from the Subscriber table.
      *
-     * @param ModelEvent $event
+     * @param ElementEvent $event
      *
      * @return bool
      * @throws \Exception
      * @throws \Throwable
      */
-    public function updateUserIdOnDelete(ModelEvent $event)
+    public function updateUserIdOnDelete(ElementEvent $event)
     {
         /**
          * @var $user User
          */
-        $user = $event->sender;
+        $user = $event->element;
 
+        /**
+         * @var SubscribersRecord $subscriberRecord
+         */
         $subscriberRecord = SubscribersRecord::find()->where([
             'userId' => $user->id,
         ])->one();

@@ -15,8 +15,9 @@ use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
-use craft\records\User as UserRecord;
+
 use craft\validators\UniqueValidator;
+use yii\db\Exception;
 
 class Subscribers extends Element
 {
@@ -260,10 +261,7 @@ class Subscribers extends Element
     /**
      * @param bool $isNew
      *
-     * @throws \Exception
-     * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
+     * @throws \yii\db\Exception
      */
     public function afterSave(bool $isNew)
     {
@@ -274,20 +272,20 @@ class Subscribers extends Element
 
         // Get the list record
         if (!$isNew) {
-            $record = SubscribersRecord::findOne($this->id);
+            $subscriberRecord = SubscribersRecord::findOne($this->id);
 
-            if (!$record) {
-                throw new \Exception('Invalid list ID: '.$this->id);
+            if (!$subscriberRecord) {
+                throw new Exception('Invalid Subscriber ID: '.$this->id);
             }
         } else {
-            $record = new SubscribersRecord();
-            $record->id = $this->id;
+            $subscriberRecord = new SubscribersRecord();
+            $subscriberRecord->id = $this->id;
         }
 
         $user = null;
 
         // Sync updates with Craft User if User Sync enabled
-        if ($this->email && ($settings AND $settings->enableUserSync)) {
+        if ($this->email && $settings->enableUserSync) {
 
             // Get an existing matched User by Element ID if we have them
             if ($this->userId) {
@@ -298,7 +296,7 @@ class Subscribers extends Element
                 // If we don't have a match, see if we can find a matching user by email
                 $user = Craft::$app->users->getUserByUsernameOrEmail($this->email);
 
-                // Set to null when updating un matched email
+                // Set to null when updating a matched email
                 $this->userId = null;
             }
 
@@ -307,29 +305,32 @@ class Subscribers extends Element
             }
         }
 
-        $record->userId = $this->userId;
-        $record->email = $this->email;
-        $record->firstName = $this->firstName;
-        $record->lastName = $this->lastName;
+        // Prepare our Subscriber Record
+        $subscriberRecord->userId = $this->userId;
+        $subscriberRecord->email = $this->email;
+        $subscriberRecord->firstName = $this->firstName;
+        $subscriberRecord->lastName = $this->lastName;
 
-        $result = $record->save(false);
+        $result = $subscriberRecord->save(false);
 
-        if ($result) {
-            // Sync updates with Craft User if User Sync enabled
-            if ($isNew === false && $user !== null && $settings->enableUserSync) {
-
-                $userRecord = new UserRecord();
-
-                // If they changed their Subscriber info, update the Craft User info too
-                $userRecord->id = $record->userId;
-                $userRecord->email = $record->email;
-                $userRecord->firstName = $record->firstName;
-                $userRecord->lastName = $record->lastName;
-
-                $userRecord->update();
-            }
-            // Update the entry's descendants, who may be using this entry's URI in their own URIs
-            // Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);
+        if ($result &&
+            $isNew === false &&
+            $user !== null &&
+            $settings->enableUserSync)
+        {
+            // Sync updates with existing Craft User if User Sync enabled
+            Craft::$app->getDb()->createCommand()->update(
+                '{{%users}}',
+                [
+                    'email' => $subscriberRecord->email ?? $user->email,
+                    'firstName' => $subscriberRecord->firstName ?? $user->firstName,
+                    'lastName' => $subscriberRecord->lastName ?? $user->lastName
+                ],
+                ['id' => $subscriberRecord->userId],
+                [],
+                false
+            )
+            ->execute();
         }
 
         parent::afterSave($isNew);

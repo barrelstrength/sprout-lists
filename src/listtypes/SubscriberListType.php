@@ -464,11 +464,12 @@ class SubscriberListType extends ListType
      */
     public function saveSubscriber(Subscribers $subscriber)
     {
-        if ($subscriber->validate(null, false)) {
+        if (!$subscriber->validate(null, false)) {
+            return false;
+        }
 
-            if (Craft::$app->getElements()->saveElement($subscriber)) {
-                $this->saveSubscriptions($subscriber);
-            }
+        if (Craft::$app->getElements()->saveElement($subscriber)) {
+            $this->saveSubscriptions($subscriber);
 
             return true;
         }
@@ -500,16 +501,15 @@ class SubscriberListType extends ListType
         }
 
         // If no Subscriber was found, create one
-        if (!$subscriber->id) {
-            if ($subscriber->userId !== null) {
-                $user = Craft::$app->users->getUserById($subscriber->userId);
+        if (!$subscriber->id && $subscriber->userId !== null) {
+            $user = Craft::$app->users->getUserById($subscriber->userId);
 
-                if ($user) {
-                    $subscriber->email = $user->email;
-                }
+            if ($user) {
+                $subscriber->email = $user->email;
             }
-            $this->saveSubscriber($subscriber);
         }
+
+        $this->saveSubscriber($subscriber);
 
         return $subscriber;
     }

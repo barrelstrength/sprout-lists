@@ -15,10 +15,12 @@ use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
 use craft\elements\User;
-use craft\events\ModelEvent;
+use craft\events\ElementEvent;
+
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 
+use craft\services\Elements;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use yii\base\Event;
@@ -115,11 +117,15 @@ class SproutLists extends Plugin
         });
 
         if ($this->getSettings()->enableUserSync) {
-            Event::on(User::class, User::EVENT_AFTER_SAVE, function(ModelEvent $event) {
-                SproutLists::$app->subscribers->updateUserIdOnSave($event);
+            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function(ElementEvent $event) {
+                if ($event->element instanceof User) {
+                    SproutLists::$app->subscribers->updateUserIdOnSave($event);
+                }
             });
-            Event::on(User::class, User::EVENT_AFTER_SAVE, function(ModelEvent $event) {
-                SproutLists::$app->subscribers->updateUserIdOnDelete($event);
+            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, function(ElementEvent $event) {
+                if ($event->element instanceof User) {
+                    SproutLists::$app->subscribers->updateUserIdOnDelete($event);
+                }
             });
         }
     }

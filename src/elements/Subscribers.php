@@ -15,6 +15,7 @@ use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
+use craft\records\User as UserRecord;
 use craft\validators\UniqueValidator;
 
 class Subscribers extends Element
@@ -315,13 +316,17 @@ class Subscribers extends Element
 
         if ($result) {
             // Sync updates with Craft User if User Sync enabled
-            if (($user AND $record->userId !== null) && $settings->enableUserSync) {
-                // If they changed their Subscriber info, update the Craft User info too
-                $user->email = $record->email;
-                $user->firstName = $record->firstName;
-                $user->lastName = $record->lastName;
+            if ($isNew === false && $user !== null && $settings->enableUserSync) {
 
-                Craft::$app->elements->saveElement($user);
+                $userRecord = new UserRecord();
+
+                // If they changed their Subscriber info, update the Craft User info too
+                $userRecord->id = $record->userId;
+                $userRecord->email = $record->email;
+                $userRecord->firstName = $record->firstName;
+                $userRecord->lastName = $record->lastName;
+
+                $userRecord->update();
             }
             // Update the entry's descendants, who may be using this entry's URI in their own URIs
             // Craft::$app->getElements()->updateElementSlugAndUri($this, true, true);

@@ -205,9 +205,9 @@ class Lists extends Element
         }
 
         $record->elementId = $this->elementId;
-        $record->type      = $this->type;
-        $record->name      = $this->name;
-        $record->handle    = $this->handle;
+        $record->type = $this->type;
+        $record->name = $this->name;
+        $record->handle = $this->handle;
 
         $record->save(false);
 

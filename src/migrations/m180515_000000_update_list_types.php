@@ -23,7 +23,8 @@ class m180515_000000_update_list_types extends Migration
 
         foreach ($listClasses as $listClass) {
             $this->update('{{%sproutlists_lists}}', [
-                'type' => $listClass['newType']], ['type' => $listClass['oldType']], [], false);
+                'type' => $listClass['newType']
+            ], ['type' => $listClass['oldType']], [], false);
         }
 
         return true;

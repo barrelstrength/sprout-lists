@@ -3,6 +3,7 @@
 namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\records\Subscription;
+use barrelstrength\sproutlists\SproutLists;
 use craft\base\Component;
 use craft\elements\User;
 use craft\events\ModelEvent;
@@ -32,7 +33,9 @@ class Subscribers extends Component
         /**
          * @var SubscribersRecord $subscriberRecord
          */
-        $subscriberRecord = SubscribersRecord::find()->where(['userId' => $user->id])->one();
+        $subscriberRecord = SubscribersRecord::find()->where([
+            'userId' => $user->id
+        ])->one();
 
         // If that doesn't work, try to find a user with a matching email address
         if ($subscriberRecord === null) {
@@ -96,14 +99,11 @@ class Subscribers extends Component
 
             $subscriberRecord->userId = null;
 
-            try
-            {
+            try {
                 $subscriberRecord->save();
 
                 return true;
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 throw $e;
             }
         }

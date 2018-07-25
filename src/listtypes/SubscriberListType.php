@@ -356,7 +356,7 @@ class SubscriberListType extends ListType
         $subscriberId = null;
 
         $listAttributes = [
-            'handle'    => $subscription->listHandle
+            'handle' => $subscription->listHandle
         ];
 
         if ($subscription->elementId) {
@@ -508,7 +508,6 @@ class SubscriberListType extends ListType
                     $subscriber->email = $user->email;
                 }
             }
-
             $this->saveSubscriber($subscriber);
         }
 

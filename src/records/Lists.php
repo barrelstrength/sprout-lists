@@ -9,12 +9,12 @@ use yii\db\ActiveQueryInterface;
 /**
  * Class Lists record.
  *
- * @property int $id
- * @property int $elementId
+ * @property int    $id
+ * @property int    $elementId
  * @property string $type
  * @property string $name
  * @property string $handle
- * @property int $totalSubscribers
+ * @property int    $totalSubscribers
  */
 class Lists extends ActiveRecord
 {

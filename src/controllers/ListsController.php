@@ -144,6 +144,7 @@ class ListsController extends Controller
 
     /**
      * Adds a subscriber to a list
+     *
      * @return \yii\web\Response
      * @throws \Throwable
      * @throws \yii\base\Exception

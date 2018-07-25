@@ -84,8 +84,7 @@ class Lists extends Component
             'handle' => $listHandle
         ])->one();
 
-        if ($list === null)
-        {
+        if ($list === null) {
             return new SubscriberListType();
         }
 

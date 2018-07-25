@@ -173,17 +173,6 @@ class Subscribers extends Element
     }
 
     /**
-     * @param mixed|null $element
-     *
-     * @throws \Exception
-     * @return array|string
-     */
-    public function getRecipients($element = null)
-    {
-        return SproutBase::$app->mailers->getRecipients($element, $this);
-    }
-
-    /**
      * @return null|string
      */
     public function getUriFormat()

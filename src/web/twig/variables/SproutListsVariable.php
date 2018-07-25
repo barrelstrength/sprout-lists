@@ -134,21 +134,4 @@ class SproutListsVariable
 
         return $listType->getSubscriberCount($list);
     }
-
-    public function getErrors()
-    {
-        $routeParams = Craft::$app->getUrlManager()->getRouteParams();
-
-        $subscription = $routeParams['subscription'] ?? null;
-
-        $errors = [];
-        /**
-         * @var $subscription Subscription
-         */
-        if ($subscription && $subscription->hasErrors()) {
-            $errors = $subscription->getErrorSummary(true);
-        }
-
-        return $errors;
-    }
 }

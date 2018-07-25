@@ -2,10 +2,10 @@
 
 namespace barrelstrength\sproutlists\web\twig\extensions;
 
-use Craft;
+
 use craft\helpers\StringHelper;
 use \Twig_Extension;
-use barrelstrength\sproutactive\SproutActive;
+
 
 class TwigExtensions extends Twig_Extension
 {

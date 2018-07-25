@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
+use barrelstrength\sproutlists\elements\Lists;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
@@ -34,7 +35,11 @@ class DeleteList extends Delete
      */
     public function performAction(ElementQueryInterface $query): bool
     {
+        /**
+         * @var Lists[] $lists
+         */
         $lists = $query->all();
+
         // Delete the users
         foreach ($lists as $list) {
             $id = $list->id;

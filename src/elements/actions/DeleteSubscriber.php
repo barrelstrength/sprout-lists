@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
+use barrelstrength\sproutlists\elements\Subscribers;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
@@ -36,7 +37,11 @@ class DeleteSubscriber extends Delete
      */
     public function performAction(ElementQueryInterface $query): bool
     {
+        /**
+         * @var Subscribers[] $subscribers
+         */
         $subscribers = $query->all();
+
         $listType = SproutLists::$app->lists->getListType(SubscriberListType::class);
 
         // Delete the users

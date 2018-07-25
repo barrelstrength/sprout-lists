@@ -3,10 +3,11 @@
 namespace barrelstrength\sproutlists\elements;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
-use barrelstrength\sproutbase\SproutBase;
+
 use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscribersQuery;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
+use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Element;
@@ -194,7 +195,7 @@ class Subscribers extends Element
     }
 
     /**
-     * @return mixed
+     * @return array
      * @throws \Exception
      */
     public function getListIds()
@@ -265,11 +266,10 @@ class Subscribers extends Element
      */
     public function afterSave(bool $isNew)
     {
-        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
-
-        if ($plugin) {
-            $settings = $plugin->getSettings();
-        }
+        /**
+         * @var Settings $settings
+         */
+        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // Get the list record
         if (!$isNew) {

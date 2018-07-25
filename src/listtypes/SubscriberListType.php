@@ -56,6 +56,9 @@ class SubscriberListType extends ListType
     {
         $lists = [];
 
+        /**
+         * @var SubscribersRecord $subscriberRecord
+         */
         $subscriberRecord = null;
 
         /**
@@ -169,7 +172,7 @@ class SubscriberListType extends ListType
         // If no List exists, dynamically create one
         if ($listRecord) {
             /**
-             * @var $list Lists
+             * @var Lists $list
              */
             $list = Craft::$app->getElements()->getElementById($listRecord->id);
 
@@ -205,13 +208,10 @@ class SubscriberListType extends ListType
      */
     public function subscribe(Subscription $subscription)
     {
-        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
-
-        $settings = null;
-
-        if ($plugin) {
-            $settings = $plugin->getSettings();
-        }
+        /**
+         * @var Settings $settings
+         */
+        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         $subscriber = new Subscribers();
 
@@ -261,9 +261,10 @@ class SubscriberListType extends ListType
      */
     public function unsubscribe(Subscription $subscription)
     {
-        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
-
-        $settings = isset($plugin) ? $plugin->getSettings() : null;
+        /**
+         * @var Settings $settings
+         */
+        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         $listAttributes = [
             'type' => $subscription->listType,
@@ -362,6 +363,9 @@ class SubscriberListType extends ListType
             $listAttributes['elementId'] = $subscription->elementId;
         }
 
+        /**
+         * @var ListsRecord $listRecord
+         */
         $listRecord = ListsRecord::find()->where($listAttributes)->one();
 
         if ($listRecord) {
@@ -549,6 +553,7 @@ class SubscriberListType extends ListType
 
     /**
      * Gets the HTML output for the lists sidebar on the Subscriber edit page.
+     *
      * @param $subscriberId
      *
      * @return string|\Twig_Markup

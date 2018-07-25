@@ -4,6 +4,13 @@ namespace barrelstrength\sproutlists\records;
 
 use craft\db\ActiveRecord;
 
+/**
+ * Class Subscription record.
+ *
+ * @property int $id
+ * @property int $listId
+ * @property int $subscriberId
+ */
 class Subscription extends ActiveRecord
 {
     /**

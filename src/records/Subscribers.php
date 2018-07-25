@@ -6,6 +6,15 @@ use craft\base\Element;
 use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 
+/**
+ * Class Subscribers record.
+ *
+ * @property int $id
+ * @property int $userId
+ * @property string $email
+ * @property string $firstName
+ * @property string $lastName
+ */
 class Subscribers extends ActiveRecord
 {
     /**

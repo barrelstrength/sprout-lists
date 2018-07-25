@@ -9,7 +9,7 @@ use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
 use yii\base\Exception;
-use Craft;
+
 
 class Lists extends Component
 {
@@ -76,8 +76,7 @@ class Lists extends Component
     /**
      * @param $listHandle
      *
-     * @return mixed
-     * @throws Exception
+     * @return SubscriberListType
      */
     public function getListTypeByHandle($listHandle)
     {

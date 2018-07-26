@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0-beta.9 - 2018-07-26
+
+## Added
+- Added support for creating lists dynamically
+- Added support to filter by elementId on subscribe, unsubscribe and isSubscribed methods
+
+## Changed
+- Updated Sprout Base requirement to v2.0.10
+
+## Fixed
+- Added elementId on updating and adding List record elementId
+- Fixed behavior for User Sync Events
+- Fixed missing translation category
+- Updated to use registerTwigExtension()
+
 ## 1.0.0-beta.8 - 2018-05-17
 
 ### Fixed

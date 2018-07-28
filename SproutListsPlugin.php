@@ -21,7 +21,7 @@ class SproutListsPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '0.7.1';
+		return '0.8.0';
 	}
 
 	/**
@@ -47,6 +47,14 @@ class SproutListsPlugin extends BasePlugin
 	{
 		return 'http://barrelstrengthdesign.com';
 	}
+
+    /**
+     * @return null|string
+     */
+    public function getReleaseFeedUrl()
+    {
+        return 'https://raw.githubusercontent.com/barrelstrength/craft-sprout-lists/v0/releases.json';
+    }
 
 	/**
 	 * @return bool

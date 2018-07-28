@@ -1,0 +1,41 @@
+[
+  {
+    "version": "0.8.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/archive/v0.8.0.zip",
+    "date": "2018-07-28T08:00:00+00:00",
+    "notes": [
+      "[Improved] Moved release feed to Github"
+    ]
+  },
+  {
+    "version": "0.7.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/releases",
+    "date": "2017-09-13T13:34:00+00:00",
+    "notes": [
+      "[Improved] Updated access to `actionSubscribe` and `actionUnsubscribe` controller methods to allowAnonymous",
+      "[Improved] Updated SproutLists_SubscriptionModel email attribute to use `AttributeType::Email`",
+      "[Improved] Updated getListCount and getSubscriberCount on variable class to better support third party integrations",
+      "[Improved] Removed MailChimp integration (Moved to Sprout Mailchimp plugin)",
+      "[Improved] Removed unused getListTypes methods",
+      "[Improved] Removed SproutListsBaseListType::getSettings method",
+      "[Fixed] Fixed bug where listHandle was required for third-party integrations",
+      "[Fixed] Fixed bug when retrieving all lists with SproutLists_SubscriberListType::getLists"
+    ]
+  },
+  {
+    "version": "0.7.0",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/releases",
+    "date": "2017-05-17T07:00:00+00:00",
+    "notes": [
+      "[Added] Public Beta"
+    ]
+  },
+  {
+    "version": "0.6.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/releases",
+    "date": "2016-01-18T05:31:10+00:00",
+    "notes": [
+      "[Added] Private Beta"
+    ]
+  }
+]

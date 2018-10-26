@@ -215,6 +215,14 @@ class SubscriberListType extends ListType
 
         $subscriber = new Subscribers();
 
+        if (!empty($subscription->firstName)) {
+            $subscriber->firstName = $subscription->firstName;
+        }
+
+        if (!empty($subscription->lastName)) {
+            $subscriber->lastName = $subscription->lastName;
+        }
+
         if (!empty($subscription->email)) {
             $subscriber->email = $subscription->email;
         }

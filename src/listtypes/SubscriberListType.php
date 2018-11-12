@@ -413,10 +413,6 @@ class SubscriberListType extends ListType
     public function saveSubscriptions(Subscribers $subscriber)
     {
         try {
-            SubscriptionRecord::deleteAll('subscriberId = :subscriberId', [
-                ':subscriberId' => $subscriber->id
-            ]);
-
             if (!empty($subscriber->subscriberLists)) {
                 foreach ($subscriber->subscriberLists as $listId) {
                     $list = $this->getListById($listId);

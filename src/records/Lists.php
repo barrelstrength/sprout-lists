@@ -42,6 +42,6 @@ class Lists extends ActiveRecord
     public function getSubscribers(): ActiveQueryInterface
     {
         return $this->hasMany(Subscribers::class, ['id' => 'subscriberId'])
-            ->viaTable('sproutlists_subscriptions', ['listId' => 'id']);
+            ->viaTable('{{%sproutlists_subscriptions}}', ['listId' => 'id']);
     }
 }

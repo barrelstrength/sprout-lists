@@ -18,6 +18,6 @@ class Subscription extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return 'sproutlists_subscriptions';
+        return '{{%sproutlists_subscriptions}}';
     }
 }

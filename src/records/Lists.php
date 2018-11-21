@@ -23,7 +23,7 @@ class Lists extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return 'sproutlists_lists';
+        return '{{%sproutlists_lists}}';
     }
 
     /**

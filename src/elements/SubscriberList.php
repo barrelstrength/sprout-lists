@@ -196,15 +196,18 @@ class SubscriberList extends Element
         if (!$isNew) {
             $record = ListsRecord::findOne($this->id);
 
+            $record->elementId = $this->elementId;
+
             if (!$record) {
                 throw new \Exception('Invalid list ID: '.$this->id);
             }
         } else {
             $record = new ListsRecord();
-            $record->id = $this->id;
+            $record->id        = $this->id;
+            // Assign current listId for newly created list
+            $record->elementId = $this->id;
         }
 
-        $record->elementId = $this->elementId;
         $record->type = $this->type;
         $record->name = $this->name;
         $record->handle = $this->handle;

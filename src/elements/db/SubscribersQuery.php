@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\db;
 
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\elements\db\ElementQuery;
 
 class SubscribersQuery extends ElementQuery
@@ -26,11 +27,27 @@ class SubscribersQuery extends ElementQuery
             'sproutlists_subscribers.dateUpdated'
         ]);
 
-        if ($this->listId != null) {
-            $this->query->leftJoin('{{%sproutlists_subscriptions}} subscriptions', 'subscriptions.subscriberId = sproutlists_subscribers.id');
-            $this->query->leftJoin('{{%sproutlists_lists}} lists', 'lists.id = subscriptions.listId');
-            $this->query->where('subscriptions.listId = :listId', [':listId' => $this->listId]);
+        // @todo - can we optimize this query? This feels really inefficient
+        if ($this->listId) {
+            // Get all subscriptions for this list
+            $subscriptions = SubscriptionRecord::find()
+                ->select('subscriberId')
+                ->where([
+                    'listId' => $this->listId
+                ])->all();
+
+            // Filter so we only have ids
+            $subscriberIds = array_map(function($subscriptions) {
+                return $subscriptions->subscriberId;
+            }, $subscriptions);
+
+            // Only return subscribers that match this query
+            $this->subQuery->andWhere(['in',
+                'sproutlists_subscribers.id',
+                array_unique($subscriberIds, SORT_REGULAR)
+            ]);
         }
+
         return parent::beforePrepare();
     }
 }

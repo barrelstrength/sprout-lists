@@ -1,5 +1,15 @@
 # Changelog
 
+## UNRELEASED: 1.0.0-beta.13 - 2018-12-13
+
+### Fixed
+- Fixed bug where lists created in the Control Panel were not properly assigned a List ID ([#26])
+- Updated subscribers to allow subscriptions to multiple lists via front-end ([#23])
+- Updated various database queries to respect table prefixes ([^2])
+
+[#23]: https://github.com/barrelstrength/craft-sprout-lists/issues/23
+[#26]: https://github.com/barrelstrength/craft-sprout-lists/issues/26
+
 ## 1.0.0-beta.12 - 2018-10-29
 
 ### Changed

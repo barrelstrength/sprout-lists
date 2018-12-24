@@ -9,7 +9,7 @@ use craft\elements\User;
 use craft\events\ElementEvent;
 
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
-use barrelstrength\sproutlists\elements\Subscriber as SubscribersElement;
+use barrelstrength\sproutlists\elements\Subscriber;
 use Craft;
 
 
@@ -20,7 +20,7 @@ class Subscribers extends Component
      *
      * @param ElementEvent $event
      *
-     * @return SubscribersElement|bool
+     * @return Subscriber|bool
      * @throws \Exception
      * @throws \Throwable
      */

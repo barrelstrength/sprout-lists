@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ClassConstantCanBeUsedInspection */
 
 namespace barrelstrength\sproutlists\migrations;
 

@@ -4,7 +4,7 @@ namespace barrelstrength\sproutlists\elements\db;
 
 use craft\elements\db\ElementQuery;
 
-class ListsQuery extends ElementQuery
+class SubscriberListQuery extends ElementQuery
 {
     /**
      * @inheritdoc

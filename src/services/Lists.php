@@ -7,10 +7,14 @@ use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\records\Subscription;
 use craft\base\Component;
-use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use barrelstrength\sproutlists\records\SubscriberList as ListsRecord;
 use yii\base\Exception;
 
 
+/**
+ *
+ * @property array $allListTypes
+ */
 class Lists extends Component
 {
     /**

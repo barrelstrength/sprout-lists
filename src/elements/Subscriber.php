@@ -5,7 +5,7 @@ namespace barrelstrength\sproutlists\elements;
 use barrelstrength\sproutbase\app\lists\base\ListType;
 
 use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
-use barrelstrength\sproutlists\elements\db\SubscribersQuery;
+use barrelstrength\sproutlists\elements\db\SubscriberQuery;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\records\Subscription;
@@ -14,11 +14,16 @@ use craft\base\Element;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
-use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
+use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
 
 use craft\validators\UniqueValidator;
 use yii\db\Exception;
 
+/**
+ *
+ * @property array $listIds
+ * @property array $lists
+ */
 class Subscriber extends Element
 {
     /**
@@ -121,6 +126,9 @@ class Subscriber extends Element
 
         $listType = SproutLists::$app->lists->getListType(SubscriberListType::class);
 
+        /**
+         * @var ListType|SubscriberListType $listType
+         */
         $lists = $listType->getListsWithSubscribers();
 
         if (!empty($lists)) {
@@ -164,7 +172,7 @@ class Subscriber extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new SubscribersQuery(static::class);
+        return new SubscriberQuery(static::class);
     }
 
     /**

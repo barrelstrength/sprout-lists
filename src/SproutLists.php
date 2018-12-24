@@ -29,6 +29,9 @@ use yii\base\Event;
  * Class SproutListsPlugin
  *
  * @package Craft
+ *
+ * @property mixed $cpNavItem
+ * @property mixed $settingsResponse
  */
 class SproutLists extends Plugin
 {

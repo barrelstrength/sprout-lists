@@ -3,12 +3,12 @@
 namespace barrelstrength\sproutlists\elements;
 
 use barrelstrength\sproutlists\elements\actions\DeleteList;
-use barrelstrength\sproutlists\elements\db\ListsQuery;
+use barrelstrength\sproutlists\elements\db\SubscriberListQuery;
 use craft\base\Element;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
-use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use barrelstrength\sproutlists\records\SubscriberList as ListsRecord;
 use yii\web\ErrorHandler;
 
 class SubscriberList extends Element
@@ -83,7 +83,7 @@ class SubscriberList extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new ListsQuery(static::class);
+        return new SubscriberListQuery(static::class);
     }
 
     /**
@@ -117,7 +117,6 @@ class SubscriberList extends Element
             ErrorHandler::convertExceptionToError($e);
         }
     }
-
 
     /**
      * @inheritdoc

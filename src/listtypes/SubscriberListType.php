@@ -11,10 +11,15 @@ use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\helpers\Template;
-use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
-use barrelstrength\sproutlists\records\Lists as ListsRecord;
+use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
+use barrelstrength\sproutlists\records\SubscriberList as ListsRecord;
 use yii\base\Exception;
 
+/**
+ *
+ * @property string $name
+ * @property array  $listsWithSubscribers
+ */
 class SubscriberListType extends ListType
 {
     /**
@@ -127,10 +132,11 @@ class SubscriberListType extends ListType
      *
      * @return array
      */
-    public function getListsWithSubscribers()
+    public function getListsWithSubscribers(): array
     {
         $lists = [];
         $records = ListsRecord::find()->all();
+
         if ($records) {
             foreach ($records as $record) {
                 /**
@@ -181,7 +187,7 @@ class SubscriberListType extends ListType
                 $this->saveList($list);
             }
         } elseif ($settings->enableAutoList) {
-            $list->type = SubscriberListType::class;
+            $list->type = __CLASS__;
             $list->elementId = $subscription->elementId;
             $list->name = $subscription->listHandle;
             $list->handle = $subscription->listHandle;
@@ -635,7 +641,7 @@ class SubscriberListType extends ListType
     }
 
     /**
-     * @param $list
+     * @param SubscriberList $list
      *
      * @return int|mixed
      * @throws \Exception
@@ -648,7 +654,7 @@ class SubscriberListType extends ListType
     }
 
     /**
-     * @param $list
+     * @param SubscriberList $list
      *
      * @return array|mixed
      * @throws \Exception

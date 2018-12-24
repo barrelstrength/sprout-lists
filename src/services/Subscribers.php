@@ -8,7 +8,7 @@ use craft\base\Component;
 use craft\elements\User;
 use craft\events\ElementEvent;
 
-use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
+use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
 use barrelstrength\sproutlists\elements\Subscriber;
 use Craft;
 

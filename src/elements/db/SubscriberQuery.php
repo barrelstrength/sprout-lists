@@ -5,7 +5,7 @@ namespace barrelstrength\sproutlists\elements\db;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\elements\db\ElementQuery;
 
-class SubscribersQuery extends ElementQuery
+class SubscriberQuery extends ElementQuery
 {
     /**
      * @var int

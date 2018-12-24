@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\records;
 
+use barrelstrength\sproutlists\elements\SubscriberList;
 use craft\base\Element;
 use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
@@ -9,13 +10,15 @@ use yii\db\ActiveQueryInterface;
 /**
  * Class Subscriber record.
  *
- * @property int    $id
- * @property int    $userId
- * @property string $email
- * @property string $firstName
- * @property string $lastName
+ * @property int                          $id
+ * @property int                          $userId
+ * @property string                       $email
+ * @property string                       $firstName
+ * @property \yii\db\ActiveQueryInterface $element
+ * @property \yii\db\ActiveQueryInterface $lists
+ * @property string                       $lastName
  */
-class Subscribers extends ActiveRecord
+class Subscriber extends ActiveRecord
 {
     /**
      * @return string
@@ -40,7 +43,7 @@ class Subscribers extends ActiveRecord
      */
     public function getLists(): ActiveQueryInterface
     {
-        return $this->hasMany(Lists::class, ['id' => 'listId'])
+        return $this->hasMany(SubscriberList::class, ['id' => 'listId'])
             ->viaTable('{{%sproutlists_subscriptions}}', ['subscriberId' => 'id']);
     }
 }

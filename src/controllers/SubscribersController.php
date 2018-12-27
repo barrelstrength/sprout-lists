@@ -8,6 +8,7 @@ use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 use Craft;
+use yii\web\Response;
 
 class SubscribersController extends Controller
 {
@@ -17,10 +18,10 @@ class SubscribersController extends Controller
      * @param null $id
      * @param null $subscriber
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      */
-    public function actionEditSubscriberTemplate($id = null, $subscriber = null)
+    public function actionEditSubscriberTemplate($id = null, $subscriber = null): Response
     {
         $listType = SproutLists::$app->lists->getListType(SubscriberListType::class);
         $listTypes[] = $listType;
@@ -36,12 +37,16 @@ class SubscribersController extends Controller
     }
 
     /**
-     *  Saves a subscriber
+     * Saves a subscriber
      *
-     * @throws \Exception
+     * @return Response
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \craft\errors\MissingComponentException
+     * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionSaveSubscriber()
+    public function actionSaveSubscriber(): Response
     {
         $this->requirePostRequest();
 
@@ -61,31 +66,33 @@ class SubscribersController extends Controller
         $type = Craft::$app->getRequest()->getBodyParam('type');
 
         /**
-         * @var ListType $listType
+         * @todo - Abstract to add support for saveSubscriber via other ListTypes
+         *
+         * @var ListType|SubscriberListType $listType
          */
         $listType = SproutLists::$app->lists->getListType($type);
 
-        if ($listType->saveSubscriber($subscriber)) {
-            Craft::$app->getSession()->setNotice(Craft::t('sprout-lists', 'Subscriber saved.'));
+        if (!$listType->saveSubscriber($subscriber)) {
+            Craft::$app->getSession()->setError(Craft::t('sprout-lists', 'Unable to save subscriber.'));
 
-            return $this->redirectToPostedUrl($subscriber);
+            Craft::$app->getUrlManager()->setRouteParams([
+                'subscriber' => $subscriber
+            ]);
         }
 
-        Craft::$app->getSession()->setError(Craft::t('sprout-lists', 'Unable to save subscriber.'));
+        Craft::$app->getSession()->setNotice(Craft::t('sprout-lists', 'Subscriber saved.'));
 
-        return Craft::$app->getUrlManager()->setRouteParams([
-            'subscriber' => $subscriber
-        ]);
+        return $this->redirectToPostedUrl($subscriber);
     }
 
     /**
      * Deletes a subscriber
      *
-     * @return null|\yii\web\Response
+     * @return Response
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionDeleteSubscriber()
+    public function actionDeleteSubscriber(): Response
     {
         $this->requirePostRequest();
 
@@ -102,8 +109,6 @@ class SubscribersController extends Controller
             Craft::$app->getUrlManager()->setRouteParams([
                 'subscriber' => $subscriber
             ]);
-
-            return null;
         }
 
         Craft::$app->getSession()->setNotice(Craft::t('sprout-lists', 'Subscriber deleted.'));

@@ -34,7 +34,7 @@ class Lists extends Component
      *
      * @return array
      */
-    public function getAllListTypes()
+    public function getAllListTypes(): array
     {
         $event = new RegisterListTypesEvent([
             'listTypes' => []
@@ -82,8 +82,9 @@ class Lists extends Component
      *
      * @return SubscriberListType
      */
-    public function getListTypeByHandle($listHandle)
+    public function getListTypeByHandle($listHandle): SubscriberListType
     {
+        /** @var ListsRecord $list */
         $list = ListsRecord::find()->where([
             'handle' => $listHandle
         ])->one();
@@ -105,7 +106,7 @@ class Lists extends Component
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteList($listId)
+    public function deleteList($listId): bool
     {
         $listRecord = ListsRecord::findOne($listId);
 

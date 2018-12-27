@@ -12,7 +12,7 @@ use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
-use barrelstrength\sproutlists\records\SubscriberList as ListsRecord;
+use barrelstrength\sproutlists\records\SubscriberList as SubscriberListRecord;
 use yii\base\Exception;
 
 /**
@@ -25,7 +25,7 @@ class SubscriberListType extends ListType
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return Craft::t('sprout-lists', 'Subscriber List');
     }
@@ -83,7 +83,7 @@ class SubscriberListType extends ListType
         if ($subscriberRecord == null) {
             // Only findAll if we are not looking for a specific Subscriber, otherwise we want to return null
             if (empty($subscriber->email)) {
-                $listRecords = ListsRecord::find()->all();
+                $listRecords = SubscriberListRecord::find()->all();
             }
         } else {
             $listRecords = $subscriberRecord->getLists()->all();
@@ -135,12 +135,12 @@ class SubscriberListType extends ListType
     public function getListsWithSubscribers(): array
     {
         $lists = [];
-        $records = ListsRecord::find()->all();
+        $records = SubscriberListRecord::find()->all();
 
         if ($records) {
             foreach ($records as $record) {
                 /**
-                 * @var $record ListsRecord
+                 * @var $record SubscriberListRecord
                  */
                 $subscribers = $record->getSubscribers()->all();
 
@@ -167,12 +167,16 @@ class SubscriberListType extends ListType
      */
     public function getOrCreateList(Subscription $subscription)
     {
-        $listRecord = ListsRecord::find()->where(['handle' => $subscription->listHandle])->one();
+        /** @var SubscriberListRecord $listRecord */
+        $listRecord = SubscriberListRecord::find()->where([
+            'handle' => $subscription->listHandle
+        ])->one();
 
         $list = new SubscriberList();
         /**
          * @var $settings Settings
          */
+        /** @noinspection NullPointerExceptionInspection */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // If no List exists, dynamically create one
@@ -186,7 +190,7 @@ class SubscriberListType extends ListType
                 $list->elementId = $subscription->elementId;
                 $this->saveList($list);
             }
-        } elseif ($settings->enableAutoList) {
+        } elseif ($settings && $settings->enableAutoList) {
             $list->type = __CLASS__;
             $list->elementId = $subscription->elementId;
             $list->name = $subscription->listHandle;
@@ -207,7 +211,7 @@ class SubscriberListType extends ListType
     // =========================================================================
 
     /**
-     * @param $subscription
+     * @param Subscription $subscription
      *
      * @return bool|mixed
      * @throws \Throwable
@@ -217,6 +221,7 @@ class SubscriberListType extends ListType
         /**
          * @var Settings $settings
          */
+        /** @noinspection NullPointerExceptionInspection */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         $subscriber = new Subscriber();
@@ -225,7 +230,7 @@ class SubscriberListType extends ListType
             $subscriber->email = $subscription->email;
         }
 
-        if ($subscription->userId !== null && $settings->enableUserSync) {
+        if ($subscription->userId !== null && $settings && $settings->enableUserSync) {
             $subscriber->userId = $subscription->userId;
         }
 
@@ -270,6 +275,7 @@ class SubscriberListType extends ListType
         /**
          * @var Settings $settings
          */
+        /** @noinspection NullPointerExceptionInspection */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         $listAttributes = [
@@ -282,9 +288,9 @@ class SubscriberListType extends ListType
         }
 
         if ($subscription->id) {
-            $list = ListsRecord::findOne($subscription->id);
+            $list = SubscriberListRecord::findOne($subscription->id);
         } else {
-            $list = ListsRecord::find()
+            $list = SubscriberListRecord::find()
                 ->where($listAttributes)
                 ->one();
         }
@@ -351,10 +357,11 @@ class SubscriberListType extends ListType
         /**
          * @var $settings Settings
          */
+        /** @noinspection NullPointerExceptionInspection */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
         // however, if User Sync is not enabled, we need an email
-        if ($settings->enableUserSync === true && $subscription->email === null) {
+        if ($settings && $settings->enableUserSync === true && $subscription->email === null) {
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: `email` is required by the isSubscribed variable with User Sync is enabled.'));
         }
 
@@ -370,9 +377,9 @@ class SubscriberListType extends ListType
         }
 
         /**
-         * @var ListsRecord $listRecord
+         * @var SubscriberListRecord $listRecord
          */
-        $listRecord = ListsRecord::find()->where($listAttributes)->one();
+        $listRecord = SubscriberListRecord::find()->where($listAttributes)->one();
 
         if ($listRecord) {
             $listId = $listRecord->id;
@@ -388,6 +395,7 @@ class SubscriberListType extends ListType
             'userId' => $subscription->userId
         ]);
 
+        /** @var SubscribersRecord $subscriberRecord */
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
         if ($subscriberRecord) {
@@ -464,7 +472,7 @@ class SubscriberListType extends ListType
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
      */
-    public function saveSubscriber(Subscriber $subscriber)
+    public function saveSubscriber(Subscriber $subscriber): bool
     {
         if (!$subscriber->validate(null, false)) {
             return false;
@@ -496,9 +504,10 @@ class SubscriberListType extends ListType
             'userId' => $subscriber->userId
         ]);
 
+        /** @var SubscribersRecord $subscriberRecord */
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
-        if (!empty($subscriberRecord)) {
+        if ($subscriberRecord !== null) {
             $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
         }
 
@@ -536,7 +545,7 @@ class SubscriberListType extends ListType
      * @return SubscriptionRecord
      * @throws \Throwable
      */
-    public function deleteSubscriberById($id)
+    public function deleteSubscriberById($id): SubscriptionRecord
     {
         /**
          * @var $subscriber SubscriptionRecord
@@ -558,21 +567,20 @@ class SubscriberListType extends ListType
      * @param $subscriberId
      *
      * @return string|\Twig_Markup
-     * @throws Exception
+     * @throws \Exception
      * @throws \Twig_Error_Loader
      */
     public function getSubscriberListsHtml($subscriberId)
     {
         $listIds = [];
 
-        if ($subscriberId != null) {
-
+        if ($subscriberId !== null) {
+            /**
+             * @var $subscriber Subscriber
+             */
             $subscriber = $this->getSubscriberById($subscriberId);
 
             if ($subscriber) {
-                /**
-                 * @var $subscriber Subscriber
-                 */
                 $listIds = $subscriber->getListIds();
             }
         }
@@ -610,12 +618,12 @@ class SubscriberListType extends ListType
      *
      * @return bool
      */
-    public function updateTotalSubscribersCount($listId = null)
+    public function updateTotalSubscribersCount($listId = null): bool
     {
         if ($listId == null) {
-            $lists = ListsRecord::find()->all();
+            $lists = SubscriberListRecord::find()->all();
         } else {
-            $list = ListsRecord::findOne($listId);
+            $list = SubscriberListRecord::findOne($listId);
 
             $lists = [$list];
         }
@@ -671,17 +679,17 @@ class SubscriberListType extends ListType
 
         $subscribers = [];
 
-        if (empty($list)) {
+        if ($list === null) {
             return $subscribers;
         }
 
-        $listRecord = ListsRecord::find()->where([
+        $listRecord = SubscriberListRecord::find()->where([
             'type' => $list->type,
             'handle' => $list->handle
         ])->one();
 
         /**
-         * @var $listRecord ListsRecord
+         * @var $listRecord SubscriberListRecord
          */
         if ($listRecord != null) {
             $subscribers = $listRecord->getSubscribers()->all();

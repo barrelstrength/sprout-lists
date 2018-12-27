@@ -13,7 +13,7 @@ class m180303_000000_update_type_to_class extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         // Link to Url
         $this->update('{{%sproutlists_lists}}', [
@@ -28,7 +28,7 @@ class m180303_000000_update_type_to_class extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180303_000000_update_type_to_class cannot be reverted.\n";
         return false;

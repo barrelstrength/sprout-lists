@@ -208,16 +208,20 @@ class Subscriber extends Element
      * @return array
      * @throws \Exception
      */
-    public function getListIds()
+    public function getListIds(): array
     {
-        if (empty($this->subscriberListsIds)) {
-            $subscriberLists = $this->getLists();
+        if ($this->subscriberListsIds) {
+            return $this->subscriberListsIds;
+        }
 
-            if (count($subscriberLists)) {
-                foreach ($subscriberLists as $list) {
-                    $this->subscriberListsIds[] = $list->id;
-                }
-            }
+        $subscriberLists = $this->getLists();
+
+        if (!count($subscriberLists)) {
+            return [];
+        }
+
+        foreach ($subscriberLists as $list) {
+            $this->subscriberListsIds[] = $list->id;
         }
 
         return $this->subscriberListsIds;
@@ -229,7 +233,7 @@ class Subscriber extends Element
      * @return array
      * @throws \Exception
      */
-    public function getLists()
+    public function getLists(): array
     {
         $lists = [];
 
@@ -240,6 +244,7 @@ class Subscriber extends Element
         $listType = SproutLists::$app->lists->getListType(SubscriberListType::class);
 
         if (count($subscriptions)) {
+            /** @var Subscription $subscription */
             foreach ($subscriptions as $subscription) {
                 /**
                  * @var $listType ListType
@@ -254,7 +259,7 @@ class Subscriber extends Element
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['email'], 'required'],
@@ -269,14 +274,20 @@ class Subscriber extends Element
     /**
      * @param bool $isNew
      *
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function afterSave(bool $isNew)
     {
         /**
          * @var Settings $settings
          */
+        /** @noinspection NullPointerExceptionInspection */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
+
+        if (!$settings) {
+            parent::afterSave($isNew);
+            return;
+        }
 
         // Get the list record
         if (!$isNew) {
@@ -324,8 +335,7 @@ class Subscriber extends Element
         if ($result &&
             $isNew === false &&
             $user !== null &&
-            $settings->enableUserSync)
-        {
+            $settings->enableUserSync) {
             // Sync updates with existing Craft User if User Sync enabled
             Craft::$app->getDb()->createCommand()->update(
                 '{{%users}}',
@@ -338,7 +348,7 @@ class Subscriber extends Element
                 [],
                 false
             )
-            ->execute();
+                ->execute();
         }
 
         parent::afterSave($isNew);

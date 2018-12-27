@@ -12,7 +12,7 @@ class TwigExtensions extends Twig_Extension
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Sprout Subscriber Lists';
     }
@@ -22,7 +22,7 @@ class TwigExtensions extends Twig_Extension
      *
      * @return array|\Twig_Filter[]
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new \Twig_SimpleFilter('subscriberUserIds', [$this, 'subscriberUserIds'])
@@ -53,7 +53,7 @@ class TwigExtensions extends Twig_Extension
      *
      * @return array
      */
-    public function buildArrayOfIds($subscriptions, $attribute)
+    public function buildArrayOfIds($subscriptions, $attribute): array
     {
         $ids = [];
 

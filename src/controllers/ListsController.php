@@ -9,6 +9,7 @@ use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
 use Craft;
+use yii\web\Response;
 
 class ListsController extends Controller
 {
@@ -26,10 +27,10 @@ class ListsController extends Controller
      * @param null $listId
      * @param null $list
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      */
-    public function actionEditListTemplate($type = null, $listId = null, $list = null)
+    public function actionEditListTemplate($type = null, $listId = null, $list = null): Response
     {
         $type = $type ?? SubscriberListType::class;
 
@@ -106,13 +107,13 @@ class ListsController extends Controller
     /**
      * Deletes a list
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionDeleteList()
+    public function actionDeleteList(): Response
     {
         $this->requirePostRequest();
 
@@ -145,12 +146,12 @@ class ListsController extends Controller
     /**
      * Adds a subscriber to a list
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Throwable
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionSubscribe()
+    public function actionSubscribe(): Response
     {
         $this->requirePostRequest();
 
@@ -183,11 +184,11 @@ class ListsController extends Controller
     /**
      * Removes a subscriber from a list
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionUnsubscribe()
+    public function actionUnsubscribe(): Response
     {
         $this->requirePostRequest();
 

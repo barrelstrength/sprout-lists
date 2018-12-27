@@ -85,7 +85,7 @@ class Subscribers extends Component
      * @throws \Exception
      * @throws \Throwable
      */
-    public function updateUserIdOnDelete(ElementEvent $event)
+    public function updateUserIdOnDelete(ElementEvent $event): bool
     {
         /**
          * @var $user User

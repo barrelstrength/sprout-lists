@@ -7,6 +7,9 @@ use Craft;
 
 /**
  *
+ * @property string $pluginNameOverride
+ * @property bool $enableUserSync
+ * @property bool $enableAutoList
  * @property array $settingsNavItems
  */
 class Settings extends Model
@@ -26,7 +29,7 @@ class Settings extends Model
      */
     public $enableAutoList;
 
-    public function getSettingsNavItems()
+    public function getSettingsNavItems(): array
     {
         return [
             'settingsHeading' => [

@@ -7,6 +7,7 @@ use barrelstrength\sproutlists\elements\db\SubscriberListQuery;
 use craft\base\Element;
 use Craft;
 use craft\elements\db\ElementQueryInterface;
+use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\SubscriberList as ListsRecord;
 use yii\web\ErrorHandler;
@@ -108,7 +109,6 @@ class SubscriberList extends Element
      *
      * @return string
      */
-    /** @noinspection PhpInconsistentReturnPointsInspection */
     public function __toString()
     {
         try {
@@ -175,7 +175,7 @@ class SubscriberList extends Element
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -195,11 +195,11 @@ class SubscriberList extends Element
         if (!$isNew) {
             $record = ListsRecord::findOne($this->id);
 
-            $record->elementId = $this->elementId;
-
             if (!$record) {
-                throw new \Exception('Invalid list ID: '.$this->id);
+                throw new ElementNotFoundException('Invalid list ID: '.$this->id);
             }
+
+            $record->elementId = $this->elementId;
         } else {
             $record = new ListsRecord();
             $record->id        = $this->id;

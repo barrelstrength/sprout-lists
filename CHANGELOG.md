@@ -1,11 +1,17 @@
 # Changelog
 
-## UNRELEASED: 1.0.0-beta.13 - 2018-12-13
+## 1.0.0-beta.13 - 2019-01-23
+
+### Changed
+- Updated Sprout Lists naming convention: Subscribers => Subscriber
+- Updated Sprout Lists naming convention: Lists => SubscriberList
 
 ### Fixed
-- Fixed bug where lists created in the Control Panel were not properly assigned a List ID ([#26])
 - Updated subscribers to allow subscriptions to multiple lists via front-end ([#23])
-- Updated various database queries to respect table prefixes ([^2])
+- Fixed bug where Lists query did not recognize table prefix
+- Fixed bug where Subscriptions query did not recognize table prefix
+- Fixed bug where new lists would not get assigned a List ID [#26]
+- Fixed subquery for sources on Subscriber Element Index page
 
 [#23]: https://github.com/barrelstrength/craft-sprout-lists/issues/23
 [#26]: https://github.com/barrelstrength/craft-sprout-lists/issues/26

@@ -3,7 +3,7 @@
 namespace barrelstrength\sproutlists\listtypes;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
-use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\elements\SubscriberList;
 use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\models\Subscription;
@@ -22,23 +22,23 @@ class SubscriberListType extends ListType
      */
     public function getName()
     {
-        return Craft::t('sprout-lists', 'Subscriber Lists');
+        return Craft::t('sprout-lists', 'Subscriber SubscriberList');
     }
 
-    // Lists
+    // SubscriberList
     // =========================================================================
 
     /**
      * Saves a list.
      *
-     * @param Lists $list
+     * @param SubscriberList $list
      *
      * @return bool|mixed
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
      */
-    public function saveList(Lists $list)
+    public function saveList(SubscriberList $list)
     {
         $list->totalSubscribers = 0;
 
@@ -87,7 +87,7 @@ class SubscriberListType extends ListType
         if (!empty($listRecords)) {
 
             foreach ($listRecords as $listRecord) {
-                $list = new Lists();
+                $list = new SubscriberList();
                 $list->setAttributes($listRecord->getAttributes(), false);
                 $lists[] = $list;
             }
@@ -154,7 +154,7 @@ class SubscriberListType extends ListType
      *
      * @param Subscription $subscription
      *
-     * @return Lists|\craft\base\ElementInterface|null
+     * @return SubscriberList|\craft\base\ElementInterface|null
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
@@ -163,7 +163,7 @@ class SubscriberListType extends ListType
     {
         $listRecord = ListsRecord::find()->where(['handle' => $subscription->listHandle])->one();
 
-        $list = new Lists();
+        $list = new SubscriberList();
         /**
          * @var $settings Settings
          */
@@ -172,7 +172,7 @@ class SubscriberListType extends ListType
         // If no List exists, dynamically create one
         if ($listRecord) {
             /**
-             * @var Lists $list
+             * @var SubscriberList $list
              */
             $list = Craft::$app->getElements()->getElementById($listRecord->id);
 
@@ -640,7 +640,7 @@ class SubscriberListType extends ListType
      * @return int|mixed
      * @throws \Exception
      */
-    public function getSubscriberCount(Lists $list)
+    public function getSubscriberCount(SubscriberList $list)
     {
         $subscribers = $this->getSubscribers($list);
 
@@ -653,7 +653,7 @@ class SubscriberListType extends ListType
      * @return array|mixed
      * @throws \Exception
      */
-    public function getSubscribers(Lists $list)
+    public function getSubscribers(SubscriberList $list)
     {
         if (empty($list->type)) {
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'Missing argument: "type" is required by the getSubscribers variable.'));

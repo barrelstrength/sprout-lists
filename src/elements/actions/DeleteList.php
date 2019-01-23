@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\elements\actions;
 
-use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\elements\SubscriberList;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\elements\actions\Delete;
@@ -36,7 +36,7 @@ class DeleteList extends Delete
     public function performAction(ElementQueryInterface $query): bool
     {
         /**
-         * @var Lists[] $lists
+         * @var SubscriberList[] $lists
          */
         $lists = $query->all();
 

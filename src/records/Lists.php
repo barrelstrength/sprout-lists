@@ -7,7 +7,7 @@ use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 
 /**
- * Class Lists record.
+ * Class SubscriberList record.
  *
  * @property int    $id
  * @property int    $elementId

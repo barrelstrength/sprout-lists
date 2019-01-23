@@ -14,7 +14,7 @@ class TwigExtensions extends Twig_Extension
      */
     public function getName()
     {
-        return 'Sprout Lists';
+        return 'Sprout Subscriber Lists';
     }
 
     /**

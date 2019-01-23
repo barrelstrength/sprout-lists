@@ -139,7 +139,7 @@ class SproutLists extends Plugin
     }
 
     /**
-     * Redirect to Sprout Lists settings
+     * Redirect to Sprout SubscriberList settings
      *
      * @inheritdoc
      */
@@ -169,7 +169,7 @@ class SproutLists extends Plugin
                     'url' => 'sprout-lists/subscribers'
                 ],
                 'lists' => [
-                    'label' => Craft::t('sprout-lists', 'Lists'),
+                    'label' => Craft::t('sprout-lists', 'Subscriber Lists'),
                     'url' => 'sprout-lists/lists'
                 ],
                 'settings' => [

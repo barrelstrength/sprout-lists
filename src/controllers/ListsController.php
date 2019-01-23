@@ -3,7 +3,7 @@
 namespace barrelstrength\sproutlists\controllers;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
-use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\elements\SubscriberList;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
@@ -36,7 +36,7 @@ class ListsController extends Controller
         $listType = SproutLists::$app->lists->getListType($type);
 
         if ($list == null) {
-            $list = new Lists();
+            $list = new SubscriberList();
         }
 
         $continueEditingUrl = null;
@@ -71,7 +71,7 @@ class ListsController extends Controller
 
         $listId = Craft::$app->request->getBodyParam('listId');
 
-        $list = new Lists();
+        $list = new SubscriberList();
 
         if ($listId != null) {
             $list = Craft::$app->getElements()->getElementById($listId);

@@ -11,7 +11,7 @@ use craft\helpers\UrlHelper;
 use barrelstrength\sproutlists\records\Lists as ListsRecord;
 use yii\web\ErrorHandler;
 
-class Lists extends Element
+class SubscriberList extends Element
 {
     /**
      * @var int
@@ -48,7 +48,7 @@ class Lists extends Element
      */
     public static function displayName(): string
     {
-        return Craft::t('sprout-lists', 'Sprout Lists');
+        return Craft::t('sprout-lists', 'Sprout SubscriberList');
     }
 
     /**
@@ -96,7 +96,7 @@ class Lists extends Element
         $sources = [
             [
                 'key' => '*',
-                'label' => Craft::t('sprout-lists', 'All Lists')
+                'label' => Craft::t('sprout-lists', 'All SubscriberList')
             ]
         ];
 

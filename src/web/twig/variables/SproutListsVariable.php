@@ -3,7 +3,7 @@
 namespace barrelstrength\sproutlists\web\twig\variables;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
-use barrelstrength\sproutlists\elements\Lists;
+use barrelstrength\sproutlists\elements\SubscriberList;
 use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
@@ -80,7 +80,7 @@ class SproutListsVariable
             throw new \InvalidArgumentException(Craft::t('sprout-lists', 'The `listHandle` parameter is required.'));
         }
 
-        $list = new Lists();
+        $list = new SubscriberList();
         $list->handle = $criteria['listHandle'] ?? null;
 
         $listType = SproutLists::$app->lists->getListTypeByHandle($list->handle);
@@ -125,7 +125,7 @@ class SproutListsVariable
      */
     public function getSubscriberCount(array $criteria = [])
     {
-        $list = new Lists();
+        $list = new SubscriberList();
         $list->handle = $criteria['listHandle'] ?? null;
 
         $listType = SproutLists::$app->lists->getListTypeByHandle($list->handle);

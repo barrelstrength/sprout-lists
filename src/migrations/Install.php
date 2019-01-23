@@ -15,7 +15,7 @@ class Install extends Migration
         $this->createTable($this->listsTable,
             [
                 'id' => $this->primaryKey(),
-                'elementId' => $this->integer()->notNull(),
+                'elementId' => $this->integer(),
                 'type' => $this->string(),
                 'name' => $this->string(),
                 'handle' => $this->string(),

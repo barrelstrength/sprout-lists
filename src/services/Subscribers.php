@@ -9,7 +9,7 @@ use craft\elements\User;
 use craft\events\ElementEvent;
 
 use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
-use barrelstrength\sproutlists\elements\Subscribers as SubscribersElement;
+use barrelstrength\sproutlists\elements\Subscriber as SubscribersElement;
 use Craft;
 
 
@@ -75,7 +75,7 @@ class Subscribers extends Component
     }
 
     /**
-     * Remove any relationships between Sprout Lists Subscribers and Users who are deleted.
+     * Remove any relationships between Sprout Lists Subscriber and Users who are deleted.
      * Deleting a Craft User does not delete the matching Subscriber. It simply removes
      * the relationship to any Craft User ID from the Subscriber table.
      *

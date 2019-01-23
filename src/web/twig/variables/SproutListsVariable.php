@@ -4,7 +4,7 @@ namespace barrelstrength\sproutlists\web\twig\variables;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
-use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\SproutLists;
@@ -50,7 +50,7 @@ class SproutListsVariable
      */
     public function getLists(array $criteria = [])
     {
-        $subscriber = new Subscribers();
+        $subscriber = new Subscriber();
         $listType = $criteria['listType'] ?? SubscriberListType::class;
         $subscriber->listType = $listType;
         $subscriber->email = $criteria['email'] ?? null;
@@ -103,7 +103,7 @@ class SproutListsVariable
      */
     public function getListCount(array $criteria = [])
     {
-        $subscriber = new Subscribers();
+        $subscriber = new Subscriber();
         $subscriber->listType = $criteria['listType'] ?? SubscriberListType::class;
         $subscriber->email = $criteria['email'] ?? null;
         $subscriber->userId = $criteria['userId'] ?? null;

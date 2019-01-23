@@ -3,7 +3,7 @@
 namespace barrelstrength\sproutlists\controllers;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
-use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\SproutLists;
 use craft\web\Controller;
@@ -47,7 +47,7 @@ class SubscribersController extends Controller
 
         $subscriberId = Craft::$app->getRequest()->getBodyParam('subscriberId');
 
-        $subscriber = new Subscribers();
+        $subscriber = new Subscriber();
 
         if ($subscriberId != null) {
             $subscriber = Craft::$app->getElements()->getElementById($subscriberId);

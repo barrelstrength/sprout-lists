@@ -127,8 +127,8 @@ class Lists extends Element
         $attributes = [
             'name' => ['label' => Craft::t('sprout-lists', 'Name')],
             'handle' => ['label' => Craft::t('sprout-lists', 'List Handle')],
-            'view' => ['label' => Craft::t('sprout-lists', 'View Subscribers')],
-            'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscribers')],
+            'view' => ['label' => Craft::t('sprout-lists', 'View Subscriber')],
+            'totalSubscribers' => ['label' => Craft::t('sprout-lists', 'Total Subscriber')],
             'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')]
         ];
 
@@ -155,7 +155,7 @@ class Lists extends Element
 
                 if ($this->id && $totalSubscribers > 0) {
                     return '<a href="'.UrlHelper::cpUrl('sprout-lists/subscribers/'.$this->handle).'" class="go">'.
-                        Craft::t('sprout-lists', 'View Subscribers').'</a>';
+                        Craft::t('sprout-lists', 'View Subscriber').'</a>';
                 }
                 return '';
                 break;

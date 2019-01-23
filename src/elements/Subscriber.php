@@ -19,7 +19,7 @@ use barrelstrength\sproutlists\records\Subscribers as SubscribersRecord;
 use craft\validators\UniqueValidator;
 use yii\db\Exception;
 
-class Subscribers extends Element
+class Subscriber extends Element
 {
     /**
      * @var int
@@ -74,7 +74,7 @@ class Subscribers extends Element
      */
     public static function displayName(): string
     {
-        return Craft::t('sprout-lists', 'Sprout Subscribers');
+        return Craft::t('sprout-lists', 'Sprout Subscriber');
     }
 
     /**

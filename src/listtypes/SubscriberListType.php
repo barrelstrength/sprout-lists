@@ -4,7 +4,7 @@ namespace barrelstrength\sproutlists\listtypes;
 
 use barrelstrength\sproutbase\app\lists\base\ListType;
 use barrelstrength\sproutlists\elements\Lists;
-use barrelstrength\sproutlists\elements\Subscribers;
+use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
@@ -48,11 +48,11 @@ class SubscriberListType extends ListType
     /**
      * Gets lists.
      *
-     * @param Subscribers $subscriber
+     * @param Subscriber $subscriber
      *
      * @return array
      */
-    public function getLists(Subscribers $subscriber = null)
+    public function getLists(Subscriber $subscriber = null)
     {
         $lists = [];
 
@@ -62,7 +62,7 @@ class SubscriberListType extends ListType
         $subscriberRecord = null;
 
         /**
-         * @var $subscriber Subscribers
+         * @var $subscriber Subscriber
          */
         if ($subscriber != null AND (!empty($subscriber->email) OR !empty($subscriber->userId))) {
             $subscriberAttributes = array_filter([
@@ -99,11 +99,11 @@ class SubscriberListType extends ListType
     /**
      * Get the total number of lists for a given subscriber
      *
-     * @param Subscribers $subscriber
+     * @param Subscriber $subscriber
      *
      * @return int
      */
-    public function getListCount(Subscribers $subscriber = null)
+    public function getListCount(Subscriber $subscriber = null)
     {
         $lists = $this->getLists($subscriber);
 
@@ -213,7 +213,7 @@ class SubscriberListType extends ListType
          */
         $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
 
-        $subscriber = new Subscribers();
+        $subscriber = new Subscriber();
 
         if (!empty($subscription->email)) {
             $subscriber->email = $subscription->email;
@@ -405,12 +405,12 @@ class SubscriberListType extends ListType
     /**
      * Saves a subscription
      *
-     * @param Subscribers $subscriber
+     * @param Subscriber $subscriber
      *
      * @return bool
      * @throws \Exception
      */
-    public function saveSubscriptions(Subscribers $subscriber)
+    public function saveSubscriptions(Subscriber $subscriber)
     {
         try {
             if (!empty($subscriber->subscriberLists)) {
@@ -445,20 +445,20 @@ class SubscriberListType extends ListType
         }
     }
 
-    // Subscribers
+    // Subscriber
     // =========================================================================
 
     /**
      * Saves a subscriber
      *
-     * @param Subscribers $subscriber
+     * @param Subscriber $subscriber
      *
      * @return bool
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
      */
-    public function saveSubscriber(Subscribers $subscriber)
+    public function saveSubscriber(Subscriber $subscriber)
     {
         if (!$subscriber->validate(null, false)) {
             return false;
@@ -476,14 +476,14 @@ class SubscriberListType extends ListType
     /**
      * Gets a subscriber
      *
-     * @param Subscribers $subscriber
+     * @param Subscriber $subscriber
      *
-     * @return Subscribers|\craft\services\Elements
+     * @return Subscriber|\craft\services\Elements
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      * @throws \yii\base\Exception
      */
-    public function getSubscriber(Subscribers $subscriber)
+    public function getSubscriber(Subscriber $subscriber)
     {
         $attributes = array_filter([
             'email' => $subscriber->email,
@@ -565,7 +565,7 @@ class SubscriberListType extends ListType
 
             if ($subscriber) {
                 /**
-                 * @var $subscriber Subscribers
+                 * @var $subscriber Subscriber
                  */
                 $listIds = $subscriber->getListIds();
             }

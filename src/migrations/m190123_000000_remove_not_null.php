@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutlists\migrations;
 
-use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use craft\db\Migration;
 
 /**

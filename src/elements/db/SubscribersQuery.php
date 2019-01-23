@@ -27,9 +27,9 @@ class SubscribersQuery extends ElementQuery
         ]);
 
         if ($this->listId != null) {
-            $this->query->leftJoin('{{%sproutlists_subscriptions subscriptions}}', 'subscriptions.subscriberId = sproutlists_subscribers.id');
-            $this->query->leftJoin('{{%sproutlists_lists lists}}', 'lists.id = subscriptions.listId');
-            $this->query->where('subscriptions.listId = '.$this->listId);
+            $this->query->leftJoin('{{%sproutlists_subscriptions}} subscriptions', 'subscriptions.subscriberId = sproutlists_subscribers.id');
+            $this->query->leftJoin('{{%sproutlists_lists}} lists', 'lists.id = subscriptions.listId');
+            $this->query->where('subscriptions.listId = :listId', [':listId' => $this->listId]);
         }
         return parent::beforePrepare();
     }

@@ -96,7 +96,7 @@ class SubscriberList extends Element
         $sources = [
             [
                 'key' => '*',
-                'label' => Craft::t('sprout-lists', 'All SubscriberList')
+                'label' => Craft::t('sprout-lists', 'All Subscriber Lists')
             ]
         ];
 

@@ -57,4 +57,14 @@ class Subscription extends Model
      * @var string
      */
     public $email;
+
+    /**
+     * @var string
+     */
+    public $firstName;
+
+    /**
+     * @var string
+     */
+    public $lastName;
 }

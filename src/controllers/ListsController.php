@@ -161,6 +161,8 @@ class ListsController extends Controller
         $subscription->userId = Craft::$app->getRequest()->getBodyParam('userId');
         $subscription->email = Craft::$app->getRequest()->getBodyParam('email');
         $subscription->elementId = Craft::$app->getRequest()->getBodyParam('elementId');
+        $subscription->firstName = Craft::$app->getRequest()->getBodyParam('firstName');
+        $subscription->lastName = Craft::$app->getRequest()->getBodyParam('lastName');
 
         $listType = SproutLists::$app->lists->getListTypeByHandle($subscription->listHandle);
 

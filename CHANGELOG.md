@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0-beta.15 - 2019-01-31
+
+### Added
+- Added support for capturing First Name and Last Name values with subscriptions
+
 ## 1.0.0-beta.14 - 2019-01-25
 
 ### Added

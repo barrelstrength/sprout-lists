@@ -230,7 +230,15 @@ class SubscriberListType extends ListType
             $subscriber->email = $subscription->email;
         }
 
-        if ($subscription->userId !== null && $settings && $settings->enableUserSync) {
+        if (!empty($subscription->firstName)) {
+            $subscriber->firstName = $subscription->firstName;
+        }
+
+        if (!empty($subscription->lastName)) {
+            $subscriber->lastName = $subscription->lastName;
+        }
+
+        if ($subscription->userId !== null && $settings->enableUserSync) {
             $subscriber->userId = $subscription->userId;
         }
 
@@ -501,14 +509,21 @@ class SubscriberListType extends ListType
     {
         $attributes = array_filter([
             'email' => $subscriber->email,
-            'userId' => $subscriber->userId
+            'userId' => $subscriber->userId,
         ]);
 
-        /** @var SubscribersRecord $subscriberRecord */
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
         if ($subscriberRecord !== null) {
             $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
+        }
+
+        if ($firstName) {
+            $subscriber->firstName = $firstName;
+        }
+
+        if ($lastName) {
+            $subscriber->lastName = $lastName;
         }
 
         // If no Subscriber was found, create one

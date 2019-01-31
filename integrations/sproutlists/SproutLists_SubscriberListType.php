@@ -801,7 +801,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 		$lists   = $this->getLists();
 		$options = array();
 
-		if (count($lists))
+		if (is_array($lists) && count($lists))
 		{
 			foreach ($lists as $list)
 			{
@@ -845,7 +845,7 @@ class SproutLists_SubscriberListType extends SproutListsBaseListType
 			$lists = array($list);
 		}
 
-		if (count($lists))
+		if (is_array($lists) && count($lists))
 		{
 			foreach ($lists as $list)
 			{

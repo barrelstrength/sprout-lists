@@ -75,7 +75,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 		{
 			$subscriberLists = $this->getListsBySubscriberId();
 
-			if (count($subscriberLists))
+			if (is_array($subscriberLists) && count($subscriberLists))
 			{
 				foreach ($subscriberLists as $list)
 				{
@@ -103,7 +103,7 @@ class SproutLists_SubscriberModel extends BaseElementModel
 			'subscriberId' => $this->id
 		));
 
-		if (count($subscriptions))
+		if (is_array($subscriptions) && count($subscriptions))
 		{
 			foreach ($subscriptions as $subscription)
 			{

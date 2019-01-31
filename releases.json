@@ -1,5 +1,13 @@
 [
   {
+    "version": "0.8.1",
+    "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/archive/v0.8.1.zip",
+    "date": "2019-01-31T08:00:00+00:00",
+    "notes": [
+      "[Improved] Improved support for PHP 7.2"
+    ]
+  },
+  {
     "version": "0.8.0",
     "downloadUrl": "https://github.com/barrelstrength/craft-sprout-lists/archive/v0.8.0.zip",
     "date": "2018-07-28T08:00:00+00:00",

@@ -202,7 +202,7 @@ class SubscriberList extends Element
             $record->elementId = $this->elementId;
         } else {
             $record = new ListsRecord();
-            $record->id        = $this->id;
+            $record->id = $this->id;
             // Assign current listId for newly created list
             $record->elementId = $this->id;
         }

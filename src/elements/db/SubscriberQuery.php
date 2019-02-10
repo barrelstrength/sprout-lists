@@ -42,7 +42,8 @@ class SubscriberQuery extends ElementQuery
             }, $subscriptions);
 
             // Only return subscribers that match this query
-            $this->subQuery->andWhere(['in',
+            $this->subQuery->andWhere([
+                'in',
                 'sproutlists_subscribers.id',
                 array_unique($subscriberIds, SORT_REGULAR)
             ]);

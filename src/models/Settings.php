@@ -9,9 +9,9 @@ use Craft;
 /**
  *
  * @property string $pluginNameOverride
- * @property bool $enableUserSync
- * @property bool $enableAutoList
- * @property array $settingsNavItems
+ * @property bool   $enableUserSync
+ * @property bool   $enableAutoList
+ * @property array  $settingsNavItems
  */
 class Settings extends Model implements SproutSettingsInterface
 {

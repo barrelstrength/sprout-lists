@@ -4,6 +4,7 @@ namespace barrelstrength\sproutlists;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\models\Settings;
@@ -77,6 +78,7 @@ class SproutLists extends Plugin
         parent::init();
 
         SproutBaseHelper::registerModule();
+        SproutBaseListsHelper::registerModule();
 
         $this->setComponents([
             'app' => App::class

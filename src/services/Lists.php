@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\services;
 
-use barrelstrength\sproutbase\app\lists\base\ListType;
+use barrelstrength\sproutbaselists\base\ListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;
 use barrelstrength\sproutlists\records\Subscription;

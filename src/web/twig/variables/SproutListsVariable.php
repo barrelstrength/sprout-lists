@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\web\twig\variables;
 
-use barrelstrength\sproutbase\app\lists\base\ListType;
+use barrelstrength\sproutbaselists\base\ListType;
 use barrelstrength\sproutlists\elements\SubscriberList;
 use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\listtypes\SubscriberListType;

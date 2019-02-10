@@ -218,11 +218,9 @@ class SubscriberListType extends ListType
      */
     public function subscribe(Subscription $subscription): bool
     {
-        /**
-         * @var Settings $settings
-         */
-        /** @noinspection NullPointerExceptionInspection */
-        $settings = Craft::$app->plugins->getPlugin('sprout-lists')->getSettings();
+        /** @var SproutLists $plugin */
+        $plugin = Craft::$app->plugins->getPlugin('sprout-lists');
+        $settings = $plugin->getSettings();
 
         $subscriber = new Subscriber();
 
@@ -512,19 +510,11 @@ class SubscriberListType extends ListType
             'userId' => $subscriber->userId,
         ]);
 
+        /** @var SubscribersRecord $subscriberRecord */
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
-        if ($subscriberRecord !== null) {
-            $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
-        }
-
-        if ($firstName) {
-            $subscriber->firstName = $firstName;
-        }
-
-        if ($lastName) {
-            $subscriber->lastName = $lastName;
-        }
+        /** @var Subscriber $subscriber */
+        $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
 
         // If no Subscriber was found, create one
         if (!$subscriber->id && $subscriber->userId !== null) {

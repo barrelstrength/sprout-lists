@@ -14,9 +14,9 @@ use yii\db\ActiveQueryInterface;
  * @property int                          $userId
  * @property string                       $email
  * @property string                       $firstName
+ * @property string                       $lastName
  * @property \yii\db\ActiveQueryInterface $element
  * @property \yii\db\ActiveQueryInterface $lists
- * @property string                       $lastName
  */
 class Subscriber extends ActiveRecord
 {

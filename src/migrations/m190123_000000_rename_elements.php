@@ -12,8 +12,9 @@ class m190123_000000_rename_elements extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
+        /** @noinspection ClassConstantCanBeUsedInspection */
         $types = [
             0 => [
                 'oldType' => 'barrelstrength\sproutlists\elements\Lists',
@@ -37,7 +38,7 @@ class m190123_000000_rename_elements extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190123_000000_rename_elements cannot be reverted.\n";
         return false;

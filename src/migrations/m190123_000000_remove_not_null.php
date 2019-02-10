@@ -12,7 +12,7 @@ class m190123_000000_remove_not_null extends Migration
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->alterColumn('{{%sproutlists_lists}}', 'elementId', $this->integer());
 
@@ -22,7 +22,7 @@ class m190123_000000_remove_not_null extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190123_000000_remove_not_null cannot be reverted.\n";
         return false;

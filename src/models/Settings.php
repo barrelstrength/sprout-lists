@@ -2,6 +2,7 @@
 
 namespace barrelstrength\sproutlists\models;
 
+use barrelstrength\sproutbase\base\SproutSettingsInterface;
 use craft\base\Model;
 use Craft;
 
@@ -12,7 +13,7 @@ use Craft;
  * @property bool $enableAutoList
  * @property array $settingsNavItems
  */
-class Settings extends Model
+class Settings extends Model implements SproutSettingsInterface
 {
     /**
      * @var string
@@ -29,6 +30,9 @@ class Settings extends Model
      */
     public $enableAutoList;
 
+    /**
+     * @inheritdoc
+     */
     public function getSettingsNavItems(): array
     {
         return [

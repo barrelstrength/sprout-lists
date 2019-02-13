@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0-beta.16 - 2019-02-13
+
+### Changed
+- Updated settings to implement SproutSettingsInterface
+- Improved translation support
+- Updated barrelstrength/sprout-base requirement to v4.0.6
+- Added barrelstrength/sprout-base-lists requirement v1.0.0
+	
 ## 1.0.0-beta.15 - 2019-01-31
 
 ### Added

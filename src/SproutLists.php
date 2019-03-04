@@ -19,9 +19,11 @@ use craft\elements\User;
 use craft\events\ElementEvent;
 
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\UrlHelper;
 
 use craft\services\Elements;
+use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use yii\base\Event;
@@ -89,30 +91,15 @@ class SproutLists extends Plugin
         Craft::setAlias('@sproutlists', $this->getBasePath());
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
+            $event->rules = array_merge($event->rules, $this->getCpUrlRules());
+        });
 
-            $event->rules['sprout-lists'] = ['template' => 'sprout-base-lists/index'];
-            $event->rules['sprout-lists/lists'] = ['template' => 'sprout-base-lists/lists/index'];
-            $event->rules['sprout-lists/lists/new'] = 'sprout-lists/lists/edit-list-template';
-            $event->rules['sprout-lists/lists/edit/<listId:\d+>'] = 'sprout-lists/lists/edit-list-template';
-
-            $event->rules['sprout-lists/subscribers'] = ['template' => 'sprout-base-lists/subscribers'];
-            $event->rules['sprout-lists/subscribers/new'] = 'sprout-lists/subscribers/edit-subscriber-template';
-            $event->rules['sprout-lists/subscribers/edit/<id:\d+>'] = 'sprout-lists/subscribers/edit-subscriber-template';
-
-            $event->rules['sprout-lists/settings'] = 'sprout/settings/edit-settings';
-            $event->rules['sprout-lists/settings/<settingsSectionHandle:.*>'] = 'sprout/settings/edit-settings';
-
-            $event->rules['sprout-lists/subscribers/<listHandle:.*>'] = [
-                'template' => 'sprout-base-lists/subscribers'
-            ];
-
-            return $event;
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+            $event->permissions['Sprout Lists'] = $this->getUserPermissions();
         });
 
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
-            $variable = $event->sender;
-
-            $variable->set('sproutLists', SproutListsVariable::class);
+            $event->sender->set('sproutLists', SproutListsVariable::class);
         });
 
         Craft::$app->view->registerTwigExtension(new TwigExtensions());
@@ -185,5 +172,47 @@ class SproutLists extends Plugin
         ];
 
         return array_merge($parent, $navigation);
+    }
+
+    private function getCpUrlRules(): array
+    {
+        return [
+            'sprout-lists' => [
+                'template' => 'sprout-base-lists/index'
+            ],
+            'sprout-lists/lists' => [
+                'template' => 'sprout-base-lists/lists/index'
+            ],
+            'sprout-lists/lists/new' => 'sprout-lists/lists/edit-list-template',
+            'sprout-lists/lists/edit/<listId:\d+>' => 'sprout-lists/lists/edit-list-template',
+
+            'sprout-lists/subscribers' => [
+                'template' => 'sprout-base-lists/subscribers'
+            ],
+            'sprout-lists/subscribers/new' => 'sprout-lists/subscribers/edit-subscriber-template',
+            'sprout-lists/subscribers/edit/<id:\d+>' => 'sprout-lists/subscribers/edit-subscriber-template',
+
+            'sprout-lists/settings' => 'sprout/settings/edit-settings',
+            'sprout-lists/settings/<settingsSectionHandle:.*>' => 'sprout/settings/edit-settings',
+
+            'sprout-lists/subscribers/<listHandle:.*>' => [
+                'template' => 'sprout-base-lists/subscribers'
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserPermissions(): array
+    {
+        return [
+            'sproutLists-editSubscribers' => [
+                'label' => Craft::t('sprout-email', 'Edit Subscribers')
+            ],
+            'sproutLists-editLists' => [
+                'label' => Craft::t('sprout-email', 'Edit Lists')
+            ],
+        ];
     }
 }

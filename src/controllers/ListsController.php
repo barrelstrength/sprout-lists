@@ -92,7 +92,7 @@ class ListsController extends Controller
         if ($session && $listType->saveList($list)) {
             $session->setNotice(Craft::t('sprout-lists', 'List saved.'));
 
-            $this->redirectToPostedUrl();
+            return $this->redirectToPostedUrl();
         } else {
             $session->setError(Craft::t('sprout-lists', 'Unable to save list.'));
 

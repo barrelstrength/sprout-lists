@@ -514,7 +514,9 @@ class SubscriberListType extends ListType
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
         /** @var Subscriber $subscriber */
-        $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
+        if ($subscriberRecord) {
+            $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
+        }
 
         // If no Subscriber was found, create one
         if (!$subscriber->id && $subscriber->userId !== null) {
@@ -550,7 +552,7 @@ class SubscriberListType extends ListType
      * @return SubscriptionRecord
      * @throws \Throwable
      */
-    public function deleteSubscriberById($id): SubscriptionRecord
+    public function deleteSubscriberById($id): Subscriber
     {
         /**
          * @var $subscriber SubscriptionRecord

@@ -146,12 +146,12 @@ class ListsController extends Controller
     /**
      * Adds a subscriber to a list
      *
-     * @return Response
+     * @return Response | null
      * @throws \Throwable
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionSubscribe(): Response
+    public function actionSubscribe()
     {
         $this->requirePostRequest();
 

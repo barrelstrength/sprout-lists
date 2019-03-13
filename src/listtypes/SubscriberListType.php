@@ -13,6 +13,7 @@ use Craft;
 use craft\helpers\Template;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
 use barrelstrength\sproutlists\records\SubscriberList as SubscriberListRecord;
+use craft\records\User;
 use yii\base\Exception;
 
 /**
@@ -244,12 +245,12 @@ class SubscriberListType extends ListType
             // If our List doesn't exist, create a List Element on the fly
             $list = $this->getOrCreateList($subscription);
 
+            // If our Subscriber doesn't exist, create a Subscriber Element on the fly
+            $subscriber = $this->getSubscriber($subscriber, $settings->enableUserSync, $subscription);
+
             if ($subscription->getErrors()) {
                 return false;
             }
-
-            // If our Subscriber doesn't exist, create a Subscriber Element on the fly
-            $subscriber = $this->getSubscriber($subscriber);
 
             $subscriptionRecord = new SubscriptionRecord();
 
@@ -422,6 +423,15 @@ class SubscriberListType extends ListType
         return false;
     }
 
+    public function cpBeforeSaveSubscriber($subscriber)
+    {
+        SubscriptionRecord::deleteAll('subscriberId = :subscriberId', [
+            ':subscriberId' => $subscriber->id
+        ]);
+
+        return null;
+    }
+
     /**
      * Saves a subscription
      *
@@ -495,15 +505,17 @@ class SubscriberListType extends ListType
 
     /**
      * Gets a subscriber
+     * @param Subscriber   $subscriber
+     * @param bool         $sync
+     * @param Subscription $subscription
      *
-     * @param Subscriber $subscriber
-     *
-     * @return Subscriber|\craft\services\Elements
+     * @return Subscriber|\craft\base\ElementInterface|null
+     * @throws Exception
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
      */
-    public function getSubscriber(Subscriber $subscriber)
+
+    public function getSubscriber(Subscriber $subscriber, $sync = false, Subscription $subscription)
     {
         $attributes = array_filter([
             'email' => $subscriber->email,
@@ -513,17 +525,29 @@ class SubscriberListType extends ListType
         /** @var SubscribersRecord $subscriberRecord */
         $subscriberRecord = SubscribersRecord::find()->where($attributes)->one();
 
-        /** @var Subscriber $subscriber */
         if ($subscriberRecord) {
             $subscriber = Craft::$app->getElements()->getElementById($subscriberRecord->id);
         }
 
         // If no Subscriber was found, create one
-        if (!$subscriber->id && $subscriber->userId !== null) {
-            $user = Craft::$app->users->getUserById($subscriber->userId);
+        if (!$subscriber->id) {
+            if ($subscriber->userId !== null) {
+                $user = Craft::$app->getUsers()->getUserById($subscriber->userId);
 
-            if ($user) {
-                $subscriber->email = $user->email;
+                if ($user) {
+                    $subscriber->email = $user->email;
+                } else {
+                    $subscription->addError('not-found-userId',
+                        Craft::t('sprout-lists', 'userId input not found on Users.'));
+                }
+            }
+
+            if ($sync === true && $subscriber->email !== null) {
+                $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($subscriber->email);
+
+                if ($user) {
+                    $subscriber->userId = $user->id;
+                }
             }
         }
 

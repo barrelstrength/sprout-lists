@@ -134,4 +134,38 @@ class SproutListsVariable
 
         return $listType->getSubscriberCount($list);
     }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        $routeParams = Craft::$app->getUrlManager()->getRouteParams();
+
+        $errors = [];
+
+        if (isset($routeParams['subscription'])) {
+            /**
+             * @var $subscription Subscription
+             */
+            $subscription = $routeParams['subscription'];
+            $subscriptionErrors = $subscription->getErrors();
+            $errors = $this->flattenArray($subscriptionErrors);
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Convert multidimensional array to single array
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    private function flattenArray(array $array) {
+        $return = array();
+        array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+        return $return;
+    }
 }

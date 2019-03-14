@@ -208,10 +208,10 @@ class SproutLists extends Plugin
     {
         return [
             'sproutLists-editSubscribers' => [
-                'label' => Craft::t('sprout-email', 'Edit Subscribers')
+                'label' => Craft::t('sprout-lists', 'Edit Subscribers')
             ],
             'sproutLists-editLists' => [
-                'label' => Craft::t('sprout-email', 'Edit Lists')
+                'label' => Craft::t('sprout-lists', 'Edit Lists')
             ],
         ];
     }

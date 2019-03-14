@@ -168,6 +168,13 @@ class ListsController extends Controller
 
         $subscription->listType = get_class($listType);
 
+        $email = trim($subscription->email);
+
+        if (!empty($email) && filter_var($subscription->email, FILTER_VALIDATE_EMAIL) === false) {
+            $subscription->addError('invalid-email',
+                Craft::t('sprout-lists', 'Submitted email is invalid.'));
+        }
+
         if ($listType->subscribe($subscription)) {
             if (Craft::$app->getRequest()->getIsAjax()) {
                 return $this->asJson([

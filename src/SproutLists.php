@@ -116,7 +116,7 @@ class SproutLists extends Plugin
 
         if (Craft::$app->getUser()->checkPermission('sproutLists-editLists')) {
             $parent['subnav']['lists'] = [
-                'label' => Craft::t('sprout-lists', 'Subscriber Lists'),
+                'label' => Craft::t('sprout-lists', 'Lists'),
                 'url' => 'sprout-lists/lists'
             ];
         }
@@ -137,9 +137,6 @@ class SproutLists extends Plugin
             'sprout-lists' => [
                 'template' => 'sprout-base-lists/index'
             ],
-            'sprout-lists/lists' => [
-                'template' => 'sprout-base-lists/lists/index'
-            ],
 
             // Subscribers
             '<pluginHandle:sprout-lists>/subscribers/new' =>
@@ -154,10 +151,12 @@ class SproutLists extends Plugin
             ],
 
             // Lists
+            '<pluginHandle:sprout-lists>/lists' =>
+                'sprout-base-lists/lists/lists-index-template',
             '<pluginHandle:sprout-lists>/lists/new' =>
-                'sprout-base-lists/lists/edit-list-template',
+                'sprout-base-lists/lists/list-edit-template',
             '<pluginHandle:sprout-lists>/lists/edit/<listId:\d+>' =>
-                'sprout-base-lists/lists/edit-list-template',
+                'sprout-base-lists/lists/list-edit-template',
 
             // Settings
             'sprout-lists/settings' =>
@@ -178,7 +177,7 @@ class SproutLists extends Plugin
             ],
             'sproutLists-editLists' => [
                 'label' => Craft::t('sprout-lists', 'Edit Lists')
-            ],
+            ]
         ];
     }
 }

@@ -44,6 +44,7 @@ class Install extends Migration
                 'id' => $this->primaryKey(),
                 'listId' => $this->integer(),
                 'subscriberId' => $this->integer(),
+                'itemId' => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid()

@@ -47,7 +47,7 @@ class SproutLists extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '4.0.3';
+    public $schemaVersion = '4.0.4';
 
     /**
      * @var string

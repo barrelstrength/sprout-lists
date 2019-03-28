@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\migrations;
 
-use barrelstrength\sproutbaselists\migrations\m190327_000000_update_subscription_column_name;
+use barrelstrength\sproutbaselists\migrations\m190327_000000_update_column_name;
 use craft\db\Migration;
 
 /**
@@ -10,7 +10,7 @@ use craft\db\Migration;
  *
  * @package barrelstrength\sproutlists\migrations
  */
-class m190327_000000_update_subscription_column_name_sproutlists extends Migration
+class m190327_000000_update_column_name_sproutlists extends Migration
 {
     /**
      * @return bool
@@ -18,7 +18,7 @@ class m190327_000000_update_subscription_column_name_sproutlists extends Migrati
      */
     public function safeUp(): bool
     {
-        $migration = new m190327_000000_update_subscription_column_name();
+        $migration = new m190327_000000_update_column_name();
 
         ob_start();
         $migration->safeUp();

@@ -1,5 +1,24 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+- Added WishList List Type
+
+### Changed
+- Lists require Element ID + Handle to be unique
+- Updates /subscribe => /add
+- Updates /unsubscribe => /remove
+- Renamed Subscriber List Type => Mailing List
+- Moved core logic to barrelstrength/sprout-base-lists
+- Updated barrelstrength/sprout-base requirement to v4.0.x ??
+- Added barrelstrength/sprout-base-lists requirement v1.0.x ??
+- Updated `sproutlists_subscriptions.subscriberId` => `sproutlists_subscriptions.itemId`
+ 
+### Fixed
+- Fixed notification error when deleting Subscriber
+- Fixed delete subscriber path
+
 ## 1.0.0-beta.16 - 2019-02-13
 
 ### Changed

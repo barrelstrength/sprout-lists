@@ -14,7 +14,6 @@ class m190327_000001_update_element_type_sproutlists extends Migration
 {
     /**
      * @return bool
-     * @throws \yii\base\NotSupportedException
      */
     public function safeUp(): bool
     {

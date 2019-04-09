@@ -1,19 +1,23 @@
 # Changelog
 
-## UNRELEASED
+## 2.0.0-rc.1 - 2019-04-09
+
+> {warning} This is a Major release and includes breaking changes. Please see the [Sprout Lists upgrade documentation](https://sprout.barrelstrengthdesign.com/docs/lists/installing-and-updating-craft-3.html#upgrading-to-v2-x) for more details on template tags and controller actions that have changed.
 
 ### Added
-- Added WishList List Type
+- Added craft.sproutLists.lists variable
+- Added craft.sproutLists.subscribers variable
 
 ### Changed
-- Lists require Element ID + Handle to be unique
-- Updates /subscribe => /add
-- Updates /unsubscribe => /remove
-- Renamed Subscriber List Type => Mailing List
+- Updated Lists to require Element ID + Handle to be unique
+- Updated controller action `sprout-lists/lists/subscribe` => `sprout-base-lists/lists/add`
+- Updated controller action `sprout-lists/lists/unsubscribe` => `sprout-base-lists/lists/remove`
+- Updated controller action `sproutlists_subscriptions.subscriberId` => `sproutlists_subscriptions.itemId`
+- Renamed `SubscriberListType` => `MailingList`
+- Improved support for Edit List and Edit Subscriber permissions
 - Moved core logic to barrelstrength/sprout-base-lists
-- Updated barrelstrength/sprout-base requirement to v4.0.x ??
-- Added barrelstrength/sprout-base-lists requirement v1.0.x ??
-- Updated `sproutlists_subscriptions.subscriberId` => `sproutlists_subscriptions.itemId`
+- Updated barrelstrength/sprout-base requirement to v4.0.8
+- Added barrelstrength/sprout-base-lists requirement v1.0.2
  
 ### Fixed
 - Fixed notification error when deleting Subscriber

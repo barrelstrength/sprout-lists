@@ -19,7 +19,7 @@ class Install extends Migration
                 'type' => $this->string(),
                 'name' => $this->string(),
                 'handle' => $this->string(),
-                'totalSubscribers' => $this->integer(),
+                'count' => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid()
@@ -43,7 +43,6 @@ class Install extends Migration
             [
                 'id' => $this->primaryKey(),
                 'listId' => $this->integer(),
-                'subscriberId' => $this->integer(),
                 'itemId' => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),

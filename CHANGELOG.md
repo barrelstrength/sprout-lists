@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0-rc.2 - 2019-04-09
+
+### Fixed
+- Required Sprout Lists to be installed to use User Sync 
+- Improved Postgres support
+
 ## 2.0.0-rc.1 - 2019-04-09
 
 > {warning} This is a Major release and includes breaking changes. Please see the [Sprout Lists upgrade documentation](https://sprout.barrelstrengthdesign.com/docs/lists/installing-and-updating-craft-3.html#upgrading-to-v2-x) for more details on template tags and controller actions that have changed.

@@ -2,7 +2,6 @@
 
 namespace barrelstrength\sproutlists\migrations;
 
-use barrelstrength\sproutbaselists\listtypes\SubscriberListType;
 use craft\db\Migration;
 
 /**
@@ -17,7 +16,7 @@ class m180303_000000_update_type_to_class extends Migration
     {
         // Link to Url
         $this->update('{{%sproutlists_lists}}', [
-            'type' => SubscriberListType::class
+            'type' => 'barrelstrength\sproutbaselists\listtypes\SubscriberListType'
         ], [
             'type' => 'subscriber'
         ], [], false);

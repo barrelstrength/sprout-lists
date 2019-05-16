@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.0-rc.4 - 2019-05-16
+
+## Updated
+- Updated barrelstrength/sprout-base requirement to v5.0.0
+
 ## 2.0.0-rc.3 - 2019-04-30
 
 ## Changed

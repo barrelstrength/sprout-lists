@@ -21,7 +21,7 @@
     "email": "sprout@barrelstrengthdesign.com",
     "issues": "https://github.com/barrelstrength/sprout-lists/issues?state=open",
     "source": "https://github.com/barrelstrength/sprout-lists",
-    "docs": "https://sprout.barrelstrengthdesign.com/craft-plugins/email/docs",
+    "docs": "https://sprout.barrelstrengthdesign.com/docs/lists",
     "rss": "https://github.com/barrelstrength/sprout-lists/commits/v2.atom"
   },
   "require": {
@@ -38,10 +38,7 @@
     "name": "Sprout Lists",
     "handle": "sprout-lists",
     "developer": "Barrel Strength",
-    "developerUrl": "https://barrelstrengthdesign.com",
-    "documentationUrl": "https://sprout.barrelstrengthdesign.com/craft-plugins/lists",
-    "changelogUrl": "https://raw.githubusercontent.com/BarrelStrength/sprout-lists/master/CHANGELOG.md",
-    "downloadUrl": "https://github.com/BarrelStrength/sprout-lists/archive/master.zip",
+    "documentationUrl": "https://sprout.barrelstrengthdesign.com/docs/lists",
     "class": "barrelstrength\\sproutlists\\SproutLists"
   }
 }

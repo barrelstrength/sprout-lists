@@ -2,7 +2,7 @@
 
 namespace barrelstrength\sproutlists\integrations\sproutreports\datasources;
 
-use barrelstrength\sproutbasereports\base\DataSource;
+use barrelstrength\sproutbasereports\base\SegmentDataSource;
 use barrelstrength\sproutbasereports\elements\Report;
 use Craft;
 use Exception;
@@ -17,14 +17,8 @@ use Twig\Error\SyntaxError;
  *
  * @property string $name
  */
-class CustomListQuery extends DataSource
+class CustomListQuery extends SegmentDataSource
 {
-    public $whichColumnIsTheEmailColumn = 'userEmail';
-
-    public function getDisplayLocations() {
-
-    }
-
     /**
      * @inheritdoc
      */
@@ -39,14 +33,6 @@ class CustomListQuery extends DataSource
     public function getDescription(): string
     {
         return Craft::t('sprout-reports', 'Create a list using a custom database query');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isAllowHtmlEditable(): bool
-    {
-        return true;
     }
 
     /**

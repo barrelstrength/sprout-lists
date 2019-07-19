@@ -6,6 +6,12 @@ use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutbaselists\models\Settings;
+use barrelstrength\sproutforms\services\Integrations;
+use barrelstrength\sproutlists\integrationtypes\SproutListsIntegration;
+use barrelstrength\sproutbasereports\services\DataSources;
+use barrelstrength\sproutbasereports\SproutBaseReports;
+use barrelstrength\sproutlists\integrations\sproutreports\datasources\CustomListQuery;
+use barrelstrength\sproutreports\datasources\CustomQuery;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterUrlRulesEvent;
@@ -73,6 +79,10 @@ class SproutLists extends Plugin
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions['Sprout Lists'] = $this->getUserPermissions();
         });
+
+        Event::on(DataSources::class, DataSources::EVENT_REGISTER_DATA_SOURCES, function(RegisterComponentTypesEvent $event) {
+            $event->types[] = CustomListQuery::class;
+        });
     }
 
     /**
@@ -113,13 +123,18 @@ class SproutLists extends Plugin
                 'url' => 'sprout-lists/subscribers'
             ];
         }
-
         if (Craft::$app->getUser()->checkPermission('sproutLists-editLists')) {
             $parent['subnav']['lists'] = [
                 'label' => Craft::t('sprout-lists', 'Lists'),
                 'url' => 'sprout-lists/lists'
             ];
         }
+
+        $parent['subnav']['segments'] = [
+            'label' => Craft::t('sprout-lists', 'Segments'),
+            'url' => 'sprout-lists/segments'
+        ];
+
 
         if (Craft::$app->getUser()->getIsAdmin()) {
             $parent['subnav']['settings'] = [
@@ -139,24 +154,57 @@ class SproutLists extends Plugin
             ],
 
             // Subscribers
-            '<pluginHandle:sprout-lists>/subscribers/new' =>
+            'sprout-lists/subscribers/new' =>
                 'sprout-base-lists/subscribers/edit-subscriber-template',
-            '<pluginHandle:sprout-lists>/subscribers/edit/<id:\d+>' =>
+            'sprout-lists/subscribers/edit/<id:\d+>' =>
                 'sprout-base-lists/subscribers/edit-subscriber-template',
-            '<pluginHandle:sprout-lists>/subscribers/<listHandle:.*>' => [
+            'sprout-lists/subscribers/<listHandle:.*>' => [
                 'template' => 'sprout-base-lists/subscribers'
             ],
-            '<pluginHandle:sprout-lists>/subscribers' => [
-                'template' => 'sprout-base-lists/subscribers'
-            ],
+            'sprout-lists/subscribers' =>
+                'sprout-base-lists/subscribers/subscribers-index-template',
 
             // Lists
-            '<pluginHandle:sprout-lists>/lists' =>
+            'sprout-lists/lists' =>
                 'sprout-base-lists/lists/lists-index-template',
-            '<pluginHandle:sprout-lists>/lists/new' =>
+            'sprout-lists/lists/new' =>
                 'sprout-base-lists/lists/list-edit-template',
-            '<pluginHandle:sprout-lists>/lists/edit/<listId:\d+>' =>
+            'sprout-lists/lists/edit/<listId:\d+>' =>
                 'sprout-base-lists/lists/list-edit-template',
+
+            // Segments
+            'sprout-lists/segments/<dataSourceId:\d+>/new' => [
+                'route' => 'sprout-base-reports/reports/edit-report-template',
+                'params' => [
+                    'viewContext' => 'sprout-lists',
+                ]
+            ],
+            'sprout-lists/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
+                'route' => 'sprout-base-reports/reports/edit-report-template',
+                'params' => [
+                    'viewContext' => 'sprout-lists',
+                ]
+            ],
+            'sprout-lists/segments/view/<reportId:\d+>' => [
+                'route' => 'sprout-base-reports/reports/results-index-template',
+                'params' => [
+                    'viewContext' => 'sprout-lists',
+                ]
+            ],
+            'sprout-lists/segments/<dataSourceId:\d+>' => [
+                'route' => 'sprout-base-reports/reports/reports-index-template',
+                'params' => [
+                    'viewContext' => 'sprout-lists',
+                    'hideSidebar' => true
+                ]
+            ],
+            'sprout-lists/segments' => [
+                'route' => 'sprout-base-reports/reports/reports-index-template',
+                'params' => [
+                    'pluginHandle' => 'sprout-lists',
+                    'hideSidebar' => true
+                ]
+            ],
 
             // Settings
             'sprout-lists/settings' =>

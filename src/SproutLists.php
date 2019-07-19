@@ -176,32 +176,32 @@ class SproutLists extends Plugin
             'sprout-lists/segments/<dataSourceId:\d+>/new' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
-                    'viewContext' => 'sprout-lists',
+                    'viewContext' => 'segments',
                 ]
             ],
             'sprout-lists/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
-                    'viewContext' => 'sprout-lists',
+                    'viewContext' => 'segments',
                 ]
             ],
             'sprout-lists/segments/view/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/results-index-template',
                 'params' => [
-                    'viewContext' => 'sprout-lists',
+                    'viewContext' => 'segments',
                 ]
             ],
             'sprout-lists/segments/<dataSourceId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'viewContext' => 'sprout-lists',
+                    'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],
             'sprout-lists/segments' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
-                    'pluginHandle' => 'sprout-lists',
+                    'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],

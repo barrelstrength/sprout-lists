@@ -6,14 +6,12 @@ use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutbaselists\models\Settings;
-use barrelstrength\sproutforms\services\Integrations;
 use barrelstrength\sproutlists\integrationtypes\SproutListsIntegration;
 use barrelstrength\sproutbasereports\services\DataSources;
-use barrelstrength\sproutbasereports\SproutBaseReports;
-use barrelstrength\sproutlists\integrations\sproutreports\datasources\CustomListQuery;
-use barrelstrength\sproutreports\datasources\CustomQuery;
+use barrelstrength\sproutlists\integrations\sproutreports\datasources\CustomMailingListQuery;
 use craft\base\Plugin;
 use Craft;
+use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\UrlHelper;
@@ -78,10 +76,6 @@ class SproutLists extends Plugin
 
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions['Sprout Lists'] = $this->getUserPermissions();
-        });
-
-        Event::on(DataSources::class, DataSources::EVENT_REGISTER_DATA_SOURCES, function(RegisterComponentTypesEvent $event) {
-            $event->types[] = CustomListQuery::class;
         });
     }
 
@@ -149,9 +143,8 @@ class SproutLists extends Plugin
     private function getCpUrlRules(): array
     {
         return [
-            'sprout-lists' => [
-                'template' => 'sprout-base-lists/index'
-            ],
+            'sprout-lists' =>
+                'sprout-base-lists/lists/lists-index-template',
 
             // Subscribers
             'sprout-lists/subscribers/new' =>
@@ -173,38 +166,39 @@ class SproutLists extends Plugin
                 'sprout-base-lists/lists/list-edit-template',
 
             // Segments
-            'sprout-lists/segments/<dataSourceId:\d+>/new' => [
+            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>/new' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-lists/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
+            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/edit-report-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-lists/segments/view/<reportId:\d+>' => [
+            '<pluginHandle:sprout-lists>/segments/view/<reportId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/results-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                 ]
             ],
-            'sprout-lists/segments/<dataSourceId:\d+>' => [
+            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],
-            'sprout-lists/segments' => [
+            '<pluginHandle:sprout-lists>/segments' => [
                 'route' => 'sprout-base-reports/reports/reports-index-template',
                 'params' => [
                     'viewContext' => 'segments',
                     'hideSidebar' => true
                 ]
             ],
+
 
             // Settings
             'sprout-lists/settings' =>

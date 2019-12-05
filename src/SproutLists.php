@@ -124,12 +124,6 @@ class SproutLists extends Plugin
             ];
         }
 
-        $parent['subnav']['segments'] = [
-            'label' => Craft::t('sprout-lists', 'Mailing Lists'),
-            'url' => 'sprout-lists/segments'
-        ];
-
-
         if (Craft::$app->getUser()->getIsAdmin()) {
             $parent['subnav']['settings'] = [
                 'label' => Craft::t('sprout-lists', 'Settings'),
@@ -164,41 +158,6 @@ class SproutLists extends Plugin
                 'sprout-base-lists/lists/list-edit-template',
             'sprout-lists/lists/edit/<listId:\d+>' =>
                 'sprout-base-lists/lists/list-edit-template',
-
-            // Segments
-            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>/new' => [
-                'route' => 'sprout-base-reports/reports/edit-report-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
-            ],
-            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>/edit/<reportId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/edit-report-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
-            ],
-            '<pluginHandle:sprout-lists>/segments/view/<reportId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/results-index-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                ]
-            ],
-            '<pluginHandle:sprout-lists>/segments/<dataSourceId:\d+>' => [
-                'route' => 'sprout-base-reports/reports/reports-index-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                    'hideSidebar' => true
-                ]
-            ],
-            '<pluginHandle:sprout-lists>/segments' => [
-                'route' => 'sprout-base-reports/reports/reports-index-template',
-                'params' => [
-                    'viewContext' => 'mailingList',
-                    'hideSidebar' => true
-                ]
-            ],
-
 
             // Settings
             'sprout-lists/settings' =>

@@ -6,9 +6,9 @@ use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutbaselists\models\Settings;
+use barrelstrength\sproutbaselists\integrations\sproutreports\datasources\SubscriberListDataSource;
 use barrelstrength\sproutlists\integrationtypes\SproutListsIntegration;
 use barrelstrength\sproutbasereports\services\DataSources;
-use barrelstrength\sproutlists\integrations\sproutreports\datasources\CustomMailingListQuery;
 use craft\base\Plugin;
 use Craft;
 use craft\events\RegisterComponentTypesEvent;
@@ -76,6 +76,10 @@ class SproutLists extends Plugin
 
         Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
             $event->permissions['Sprout Lists'] = $this->getUserPermissions();
+        });
+
+        Event::on(DataSources::class, DataSources::EVENT_REGISTER_DATA_SOURCES, static function(RegisterComponentTypesEvent $event) {
+            $event->types[] = SubscriberListDataSource::class;
         });
     }
 

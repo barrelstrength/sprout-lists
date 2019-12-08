@@ -7,7 +7,6 @@ use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbaselists\SproutBaseListsHelper;
 use barrelstrength\sproutbaselists\models\Settings;
 use barrelstrength\sproutbaselists\integrations\sproutreports\datasources\SubscriberListDataSource;
-use barrelstrength\sproutlists\integrationtypes\SproutListsIntegration;
 use barrelstrength\sproutbasereports\services\DataSources;
 use craft\base\Plugin;
 use Craft;

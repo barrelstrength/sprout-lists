@@ -4,6 +4,8 @@ namespace barrelstrength\sproutlists;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
+use barrelstrength\sproutbasereports\base\DataSource;
+use barrelstrength\sproutbasereports\SproutBaseReports;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
 use barrelstrength\sproutlists\services\App;
@@ -228,5 +230,23 @@ class SproutLists extends Plugin
                 'label' => Craft::t('sprout-lists', 'Edit Lists')
             ]
         ];
+    }
+
+    protected function afterInstall()
+    {
+        if (!Craft::$app->getPlugins()->isPluginInstalled('sprout-reports')) {
+            return true;
+        }
+
+        $dataSourceTypes = [
+            SubscriberListDataSource::class
+        ];
+
+        foreach ($dataSourceTypes as $dataSourceClass) {
+            /** @var DataSource $dataSource */
+            $dataSource = new $dataSourceClass();
+            $dataSource->viewContext = 'sprout-lists';
+            SproutBaseReports::$app->dataSources->saveDataSource($dataSource);
+        }
     }
 }

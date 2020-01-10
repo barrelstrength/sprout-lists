@@ -11,7 +11,6 @@
 {% endblock %}
 
 {% block initJs %}
-    // Pass segment to the ListQuery class to filter notification entries
     var criteria = Craft.defaultIndexCriteria;
 
     Craft.elementIndex = Craft.createElementIndex('{{ elementType|e("js") }}', $('#main'), {

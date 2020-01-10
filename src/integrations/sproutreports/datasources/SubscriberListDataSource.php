@@ -19,6 +19,7 @@ use Twig\Error\SyntaxError;
  *
  * @package barrelstrength\sproutforms\integrations\sproutreports\datasources
  *
+ * @property string $defaultEmailColumn
  * @property string $viewContextLabel
  */
 class SubscriberListDataSource extends DataSource

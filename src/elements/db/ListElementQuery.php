@@ -18,8 +18,6 @@ class ListElementQuery extends ElementQuery
 
     public $handle;
 
-    public $listBaseUrl;
-
     /**
      * @inheritdoc
      */

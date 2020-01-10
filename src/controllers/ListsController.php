@@ -26,28 +26,12 @@ class ListsController extends Controller
         'remove'
     ];
 
-    public $listBaseUrl;
-
-    public function init()
-    {
-        if (!Craft::$app->getRequest()->getIsActionRequest()) {
-            $segmentOne = Craft::$app->getRequest()->getSegment(1);
-            $segmentTwo = Craft::$app->getRequest()->getSegment(2);
-
-            $this->listBaseUrl = UrlHelper::cpUrl($segmentOne.'/'.$segmentTwo).'/';
-        }
-
-        parent::init();
-    }
-
     /**
      * @return Response
      */
     public function actionListsIndexTemplate(): Response
     {
-        return $this->renderTemplate('sprout-lists/lists/index', [
-            'listBaseUrl' => $this->listBaseUrl
-        ]);
+        return $this->renderTemplate('sprout-lists/lists/index');
     }
 
     /**
@@ -69,13 +53,13 @@ class ListsController extends Controller
             if ($listId !== null) {
                 /** @var ListElement $list */
                 $list = Craft::$app->elements->getElementById($listId, ListElement::class);
-                $continueEditingUrl = $this->listBaseUrl.'edit/'.$list->id;
+                $continueEditingUrl = 'sprout-lists/lists/edit/'.$list->id;
             } else {
                 $list = new ListElement();
             }
         }
 
-        $redirectUrl = UrlHelper::cpUrl($this->listBaseUrl);
+        $redirectUrl = UrlHelper::cpUrl('sprout-lists/lists');
 
         return $this->renderTemplate('sprout-lists/lists/_edit', [
             'list' => $list,

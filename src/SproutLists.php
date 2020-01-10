@@ -235,7 +235,7 @@ class SproutLists extends Plugin
     protected function afterInstall()
     {
         if (!Craft::$app->getPlugins()->isPluginInstalled('sprout-reports')) {
-            return true;
+            return;
         }
 
         $dataSourceTypes = [

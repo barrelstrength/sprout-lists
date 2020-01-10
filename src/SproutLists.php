@@ -4,18 +4,27 @@ namespace barrelstrength\sproutlists;
 
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
-use barrelstrength\sproutbaselists\SproutBaseListsHelper;
-use barrelstrength\sproutbaselists\models\Settings;
-use barrelstrength\sproutbaselists\integrations\sproutreports\datasources\SubscriberListDataSource;
+use barrelstrength\sproutlists\events\RegisterListTypesEvent;
+use barrelstrength\sproutlists\listtypes\SubscriberList;
+use barrelstrength\sproutlists\services\App;
+use barrelstrength\sproutlists\services\Lists;
+use barrelstrength\sproutlists\models\Settings;
+use barrelstrength\sproutlists\integrations\sproutreports\datasources\SubscriberListDataSource;
 use barrelstrength\sproutbasereports\services\DataSources;
+use barrelstrength\sproutlists\web\twig\extensions\TwigExtensions;
+use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
 use craft\base\Plugin;
 use Craft;
+use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\helpers\UrlHelper;
 use craft\services\UserPermissions;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use craft\web\View;
 use yii\base\Event;
 
 /**
@@ -31,6 +40,13 @@ use yii\base\Event;
 class SproutLists extends Plugin
 {
     use BaseSproutTrait;
+
+    /**
+     * Enable use of SproutLists::$app-> in place of Craft::$app->
+     *
+     * @var App
+     */
+    public static $app;
 
     /**
      * @var string
@@ -64,10 +80,37 @@ class SproutLists extends Plugin
     {
         parent::init();
 
+        self::$app = new App();
+
         SproutBaseHelper::registerModule();
-        SproutBaseListsHelper::registerModule();
 
         Craft::setAlias('@sproutlists', $this->getBasePath());
+
+        Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, static function(RegisterListTypesEvent $event) {
+            $event->listTypes[] = SubscriberList::class;
+//            $event->listTypes[] = WishList::class;
+        });
+
+        // Setup Template Roots
+        Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function(RegisterTemplateRootsEvent $e) {
+            $e->roots['sprout-lists'] = $this->getBasePath().DIRECTORY_SEPARATOR.'templates';
+        });
+
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, static function(Event $event) {
+            $event->sender->set('sproutLists', SproutListsVariable::class);
+        });
+
+        Event::on(User::class, User::EVENT_AFTER_SAVE, static function(Event $event) {
+            if (Craft::$app->getPlugins()->isPluginEnabled('sprout-lists')) {
+                SproutLists::$app->subscribers->handleUpdateUserIdOnSaveEvent($event);
+            }
+        });
+
+        Event::on(User::class, User::EVENT_AFTER_DELETE, static function(Event $event) {
+            if (Craft::$app->getPlugins()->isPluginEnabled('sprout-lists')) {
+                SproutLists::$app->subscribers->handleUpdateUserIdOnDeleteEvent($event);
+            }
+        });
 
         Event::on(UrlManager::class, UrlManager::EVENT_REGISTER_CP_URL_RULES, function(RegisterUrlRulesEvent $event) {
             $event->rules = array_merge($event->rules, $this->getCpUrlRules());
@@ -80,6 +123,8 @@ class SproutLists extends Plugin
         Event::on(DataSources::class, DataSources::EVENT_REGISTER_DATA_SOURCES, static function(RegisterComponentTypesEvent $event) {
             $event->types[] = SubscriberListDataSource::class;
         });
+
+        Craft::$app->view->registerTwigExtension(new TwigExtensions());
     }
 
     /**
@@ -141,26 +186,26 @@ class SproutLists extends Plugin
     {
         return [
             'sprout-lists' =>
-                'sprout-base-lists/lists/lists-index-template',
+                'sprout-lists/lists/lists-index-template',
 
             // Subscribers
             'sprout-lists/subscribers/new' =>
-                'sprout-base-lists/subscribers/edit-subscriber-template',
+                'sprout-lists/subscribers/edit-subscriber-template',
             'sprout-lists/subscribers/edit/<id:\d+>' =>
-                'sprout-base-lists/subscribers/edit-subscriber-template',
+                'sprout-lists/subscribers/edit-subscriber-template',
             'sprout-lists/subscribers/<listHandle:.*>' => [
-                'template' => 'sprout-base-lists/subscribers'
+                'template' => 'sprout-lists/subscribers'
             ],
             'sprout-lists/subscribers' =>
-                'sprout-base-lists/subscribers/subscribers-index-template',
+                'sprout-lists/subscribers/subscribers-index-template',
 
             // Lists
             'sprout-lists/lists' =>
-                'sprout-base-lists/lists/lists-index-template',
+                'sprout-lists/lists/lists-index-template',
             'sprout-lists/lists/new' =>
-                'sprout-base-lists/lists/list-edit-template',
+                'sprout-lists/lists/list-edit-template',
             'sprout-lists/lists/edit/<listId:\d+>' =>
-                'sprout-base-lists/lists/list-edit-template',
+                'sprout-lists/lists/list-edit-template',
 
             // Settings
             'sprout-lists/settings' =>

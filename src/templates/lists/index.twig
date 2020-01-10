@@ -1,0 +1,27 @@
+{% extends "sprout-lists/_layouts/elementindex" %}
+
+{% set title = "Lists"|t('sprout-lists') %}
+{% set elementType = 'barrelstrength\\sproutlists\\elements\\ListElement' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a class="btn submit add icon"
+            href="{{ cpUrl(listBaseUrl~'new') }}">{{ "New Subscriber List"|t('sprout-lists') }}</a>
+    </div>
+{% endblock %}
+
+{% block initJs %}
+    // Pass segment to the ListQuery class to filter notification entries
+    var params = {
+    'listBaseUrl': '{{ listBaseUrl }}'
+    };
+    var criteria = Craft.defaultIndexCriteria;
+
+    criteria.listBaseUrl = params.listBaseUrl;
+
+    Craft.elementIndex = Craft.createElementIndex('{{ elementType|e("js") }}', $('#main'), {
+    context:        '{{ context }}',
+    storageKey:     'elementindex.{{ elementType|e("js") }}',
+    criteria:       criteria
+    });
+{% endblock %}

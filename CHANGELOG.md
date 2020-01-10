@@ -1,5 +1,13 @@
 # Changelog
 
+## UNRELEASED: 3.0.0
+
+### Added
+- Added SubscriberListDataSource
+
+### Removed
+- Removed `barrelstrength/sprout-base-lists` requirement
+
 ## 2.0.1 - 2019-09-04
 
 ### Updated
@@ -57,7 +65,7 @@
 - Improved translation support
 - Updated barrelstrength/sprout-base requirement to v4.0.6
 - Added barrelstrength/sprout-base-lists requirement v1.0.0
-	
+
 ## 1.0.0-beta.15 - 2019-01-31
 
 ### Added

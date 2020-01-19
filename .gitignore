@@ -7,3 +7,4 @@ tests/SeleniumHomeTest.php
 .DS_Store
 .idea
 sync.sh
+/node_modules

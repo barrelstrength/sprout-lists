@@ -83,7 +83,15 @@ class Subscriber extends Element implements SubscriberInterface
      */
     public static function displayName(): string
     {
-        return Craft::t('sprout-lists', 'Sprout Subscriber');
+        return Craft::t('sprout-lists', 'Subscriber');
+    }
+
+    /**
+     * @return string
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('sprout-lists', 'Subscribers');
     }
 
     /**

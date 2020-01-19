@@ -82,6 +82,14 @@ class ListElement extends Element implements ListInterface
     }
 
     /**
+     * @return string
+     */
+    public static function pluralDisplayName(): string
+    {
+        return Craft::t('sprout-lists', 'Lists');
+    }
+
+    /**
      * @inheritdoc
      */
     public static function hasStatuses(): bool

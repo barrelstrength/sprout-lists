@@ -85,16 +85,15 @@ class Subscription extends Model implements SubscriptionInterface
     /**
      * @return array
      */
-    public function rules(): array
+    public function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         $rules[] = [
             ['email'],
             'required',
             'on' => [self::SCENARIO_SUBSCRIBER]
         ];
-
         $rules[] = [
             ['listId'],
             'required',

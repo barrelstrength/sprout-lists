@@ -232,9 +232,9 @@ class Subscriber extends Element implements SubscriberInterface
      * @return array
      * @throws InvalidConfigException
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         $rules[] = [['email'], 'required'];
         $rules[] = [['email'], 'email'];

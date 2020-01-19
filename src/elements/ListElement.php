@@ -278,17 +278,15 @@ class ListElement extends Element implements ListInterface
      * @return array
      * @throws InvalidConfigException
      */
-    public function rules(): array
+    protected function defineRules(): array
     {
-        $rules = parent::rules();
+        $rules = parent::defineRules();
 
         $rules[] = [['name', 'handle'], 'required'];
-
         $rules[] = [
             ['handle'],
             SlugValidator::class
         ];
-
         $rules[] = [
             ['elementId', 'handle'],
             UniqueValidator::class,

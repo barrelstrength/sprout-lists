@@ -23,8 +23,6 @@ class SubscriberQuery extends ElementQuery
      */
     public $email;
 
-    public $subscriberBaseUrl;
-
     /**
      * @param $value
      *

@@ -18,26 +18,12 @@ use yii\web\Response;
 
 class SubscribersController extends Controller
 {
-    public $subscriberBaseUrl;
-
-    public function init()
-    {
-        $segmentOne = Craft::$app->getRequest()->getSegment(1);
-        $segmentTwo = Craft::$app->getRequest()->getSegment(2);
-
-        $this->subscriberBaseUrl = UrlHelper::cpUrl($segmentOne.'/'.$segmentTwo).'/';
-
-        parent::init();
-    }
-
     /**
      * @return Response
      */
     public function actionSubscribersIndexTemplate(): Response
     {
-        return $this->renderTemplate('sprout-lists/subscribers/index', [
-            'subscriberBaseUrl' => $this->subscriberBaseUrl
-        ]);
+        return $this->renderTemplate('sprout-lists/subscribers/index');
     }
 
     /**

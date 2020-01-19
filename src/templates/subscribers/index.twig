@@ -1,7 +1,5 @@
 {% extends "sprout-lists/_layouts/elementindex" %}
 
-{% do view.registerAssetBundle("barrelstrength\\sproutlists\\web\\assets\\subscribers\\SubscriberAsset") %}
-
 {% set title = "Subscribers"|t('sprout-lists') %}
 {% set elementType = 'barrelstrength\\sproutlists\\elements\\Subscriber' %}
 
@@ -10,26 +8,4 @@
         <a class="btn submit add icon"
             href="{{ url('sprout-lists/subscribers/new') }}">{{ "Add Subscriber"|t('sprout-lists') }}</a>
     </div>
-{% endblock %}
-
-{% if listHandle is defined %}
-    {% js %}
-        window.listHandle = '{{ listHandle }}';
-    {% endjs %}
-{% endif %}
-
-{% block initJs %}
-    // Pass segment to the ListQuery class to filter notification entries
-    var params = {
-    'subscriberBaseUrl': '{{ subscriberBaseUrl }}'
-    };
-    var criteria = Craft.defaultIndexCriteria;
-
-    criteria.subscriberBaseUrl = params.subscriberBaseUrl;
-
-    Craft.elementIndex = Craft.createElementIndex('{{ elementType|e("js") }}', $('#main'), {
-    context:        '{{ context }}',
-    storageKey:     'elementindex.{{ elementType|e("js") }}',
-    criteria:       criteria
-    });
 {% endblock %}

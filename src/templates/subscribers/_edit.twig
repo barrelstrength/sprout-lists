@@ -86,7 +86,7 @@
 {% endblock %}
 {% block details %}
 
-    <div class="meta">
+
 
         {% for listType in listTypes %}
 
@@ -94,25 +94,34 @@
 
             {% if subscriberSettingsHtml != '' %}
 
-                <h2>{{ listType.displayName() }}</h2>
-
-                {{ subscriberSettingsHtml }}
+                <div class="meta">
+                    <div class="field">
+                        <div class="heading">{{ listType.displayName() }}</div>
+                        <div class="input">{{ subscriberSettingsHtml }}</div>
+                    </div>
+                </div>
 
             {% else %}
 
-                <p>{{ "Create a Subscriber Lists and your lists will display below."|t('sprout-lists') }}</p>
+                <div class="meta read-only">
+                    <p>{{ "Create a [{listTypeName}]({newSubscriberList}) and your lists will display here in the sidebar."|t('sprout-lists', {
+                        'listTypeName': listType.displayName(),
+                        'newSubscriberList': cpUrl('sprout-lists/lists/new')
+                        })|markdown }}</p>
 
-                <ul>
-                    <li><input type="checkbox" class="checkbox" disabled>
-                        <label>{{ "List One"|t('sprout-lists') }}</label>
-                    </li>
-                    <li><input type="checkbox" class="checkbox" disabled>
-                        <label>{{ "List Two"|t('sprout-lists') }}</label>
-                    </li>
-                    <li><input type="checkbox" class="checkbox" disabled>
-                        <label>{{ "List Three"|t('sprout-lists') }}</label>
-                    </li>
-                </ul>
+                    <ul>
+                        <li><input type="checkbox" class="checkbox" disabled>
+                            <label>{{ "List One"|t('sprout-lists') }}</label>
+                        </li>
+                        <li><input type="checkbox" class="checkbox" disabled>
+                            <label>{{ "List Two"|t('sprout-lists') }}</label>
+                        </li>
+                        <li><input type="checkbox" class="checkbox" disabled>
+                            <label>{{ "List Three"|t('sprout-lists') }}</label>
+                        </li>
+                    </ul>
+                    <br>
+                </div>
 
             {% endif %}
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      https://sprout.barrelstrengthdesign.com/
+ * @link https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license   http://sprout.barrelstrengthdesign.com/license
+ * @license https://craftcms.github.io/license
  */
 
 /**
@@ -48,7 +48,6 @@ return [
     'When you enable this setting Sprout Lists will create a relationship between a Sprout Subscriber and a matching Craft User, based on the email address. When Craft User emails are updated, they will also be updated for Sprout Subscribers. When emails are updated for a Sprout Subscriber, they will also be updated in the matching Craft User profiles. When Users are deleted the relationship in the Sprout Subscriber and the Craft User will be removed.' => 'When you enable this setting Sprout Lists will create a relationship between a Sprout Subscriber and a matching Craft User, based on the email address. When Craft User emails are updated, they will also be updated for Sprout Subscribers. When emails are updated for a Sprout Subscriber, they will also be updated in the matching Craft User profiles. When Users are deleted the relationship in the Sprout Subscriber and the Craft User will be removed.',
     'Unable to delete Subscriber.' => 'Unable to delete Subscriber.',
     'Unable to find an Element with ID: {id}' => 'Unable to find an Element with ID: {id}',
-    'New Subscriber List' => 'New Subscriber List',
     'List Item {itemId} already exists on List ID {listId}.' => 'List Item {itemId} already exists on List ID {listId}.',
     'Create a Subscriber Lists and your lists will display below.' => 'Create a Subscriber Lists and your lists will display below.',
     'Unable to save subscription while saving subscriber.' => 'Unable to save subscription while saving subscriber.',
@@ -56,14 +55,6 @@ return [
     'List does not exist.' => 'List does not exist.',
     'Element ID' => 'Element ID',
     'User not permitted to create List.' => 'User not permitted to create List.',
-    'Select at least one User Group.' => 'Select at least one User Group.',
-    'Users' => 'Users',
     'List ID' => 'List ID',
     'New Mailing List' => 'New Mailing List',
-    'Create a Subscriber Lists to select it here' => 'Create a Subscriber Lists to select it here',
-    'Lists' => 'Lists',
-    'Subscriber List (Sprout Lists)' => 'Subscriber List (Sprout Lists)',
-    'Create a Subscriber List with your Subscribers' => 'Create a Subscriber List with your Subscribers',
-    'Create reports about your users and user groups.' => 'Create reports about your users and user groups.',
-    'Segments (Sprout)' => 'Segments (Sprout)'
 ];

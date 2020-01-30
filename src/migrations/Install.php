@@ -7,7 +7,9 @@ use craft\db\Migration;
 class Install extends Migration
 {
     private $subscribersTable = '{{%sproutlists_subscribers}}';
+
     private $listsTable = '{{%sproutlists_lists}}';
+
     private $subscriptionsTable = '{{%sproutlists_subscriptions}}';
 
     public function safeUp()

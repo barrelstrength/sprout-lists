@@ -3,9 +3,9 @@
 namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutbase\SproutBase;
+use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
-use barrelstrength\sproutlists\elements\Subscriber;
 use craft\base\Component;
 use craft\elements\User;
 use Exception;

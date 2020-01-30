@@ -6,8 +6,8 @@ use barrelstrength\sproutlists\base\ListType;
 use barrelstrength\sproutlists\base\SubscriptionInterface;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\base\Model;
-use DateTime;
 use craft\validators\UniqueValidator;
+use DateTime;
 
 class Subscription extends Model implements SubscriptionInterface
 {

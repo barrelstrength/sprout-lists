@@ -7,20 +7,20 @@ use barrelstrength\sproutlists\base\ListType;
 use barrelstrength\sproutlists\elements\actions\DeleteList;
 use barrelstrength\sproutlists\elements\db\ListElementQuery;
 use barrelstrength\sproutlists\models\Subscription;
+use barrelstrength\sproutlists\records\ListElement as ListsRecord;
 use barrelstrength\sproutlists\SproutLists;
-use craft\base\Element;
 use Craft;
+use craft\base\Element;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\UrlHelper;
-use barrelstrength\sproutlists\records\ListElement as ListsRecord;
 use craft\models\FieldLayout;
 use craft\validators\SlugValidator;
+use craft\validators\UniqueValidator;
 use Exception;
 use yii\base\InvalidConfigException;
 use yii\web\ErrorHandler;
-use craft\validators\UniqueValidator;
 
 /**
  * @property mixed $listType
@@ -58,22 +58,6 @@ class ListElement extends Element implements ListInterface
     public $count = 0;
 
     /**
-     * Use the name as the string representation.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        try {
-            return (string)$this->name;
-        } catch (Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-        }
-
-        return parent::__toString();
-    }
-
-    /**
      * @return string
      */
     public static function displayName(): string
@@ -98,69 +82,22 @@ class ListElement extends Element implements ListInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getCpEditUrl()
-    {
-        return UrlHelper::cpUrl('sprout-lists/lists/edit/'.$this->id);
-    }
-
-    /**
-     * @return ListType
-     */
-    public function getType(): ListType
-    {
-        return new $this->type();
-    }
-
-    /**
-     * @param $criteria
-     *
-     * @return bool
-     */
-    public function hasItem($criteria): bool
-    {
-        $listType = $this->getType();
-
-        // Always use the List ID of the current list
-        $criteria['listId'] = $this->id;
-
-        /** @var Subscription $subscription */
-        $subscription = $listType->populateSubscriptionFromCriteria($criteria);
-        $subscriberOrItem = $listType->getSubscriberOrItem($subscription);
-
-        if (!$subscriberOrItem) {
-            return false;
-        }
-
-        $subscriptionExists = (new Query())
-            ->select(['id'])
-            ->from(['{{%sproutlists_subscriptions}}'])
-            ->where([
-                'listId' => $this->id,
-                'itemId' => $subscriberOrItem->getId()
-            ])
-            ->exists();
-
-        return $subscriptionExists;
-    }
-
-    /**
-     * @param $criteria
-     *
-     * @return bool
-     */
-    public function isSubscribed($criteria): bool
-    {
-        return $this->hasItem($criteria);
-    }
-
-    /**
      * @return ListElementQuery
      */
     public static function find(): ElementQueryInterface
     {
         return new ListElementQuery(static::class);
+    }
+
+    public static function defaultTableAttributes(string $source): array
+    {
+        return [
+            'name',
+            'type',
+            'elementId',
+            'handle',
+            'count'
+        ];
     }
 
     /**
@@ -231,15 +168,90 @@ class ListElement extends Element implements ListInterface
         return $attributes;
     }
 
-    public static function defaultTableAttributes(string $source): array
+    /**
+     * @inheritdoc
+     */
+    protected static function defineActions(string $source = null): array
     {
-        return [
-            'name',
-            'type',
-            'elementId',
-            'handle',
-            'count'
-        ];
+        $actions = [];
+
+        $actions[] = DeleteList::class;
+
+        return $actions;
+    }
+
+    /**
+     * Use the name as the string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return (string)$this->name;
+        } catch (Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+        }
+
+        return parent::__toString();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCpEditUrl()
+    {
+        return UrlHelper::cpUrl('sprout-lists/lists/edit/'.$this->id);
+    }
+
+    /**
+     * @return ListType
+     */
+    public function getType(): ListType
+    {
+        return new $this->type();
+    }
+
+    /**
+     * @param $criteria
+     *
+     * @return bool
+     */
+    public function hasItem($criteria): bool
+    {
+        $listType = $this->getType();
+
+        // Always use the List ID of the current list
+        $criteria['listId'] = $this->id;
+
+        /** @var Subscription $subscription */
+        $subscription = $listType->populateSubscriptionFromCriteria($criteria);
+        $subscriberOrItem = $listType->getSubscriberOrItem($subscription);
+
+        if (!$subscriberOrItem) {
+            return false;
+        }
+
+        $subscriptionExists = (new Query())
+            ->select(['id'])
+            ->from(['{{%sproutlists_subscriptions}}'])
+            ->where([
+                'listId' => $this->id,
+                'itemId' => $subscriberOrItem->getId()
+            ])
+            ->exists();
+
+        return $subscriptionExists;
+    }
+
+    /**
+     * @param $criteria
+     *
+     * @return bool
+     */
+    public function isSubscribed($criteria): bool
+    {
+        return $this->hasItem($criteria);
     }
 
     /**
@@ -255,6 +267,7 @@ class ListElement extends Element implements ListInterface
             case 'type':
                 /** @var ListType $type */
                 $type = new $this->type;
+
                 return $type::displayName();
                 break;
 
@@ -267,6 +280,7 @@ class ListElement extends Element implements ListInterface
                     return '<a href="'.UrlHelper::cpUrl('sprout-lists/subscribers/'.$this->handle).'" class="go">'.
                         Craft::t('sprout-lists', 'View Subscribers').'</a>';
                 }
+
                 return '';
                 break;
         }
@@ -280,29 +294,6 @@ class ListElement extends Element implements ListInterface
     public function getFieldLayout()
     {
         return Craft::$app->getFields()->getLayoutByType(static::class);
-    }
-
-    /**
-     * @return array
-     * @throws InvalidConfigException
-     */
-    protected function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['name', 'handle'], 'required'];
-        $rules[] = [
-            ['handle'],
-            SlugValidator::class
-        ];
-        $rules[] = [
-            ['elementId', 'handle'],
-            UniqueValidator::class,
-            'targetClass' => ListsRecord::class,
-            'targetAttribute' => ['elementId', 'handle']
-        ];
-
-        return $rules;
     }
 
     /**
@@ -342,14 +333,25 @@ class ListElement extends Element implements ListInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
+     * @throws InvalidConfigException
      */
-    protected static function defineActions(string $source = null): array
+    protected function defineRules(): array
     {
-        $actions = [];
+        $rules = parent::defineRules();
 
-        $actions[] = DeleteList::class;
+        $rules[] = [['name', 'handle'], 'required'];
+        $rules[] = [
+            ['handle'],
+            SlugValidator::class
+        ];
+        $rules[] = [
+            ['elementId', 'handle'],
+            UniqueValidator::class,
+            'targetClass' => ListsRecord::class,
+            'targetAttribute' => ['elementId', 'handle']
+        ];
 
-        return $actions;
+        return $rules;
     }
 }

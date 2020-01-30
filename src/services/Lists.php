@@ -4,8 +4,8 @@ namespace barrelstrength\sproutlists\services;
 
 use barrelstrength\sproutlists\base\ListType;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
-use craft\base\Component;
 use barrelstrength\sproutlists\records\ListElement as ListsRecord;
+use craft\base\Component;
 use yii\base\Exception;
 
 /**

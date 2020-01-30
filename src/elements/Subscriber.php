@@ -9,11 +9,11 @@ use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscriberQuery;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
 use barrelstrength\sproutlists\models\Settings;
-use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
+use barrelstrength\sproutlists\records\Subscription;
 use barrelstrength\sproutlists\SproutLists;
-use craft\base\Element;
 use Craft;
+use craft\base\Element;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
@@ -73,14 +73,6 @@ class Subscriber extends Element implements SubscriberInterface
     /**
      * @return string
      */
-    public function __toString()
-    {
-        return (string)$this->email;
-    }
-
-    /**
-     * @return string
-     */
     public static function displayName(): string
     {
         return Craft::t('sprout-lists', 'Subscriber');
@@ -103,21 +95,11 @@ class Subscriber extends Element implements SubscriberInterface
     }
 
     /**
-     * @inheritdoc
+     * @return SubscriberQuery The newly created [[SubscriberQuery]] instance.
      */
-    public function getCpEditUrl()
+    public static function find(): ElementQueryInterface
     {
-        return UrlHelper::cpUrl(
-            'sprout-lists/subscribers/edit/'.$this->id
-        );
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getEmail()
-    {
-        return $this->email;
+        return new SubscriberQuery(static::class);
     }
 
     /**
@@ -180,11 +162,41 @@ class Subscriber extends Element implements SubscriberInterface
     }
 
     /**
-     * @return SubscriberQuery The newly created [[SubscriberQuery]] instance.
+     * @inheritdoc
      */
-    public static function find(): ElementQueryInterface
+    protected static function defineActions(string $source = null): array
     {
-        return new SubscriberQuery(static::class);
+        $actions = [];
+
+        $actions[] = DeleteSubscriber::class;
+
+        return $actions;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->email;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCpEditUrl()
+    {
+        return UrlHelper::cpUrl(
+            'sprout-lists/subscribers/edit/'.$this->id
+        );
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**
@@ -231,25 +243,6 @@ class Subscriber extends Element implements SubscriberInterface
         }
 
         return new ActiveQuery(__CLASS__);
-    }
-
-    /**
-     * @return array
-     * @throws InvalidConfigException
-     */
-    protected function defineRules(): array
-    {
-        $rules = parent::defineRules();
-
-        $rules[] = [['email'], 'required'];
-        $rules[] = [['email'], 'email'];
-        $rules[] = [
-            ['email'],
-            UniqueValidator::class,
-            'targetClass' => SubscribersRecord::class
-        ];
-
-        return $rules;
     }
 
     /**
@@ -356,14 +349,21 @@ class Subscriber extends Element implements SubscriberInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
+     * @throws InvalidConfigException
      */
-    protected static function defineActions(string $source = null): array
+    protected function defineRules(): array
     {
-        $actions = [];
+        $rules = parent::defineRules();
 
-        $actions[] = DeleteSubscriber::class;
+        $rules[] = [['email'], 'required'];
+        $rules[] = [['email'], 'email'];
+        $rules[] = [
+            ['email'],
+            UniqueValidator::class,
+            'targetClass' => SubscribersRecord::class
+        ];
 
-        return $actions;
+        return $rules;
     }
 }

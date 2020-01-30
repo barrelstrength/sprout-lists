@@ -5,18 +5,18 @@ namespace barrelstrength\sproutlists;
 use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbasereports\base\DataSource;
+use barrelstrength\sproutbasereports\services\DataSources;
 use barrelstrength\sproutbasereports\SproutBaseReports;
 use barrelstrength\sproutlists\events\RegisterListTypesEvent;
+use barrelstrength\sproutlists\integrations\sproutreports\datasources\SubscriberListDataSource;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
+use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\services\App;
 use barrelstrength\sproutlists\services\Lists;
-use barrelstrength\sproutlists\models\Settings;
-use barrelstrength\sproutlists\integrations\sproutreports\datasources\SubscriberListDataSource;
-use barrelstrength\sproutbasereports\services\DataSources;
 use barrelstrength\sproutlists\web\twig\extensions\TwigExtensions;
 use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
-use craft\base\Plugin;
 use Craft;
+use craft\base\Plugin;
 use craft\elements\User;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -130,14 +130,6 @@ class SproutLists extends Plugin
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
-
-    /**
      * Redirect to Sprout SubscriberList settings
      *
      * @inheritdoc
@@ -184,6 +176,47 @@ class SproutLists extends Plugin
         return $parent;
     }
 
+    /**
+     * @return array
+     */
+    public function getUserPermissions(): array
+    {
+        return [
+            'sproutLists-editSubscribers' => [
+                'label' => Craft::t('sprout-lists', 'Edit Subscribers')
+            ],
+            'sproutLists-editLists' => [
+                'label' => Craft::t('sprout-lists', 'Edit Lists')
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    protected function afterInstall()
+    {
+        if (!Craft::$app->getPlugins()->isPluginInstalled('sprout-reports')) {
+            return;
+        }
+
+        $dataSourceTypes = [
+            SubscriberListDataSource::class
+        ];
+
+        foreach ($dataSourceTypes as $dataSourceClass) {
+            /** @var DataSource $dataSource */
+            $dataSource = new $dataSourceClass();
+            $dataSource->viewContext = 'sprout-lists';
+            SproutBaseReports::$app->dataSources->saveDataSource($dataSource);
+        }
+    }
+
     private function getCpUrlRules(): array
     {
         return [
@@ -215,38 +248,5 @@ class SproutLists extends Plugin
             'sprout-lists/settings/<settingsSectionHandle:.*>' =>
                 'sprout/settings/edit-settings',
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getUserPermissions(): array
-    {
-        return [
-            'sproutLists-editSubscribers' => [
-                'label' => Craft::t('sprout-lists', 'Edit Subscribers')
-            ],
-            'sproutLists-editLists' => [
-                'label' => Craft::t('sprout-lists', 'Edit Lists')
-            ]
-        ];
-    }
-
-    protected function afterInstall()
-    {
-        if (!Craft::$app->getPlugins()->isPluginInstalled('sprout-reports')) {
-            return;
-        }
-
-        $dataSourceTypes = [
-            SubscriberListDataSource::class
-        ];
-
-        foreach ($dataSourceTypes as $dataSourceClass) {
-            /** @var DataSource $dataSource */
-            $dataSource = new $dataSourceClass();
-            $dataSource->viewContext = 'sprout-lists';
-            SproutBaseReports::$app->dataSources->saveDataSource($dataSource);
-        }
     }
 }

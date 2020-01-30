@@ -33,6 +33,7 @@ class m200110_000000_update_subscriberlisttype_types extends Migration
     public function safeDown(): bool
     {
         echo "m200110_000000_update_subscriberlisttype_types cannot be reverted.\n";
+
         return false;
     }
 }

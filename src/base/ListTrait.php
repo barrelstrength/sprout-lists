@@ -5,10 +5,10 @@ namespace barrelstrength\sproutlists\base;
 use barrelstrength\sproutlists\elements\ListElement;
 use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\models\Subscription;
+use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
-use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use craft\base\Element;
 use craft\errors\ElementNotFoundException;
 use Exception;
@@ -78,6 +78,7 @@ trait ListTrait
                             Craft::t('sprout-lists', 'User not permitted to create List.')
                         ]
                     ]);
+
                     return false;
                 }
             }
@@ -85,6 +86,7 @@ trait ListTrait
             if (!$item->validate() || !$list->validate()) {
                 $subscription->addErrors($item->getErrors());
                 $subscription->addErrors($list->getErrors());
+
                 return false;
             }
 
@@ -102,6 +104,7 @@ trait ListTrait
             }
 
             $transaction->commit();
+
             return true;
         } catch (Throwable $e) {
             $transaction->rollBack();

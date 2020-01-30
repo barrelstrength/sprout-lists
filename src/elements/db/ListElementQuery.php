@@ -46,6 +46,7 @@ class ListElementQuery extends ElementQuery
     public function type($value): ListElementQuery
     {
         $this->type = $value;
+
         return $this;
     }
 
@@ -57,6 +58,7 @@ class ListElementQuery extends ElementQuery
     public function elementId($value): ListElementQuery
     {
         $this->elementId = $value;
+
         return $this;
     }
 
@@ -68,6 +70,7 @@ class ListElementQuery extends ElementQuery
     public function handle($value): ListElementQuery
     {
         $this->handle = $value;
+
         return $this;
     }
 

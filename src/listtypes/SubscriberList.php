@@ -226,6 +226,7 @@ class SubscriberList extends BaseSubscriberList
 
         if (Craft::$app->getElements()->saveElement($subscriber)) {
             $this->updateCount();
+
             return true;
         }
 
@@ -259,6 +260,7 @@ class SubscriberList extends BaseSubscriberList
             $this->updateCount();
 
             $transaction->commit();
+
             return true;
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -277,6 +279,7 @@ class SubscriberList extends BaseSubscriberList
     {
         if (!$this->settings->enableUserSync) {
             $subscriber->userId = null;
+
             return $subscriber;
         }
 

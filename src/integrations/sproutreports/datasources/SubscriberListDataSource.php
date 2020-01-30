@@ -2,12 +2,12 @@
 
 namespace barrelstrength\sproutlists\integrations\sproutreports\datasources;
 
+use barrelstrength\sproutbasereports\base\DataSource;
+use barrelstrength\sproutbasereports\elements\Report;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
 use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use barrelstrength\sproutlists\records\Subscriber as SubscriberRecord;
-use barrelstrength\sproutbasereports\elements\Report;
 use Craft;
-use barrelstrength\sproutbasereports\base\DataSource;
 use craft\db\Query;
 use Exception;
 use Twig\Error\LoaderError;

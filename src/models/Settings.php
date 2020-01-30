@@ -3,8 +3,8 @@
 namespace barrelstrength\sproutlists\models;
 
 use barrelstrength\sproutbase\base\SproutSettingsInterface;
-use craft\base\Model;
 use Craft;
+use craft\base\Model;
 
 /**
  *

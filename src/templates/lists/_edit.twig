@@ -91,7 +91,7 @@
                     <label>{{ "List ID"|t('sprout-lists') }}</label>
                 </div>
                 <div class="input">
-                    <h6>{{ list.id }}</h6>
+                    <code>{{ list.id }}</code>
                 </div>
             </div>
 
@@ -100,12 +100,12 @@
                     <label>{{ "Element ID"|t('sprout-lists') }}</label>
                 </div>
                 <div class="input">
-                    <h6>{{ list.elementId }}</h6>
+                    <code>{{ list.elementId }}</code>
                 </div>
             </div>
 
         </div>
-        <hr>
+
         <div class="meta read-only">
 
             <div class="data">
@@ -118,10 +118,11 @@
             </div>
 
         </div>
-        <hr>
 
         <div class="meta">
-            <p class="light">{{ "Deleting a List will delete all Subscriptions to the List. No Subscribers will be deleted."|t('sprout-lists') }}</p>
+            <div style="padding-top:24px;padding-bottom: 24px;">
+                <p class="light">{{ "Deleting a List will delete all Subscriptions to the List. No Subscribers will be deleted."|t('sprout-lists') }}</p>
+            </div>
         </div>
     {% endif %}
 

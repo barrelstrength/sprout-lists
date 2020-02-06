@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.1 - 2020-02-05
+
+### Added
+- Added Subscriber List Data Source migration
+
 ## 3.0.0 - 2020-02-05
 
 > {note} This release removes the List Integration with Sprout Email and Sprout Forms. Please use the new Subscriber List Data Source to create a Mailing List in Sprout Reports.

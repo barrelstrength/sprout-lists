@@ -1,7 +1,7 @@
 {
   "name": "barrelstrength/sprout-lists",
   "description": "Subscribe and unsubscribe to things.",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "type": "craft-plugin",
   "keywords": [
     "craft",
@@ -25,7 +25,7 @@
     "rss": "https://github.com/barrelstrength/sprout-lists/commits/v2.atom"
   },
   "require": {
-    "craftcms/cms": "^3.1.0",
+    "craftcms/cms": "^3.4.0",
     "barrelstrength/sprout-base": "^5.0.1"
   },
   "autoload": {

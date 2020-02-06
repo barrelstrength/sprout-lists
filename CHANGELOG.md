@@ -1,12 +1,21 @@
 # Changelog
 
-## UNRELEASED: 3.0.0
+## 3.0.0 - 2020-02-05
+
+> {note} This release removes the List Integration with Sprout Email and Sprout Forms. Please use the new Subscriber List Data Source to create a Mailing List in Sprout Reports.
 
 ### Added
-- Added SubscriberListDataSource
+- Added Subscriber List Data Source for creating Mailing Lists for use with Sprout Email and Sprout Forms
+- Added `barrelstrength\sproutlists\elements\ListElement::pluralDisplayName()`
+- Added `barrelstrength\sproutlists\elements\Subscriber::pluralDisplayName()`
+- Added `barrelstrength\sproutlists\integrations\sproutreports\datasources\SubscriberListDataSource`
 
-### Removed
-- Removed `barrelstrength/sprout-base-lists` requirement
+### Changed
+- Merged all files from Sprout Base Lists. Removed `barrelstrength/sprout-base-lists` requirement 
+- Removed `sprout-base-lists` logic in codebase
+
+### Fixed
+- Fixed display issues in List and Subscriber edit page sidebars
 
 ## 2.0.1 - 2019-09-04
 
@@ -19,23 +28,23 @@
 - Updated barrelstrength/sprout-base-lists requirement to v1.0.4
 - Updated barrelstrength/sprout-base requirement to v5.0.1
 
-## 2.0.0-rc.4 - 2019-05-16
+## 2.0.0-RC4 - 2019-05-16
 
 ### Updated
 - Updated barrelstrength/sprout-base requirement to v5.0.0
 
-## 2.0.0-rc.3 - 2019-04-30
+## 2.0.0-RC3 - 2019-04-30
 
 ### Changed
 - Updated icon
 
-## 2.0.0-rc.2 - 2019-04-09
+## 2.0.0-RC2 - 2019-04-09
 
 ### Fixed
 - Required Sprout Lists to be installed to use User Sync 
 - Improved Postgres support
 
-## 2.0.0-rc.1 - 2019-04-09
+## 2.0.0-RC1 - 2019-04-09
 
 > {warning} This is a Major release and includes breaking changes. Please see the [Sprout Lists upgrade documentation](https://sprout.barrelstrengthdesign.com/docs/lists/installing-and-updating-craft-3.html#upgrading-to-v2-x) for more details on template tags and controller actions that have changed.
 

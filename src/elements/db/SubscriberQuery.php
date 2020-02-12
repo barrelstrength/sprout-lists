@@ -41,6 +41,18 @@ class SubscriberQuery extends ElementQuery
     }
 
     /**
+     * @param $value
+     *
+     * @return static self reference
+     */
+    public function listId($value): SubscriberQuery
+    {
+        $this->listId = $value;
+
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function beforePrepare(): bool
@@ -57,7 +69,6 @@ class SubscriberQuery extends ElementQuery
         ]);
 
         if ($this->listId) {
-
             $subscriberIds = (new Query())
                 ->select(['itemId'])
                 ->from(['{{%sproutlists_subscriptions}}'])

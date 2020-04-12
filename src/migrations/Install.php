@@ -7,19 +7,16 @@
 
 namespace barrelstrength\sproutlists\migrations;
 
+use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
+use barrelstrength\sproutlists\records\Subscriber as SubscriberRecord;
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\db\Migration;
 
 class Install extends Migration
 {
-    private $subscribersTable = '{{%sproutlists_subscribers}}';
-
-    private $listsTable = '{{%sproutlists_lists}}';
-
-    private $subscriptionsTable = '{{%sproutlists_subscriptions}}';
-
     public function safeUp()
     {
-        $this->createTable($this->listsTable,
+        $this->createTable(ListElementRecord::tableName(),
             [
                 'id' => $this->primaryKey(),
                 'elementId' => $this->integer()->notNull(),
@@ -33,7 +30,7 @@ class Install extends Migration
             ]
         );
 
-        $this->createTable($this->subscribersTable,
+        $this->createTable(SubscriberRecord::tableName(),
             [
                 'id' => $this->primaryKey(),
                 'userId' => $this->integer(),
@@ -46,7 +43,7 @@ class Install extends Migration
             ]
         );
 
-        $this->createTable($this->subscriptionsTable,
+        $this->createTable(SubscriptionRecord::tableName(),
             [
                 'id' => $this->primaryKey(),
                 'listId' => $this->integer(),
@@ -60,8 +57,8 @@ class Install extends Migration
 
     public function safeDown()
     {
-        $this->dropTable($this->listsTable);
-        $this->dropTable($this->subscribersTable);
-        $this->dropTable($this->subscriptionsTable);
+        $this->dropTable(ListElementRecord::tableName());
+        $this->dropTable(SubscriberRecord::tableName());
+        $this->dropTable(SubscriptionRecord::tableName());
     }
 }

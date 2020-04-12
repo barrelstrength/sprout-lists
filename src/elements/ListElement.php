@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\elements;
@@ -13,6 +13,7 @@ use barrelstrength\sproutlists\elements\actions\DeleteList;
 use barrelstrength\sproutlists\elements\db\ListElementQuery;
 use barrelstrength\sproutlists\models\Subscription;
 use barrelstrength\sproutlists\records\ListElement as ListsRecord;
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\base\Element;
@@ -239,7 +240,7 @@ class ListElement extends Element implements ListInterface
 
         $subscriptionExists = (new Query())
             ->select(['id'])
-            ->from(['{{%sproutlists_subscriptions}}'])
+            ->from([SubscriptionRecord::tableName()])
             ->where([
                 'listId' => $this->id,
                 'itemId' => $subscriberOrItem->getId()

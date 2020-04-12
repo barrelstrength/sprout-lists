@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\elements;
@@ -14,8 +14,9 @@ use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscriberQuery;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
 use barrelstrength\sproutlists\models\Settings;
+use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
-use barrelstrength\sproutlists\records\Subscription;
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use barrelstrength\sproutlists\SproutLists;
 use Craft;
 use craft\base\Element;
@@ -326,8 +327,8 @@ class Subscriber extends Element implements SubscriberInterface
         if (Craft::$app->getRequest()->getIsCpRequest()) {
             $itemIds = (new Query())
                 ->select('itemId')
-                ->from('{{%sproutlists_subscriptions}} as subscription')
-                ->leftJoin('{{%sproutlists_lists}} as list', '[[subscription.listId]] = [[list.id]]')
+                ->from(SubscriptionRecord::tableName().' subscription')
+                ->leftJoin(ListElementRecord::tableName().' list', '[[subscription.listId]] = [[list.id]]')
                 ->where([
                     'list.type' => SubscriberList::class,
                     'subscription.itemId' => $this->id

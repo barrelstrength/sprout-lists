@@ -119,7 +119,7 @@ class SubscriberListDataSource extends DataSource
                 'lists.name AS label',
                 'lists.id AS value'
             ])
-            ->from('{{%sproutlists_lists}} lists')
+            ->from(ListElementRecord::tableName().' lists')
             ->leftJoin('{{%elements}} elements', '[[elements.id]] = [[lists.id]]')
             ->where([
                 'lists.type' => SubscriberList::class,

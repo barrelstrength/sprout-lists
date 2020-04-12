@@ -1,12 +1,13 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\records;
 
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\base\Element;
 use craft\db\ActiveRecord;
 use yii\base\InvalidConfigException;
@@ -53,6 +54,6 @@ class Subscriber extends ActiveRecord
     public function getLists(): ActiveQuery
     {
         return $this->hasMany(ListElement::class, ['id' => 'listId'])
-            ->viaTable('{{%sproutlists_subscriptions}}', ['itemId' => 'id']);
+            ->viaTable(SubscriptionRecord::tableName(), ['itemId' => 'id']);
     }
 }

@@ -7,6 +7,7 @@
 
 namespace barrelstrength\sproutlists\elements\db;
 
+use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
@@ -71,7 +72,7 @@ class SubscriberQuery extends ElementQuery
         if ($this->listId) {
             $subscriberIds = (new Query())
                 ->select(['itemId'])
-                ->from(['{{%sproutlists_subscriptions}}'])
+                ->from([SubscriptionRecord::tableName()])
                 ->where(['listId' => $this->listId])
                 ->column();
 

@@ -7,7 +7,6 @@
 
 namespace barrelstrength\sproutlists;
 
-use barrelstrength\sproutbase\base\BaseSproutTrait;
 use barrelstrength\sproutbase\SproutBaseHelper;
 use barrelstrength\sproutbasereports\base\DataSource;
 use barrelstrength\sproutbasereports\services\DataSources;
@@ -46,19 +45,12 @@ use yii\base\Event;
  */
 class SproutLists extends Plugin
 {
-    use BaseSproutTrait;
-
     /**
      * Enable use of SproutLists::$app-> in place of Craft::$app->
      *
      * @var App
      */
     public static $app;
-
-    /**
-     * @var string
-     */
-    public static $pluginHandle = 'sprout-lists';
 
     /**
      * @var bool

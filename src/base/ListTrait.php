@@ -102,10 +102,7 @@ trait ListTrait
             if ($subscriptionRecord->save()) {
                 $this->updateCount($subscriptionRecord->listId);
             } else {
-                Craft::warning(Craft::t('sprout-lists', 'List Item {itemId} already exists on List ID {listId}.', [
-                    'listId' => $list->id,
-                    'itemId' => $item->id
-                ]));
+                Craft::warning('List Item '.$item->id.' already exists on List ID '.$list->id.'.', __METHOD__);
             }
 
             $transaction->commit();

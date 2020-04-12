@@ -93,9 +93,7 @@ class WishList extends ListType
             $element = Craft::$app->elements->getElementById($subscription->itemId);
 
             if ($element === null) {
-                Craft::warning(Craft::t('sprout-lists', 'Unable to find an Element with ID: {id}', [
-                    'id' => $subscription->listId
-                ]), 'sprout-lists');
+                Craft::warning('Unable to find an Element with ID: '.$subscription->listId, __METHOD__);
 
                 return null;
             }

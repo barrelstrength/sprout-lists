@@ -9,6 +9,7 @@ namespace barrelstrength\sproutlists\base;
 
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\models\Settings;
+use barrelstrength\sproutlists\SproutLists;
 use craft\base\Component;
 
 /**
@@ -31,7 +32,7 @@ abstract class ListType extends Component
 
     public function init()
     {
-        $this->settings = SproutBase::$app->settings->getPluginSettings('sprout-lists');
+        $this->settings = SproutLists::$app->getSettings();
 
         parent::init();
     }

@@ -258,8 +258,7 @@ class Subscriber extends Element implements SubscriberInterface
      */
     public function afterSave(bool $isNew)
     {
-        /** @var Settings $settings */
-        $settings = SproutBase::$app->settings->getPluginSettings('sprout-lists');
+        $settings = SproutLists::$app->getSettings();
 
         // Get the list record
         if (!$isNew) {

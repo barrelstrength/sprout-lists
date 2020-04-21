@@ -7,6 +7,8 @@
 
 namespace barrelstrength\sproutlists\services;
 
+use barrelstrength\sproutlists\models\Settings;
+use barrelstrength\sproutlists\SproutLists;
 use craft\base\Component;
 
 /**
@@ -21,6 +23,8 @@ use craft\base\Component;
  * @author    Barrelstrength
  * @package   SproutLists
  * @since     3
+ *
+ * @property Settings $settings
  */
 class App extends Component
 {
@@ -40,5 +44,23 @@ class App extends Component
 
         $this->lists = new Lists();
         $this->subscribers = new Subscribers();
+    }
+
+    /**
+     * Returns plugin settings model.
+     *
+     * This method helps explicitly define what we're getting back so we can
+     * avoid NullReferenceException warnings
+     *
+     * @return Settings
+     */
+    public function getSettings(): Settings {
+        /** @var SproutLists $plugin */
+        $plugin = SproutLists::getInstance();
+
+        /** @var Settings $settings */
+        $settings = $plugin->getSettings();
+
+        return $settings;
     }
 }

@@ -11,6 +11,7 @@ use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\elements\Subscriber;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
+use barrelstrength\sproutlists\SproutLists;
 use craft\base\Component;
 use craft\elements\User;
 use Exception;
@@ -26,8 +27,7 @@ class Subscribers extends Component
      */
     public function handleUpdateUserIdOnSaveEvent(Event $event)
     {
-        /** @var Settings $settings */
-        $settings = SproutBase::$app->settings->getPluginSettings('sprout-lists');
+        $settings = SproutLists::$app->getSettings();
 
         if ($settings->enableUserSync && $event->sender instanceof User) {
             $this->updateUserIdOnSave($event);
@@ -41,8 +41,7 @@ class Subscribers extends Component
      */
     public function handleUpdateUserIdOnDeleteEvent(Event $event)
     {
-        /** @var Settings $settings */
-        $settings = SproutBase::$app->settings->getPluginSettings('sprout-lists');
+        $settings = SproutLists::$app->getSettings();
 
         if ($settings->enableUserSync && $event->sender instanceof User) {
             $this->updateUserIdOnDelete($event);

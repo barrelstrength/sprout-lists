@@ -333,11 +333,11 @@ class Subscriber extends Element implements SubscriberInterface
                 ->distinct()
                 ->column();
 
-            Subscription::deleteAll(['[[itemId]]' => $itemIds]);
+            SubscriptionRecord::deleteAll(['[[itemId]]' => $itemIds]);
 
             if ($this->listElements) {
                 foreach ($this->listElements as $listId) {
-                    $subscriptionRecord = new Subscription();
+                    $subscriptionRecord = new SubscriptionRecord();
                     $subscriptionRecord->listId = $listId;
                     $subscriptionRecord->itemId = $this->id;
 

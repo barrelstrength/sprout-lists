@@ -1,13 +1,12 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\base;
 
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\SproutLists;
 use craft\base\Component;

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\services;
@@ -54,7 +54,8 @@ class App extends Component
      *
      * @return Settings
      */
-    public function getSettings(): Settings {
+    public function getSettings(): Settings
+    {
         /** @var SproutLists $plugin */
         $plugin = SproutLists::getInstance();
 

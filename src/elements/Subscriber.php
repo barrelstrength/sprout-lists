@@ -7,13 +7,11 @@
 
 namespace barrelstrength\sproutlists\elements;
 
-use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutlists\base\ListType;
 use barrelstrength\sproutlists\base\SubscriberInterface;
 use barrelstrength\sproutlists\elements\actions\DeleteSubscriber;
 use barrelstrength\sproutlists\elements\db\SubscriberQuery;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
-use barrelstrength\sproutlists\models\Settings;
 use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use barrelstrength\sproutlists\records\Subscriber as SubscribersRecord;
 use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;

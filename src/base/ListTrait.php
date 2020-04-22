@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://sprout.barrelstrengthdesign.com
+ * @link      https://sprout.barrelstrengthdesign.com
  * @copyright Copyright (c) Barrel Strength Design LLC
- * @license https://craftcms.github.io/license
+ * @license   https://craftcms.github.io/license
  */
 
 namespace barrelstrength\sproutlists\base;
@@ -198,7 +198,6 @@ trait ListTrait
      */
     public function getLists(): array
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return ListElement::find()
             ->where([
                 'sproutlists_lists.type' => get_class($this)

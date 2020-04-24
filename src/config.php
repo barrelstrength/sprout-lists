@@ -23,9 +23,11 @@ return [
     // The name to display in the control panel in place of the plugin name
     'pluginNameOverride' => 'Sprout Lists',
 
-    // Create a relationship between a Sprout Subscriber and a matching Craft User, based on the email address
+    // Create a relationship between a Sprout Subscriber and a matching
+    // Craft User, based on the email address
     'enableUserSync' => false,
 
-    // Subscriber Lists will be automatically created when a subscribe form is submitted and no matching List is found.
+    // Subscriber Lists will be automatically created when a subscribe form
+    // is submitted and no matching List is found.
     'enableAutoList' => false
 ];

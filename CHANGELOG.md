@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.1.0 - UNRELEASED
+
+### Added
+- Added example config.php
+- Added `barrelstrength\sproutbase\base\SproutDependencyTrait`
+- Added `barrelstrength\sproutbase\base\SproutDependencyInterface`
+- Added `barrelstrength\sproutbase\records\Settings`
+- Added `barrelstrength\sproutbase\migrations\Install::safeDown()`
+- Added support for config overrides in base settings models
+
+### Changed
+- Updated `barrelstrength/sprout-base` requirement to v5.2.0
+
+### Fixed
+- Fixed instantiation of `SubscriptionRecord` in Subscriber Element method
+	"barrelstrength/sprout-base": "^5.2.0"
+
+### Removed
+- Removed `barrelstrength\sproutbase\services\Settings::getPluginSettings()`
+- Removed `barrelstrength\sproutbase\base\BaseSproutTrait`
+
 ## 3.0.2 - 2020-02-12
 
 ### Added
@@ -30,18 +51,18 @@
 ## 2.0.1 - 2019-09-04
 
 ### Updated
-- Updated barrelstrength/sprout-base-lists requirement to v1.0.5
+- Updated `barrelstrength/sprout-base-lists` requirement to v1.0.5
 
 ## 2.0.0 - 2019-06-18
 
 ### Updated
-- Updated barrelstrength/sprout-base-lists requirement to v1.0.4
-- Updated barrelstrength/sprout-base requirement to v5.0.1
+- Updated `barrelstrength/sprout-base-lists` requirement to v1.0.4
+- Updated `barrelstrength/sprout-base` requirement to v5.0.1
 
 ## 2.0.0-RC4 - 2019-05-16
 
 ### Updated
-- Updated barrelstrength/sprout-base requirement to v5.0.0
+- Updated `barrelstrength/sprout-base requirement` to v5.0.0
 
 ## 2.0.0-RC3 - 2019-04-30
 

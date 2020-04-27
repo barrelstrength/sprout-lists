@@ -1,9 +1,9 @@
 # Changelog
 
-## 3.1.0 - UNRELEASED
+## 3.1.0 - 2020-04-27
 
 ### Added
-- Added example config.php
+- Added example config `src/config.php`
 - Added `barrelstrength\sproutbase\base\SproutDependencyTrait`
 - Added `barrelstrength\sproutbase\base\SproutDependencyInterface`
 - Added `barrelstrength\sproutbase\records\Settings`
@@ -15,7 +15,6 @@
 
 ### Fixed
 - Fixed instantiation of `SubscriptionRecord` in Subscriber Element method
-	"barrelstrength/sprout-base": "^5.2.0"
 
 ### Removed
 - Removed `barrelstrength\sproutbase\services\Settings::getPluginSettings()`

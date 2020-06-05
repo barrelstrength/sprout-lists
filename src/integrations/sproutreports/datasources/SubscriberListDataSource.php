@@ -7,8 +7,8 @@
 
 namespace barrelstrength\sproutlists\integrations\sproutreports\datasources;
 
-use barrelstrength\sproutbasereports\base\DataSource;
-use barrelstrength\sproutbasereports\elements\Report;
+use barrelstrength\sproutbase\app\reports\base\DataSource;
+use barrelstrength\sproutbase\app\reports\elements\Report;
 use barrelstrength\sproutlists\listtypes\SubscriberList;
 use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
 use barrelstrength\sproutlists\records\Subscriber as SubscriberRecord;
@@ -25,7 +25,6 @@ use Twig\Error\SyntaxError;
  * @package barrelstrength\sproutforms\integrations\sproutreports\datasources
  *
  * @property string $defaultEmailColumn
- * @property string $viewContextLabel
  */
 class SubscriberListDataSource extends DataSource
 {
@@ -43,22 +42,6 @@ class SubscriberListDataSource extends DataSource
     public function getDescription(): string
     {
         return Craft::t('sprout-lists', 'Create a Subscriber List with your Subscribers');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getViewContext(): string
-    {
-        return 'reports';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getViewContextLabel(): string
-    {
-        return 'Subscriber List';
     }
 
     /**

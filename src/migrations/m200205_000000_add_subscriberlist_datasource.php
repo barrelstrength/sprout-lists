@@ -36,7 +36,6 @@ class m200205_000000_add_subscriberlist_datasource extends Migration
                 if (!$dataSourceExists) {
                     $this->insert($dataSourceTable, [
                         'type' => $dataSourceClass,
-                        'viewContext' => 'sprout-forms',
                         'allowNew' => 1
                     ]);
                 }

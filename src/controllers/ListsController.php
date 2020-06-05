@@ -50,7 +50,7 @@ class ListsController extends Controller
      */
     public function actionListEditTemplate($listId = null, $list = null): Response
     {
-        $this->requirePermission('sproutLists-editLists');
+        $this->requirePermission('sprout:lists:editLists');
 
         $continueEditingUrl = null;
 
@@ -83,7 +83,7 @@ class ListsController extends Controller
     public function actionSaveList()
     {
         $this->requirePostRequest();
-        $this->requirePermission('sproutLists-editLists');
+        $this->requirePermission('sprout:lists:editLists');
 
         $listType = Craft::$app->getRequest()->getBodyParam('listType');
         $listType = SproutLists::$app->lists->getListType($listType);
@@ -116,7 +116,7 @@ class ListsController extends Controller
     public function actionDeleteList(): Response
     {
         $this->requirePostRequest();
-        $this->requirePermission('sproutLists-editLists');
+        $this->requirePermission('sprout:lists:editLists');
 
         $list = new ListElement();
         $list->type = Craft::$app->getRequest()->getRequiredBodyParam('listType');

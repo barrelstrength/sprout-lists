@@ -20,9 +20,6 @@
  */
 
 return [
-    // The name to display in the control panel in place of the plugin name
-    'pluginNameOverride' => 'Sprout Lists',
-
     // Create a relationship between a Sprout Subscriber and a matching
     // Craft User, based on the email address
     'enableUserSync' => false,

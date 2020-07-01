@@ -9,15 +9,20 @@ namespace barrelstrength\sproutlists;
 
 use barrelstrength\sproutbase\app\reports\base\DataSource;
 use barrelstrength\sproutbase\app\reports\services\DataSources;
+use barrelstrength\sproutbase\config\base\SproutBasePlugin;
+use barrelstrength\sproutbase\config\configs\FormsConfig;
+use barrelstrength\sproutbase\config\configs\ListsConfig;
+use barrelstrength\sproutbase\config\configs\NotificationsConfig;
+use barrelstrength\sproutbase\config\configs\ReportsConfig;
 use barrelstrength\sproutbase\SproutBase;
 use barrelstrength\sproutbase\SproutBaseHelper;
-use barrelstrength\sproutlists\events\RegisterListTypesEvent;
-use barrelstrength\sproutlists\integrations\sproutreports\datasources\SubscriberListDataSource;
-use barrelstrength\sproutlists\listtypes\SubscriberList;
-use barrelstrength\sproutlists\services\App;
-use barrelstrength\sproutlists\services\Lists;
-use barrelstrength\sproutlists\web\twig\extensions\TwigExtensions;
-use barrelstrength\sproutlists\web\twig\variables\SproutListsVariable;
+use barrelstrength\sproutbase\app\lists\events\RegisterListTypesEvent;
+use barrelstrength\sproutbase\app\lists\integrations\sproutreports\datasources\SubscriberListDataSource;
+use barrelstrength\sproutbase\app\lists\listtypes\SubscriberList;
+use barrelstrength\sproutbase\app\lists\services\App;
+use barrelstrength\sproutbase\app\lists\services\Lists;
+use barrelstrength\sproutbase\app\lists\web\twig\extensions\TwigExtensions;
+use barrelstrength\sproutbase\app\lists\web\twig\variables\ListsVariable;
 use Craft;
 use craft\base\Plugin;
 use craft\elements\User;
@@ -27,25 +32,8 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use yii\base\Event;
 
-/**
- * Class SproutListsPlugin
- *
- * @package Craft
- *
- * @property mixed $cpNavItem
- * @property array $userPermissions
- * @property array $cpUrlRules
- * @property mixed $settingsResponse
- */
-class SproutLists extends Plugin
+class SproutLists extends SproutBasePlugin
 {
-    /**
-     * Enable use of SproutLists::$app-> in place of Craft::$app->
-     *
-     * @var App
-     */
-    public static $app;
-
     /**
      * @var string
      */
@@ -56,6 +44,13 @@ class SproutLists extends Plugin
      */
     public $minVersionRequired = '0.7.1';
 
+    public static function getSproutConfigs(): array
+    {
+        return [
+            ListsConfig::class,
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -63,59 +58,34 @@ class SproutLists extends Plugin
     {
         parent::init();
 
-        self::$app = new App();
-
         SproutBaseHelper::registerModule();
-
-        Craft::setAlias('@sproutlists', $this->getBasePath());
 
         Event::on(Lists::class, Lists::EVENT_REGISTER_LIST_TYPES, static function(RegisterListTypesEvent $event) {
             $event->listTypes[] = SubscriberList::class;
 //            $event->listTypes[] = WishList::class;
         });
 
-        // Setup Template Roots
-        Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function(RegisterTemplateRootsEvent $e) {
-            $e->roots['sprout-lists'] = $this->getBasePath().DIRECTORY_SEPARATOR.'templates';
-        });
-
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, static function(Event $event) {
-            $event->sender->set('sproutLists', SproutListsVariable::class);
-        });
-
         Event::on(User::class, User::EVENT_AFTER_SAVE, static function(Event $event) {
+            // @todo - update to use module enabled check
             if (Craft::$app->getPlugins()->isPluginEnabled('sprout-lists')) {
-                SproutLists::$app->subscribers->handleUpdateUserIdOnSaveEvent($event);
+                SproutBase::$app->subscribers->handleUpdateUserIdOnSaveEvent($event);
             }
         });
 
         Event::on(User::class, User::EVENT_AFTER_DELETE, static function(Event $event) {
+            // @todo - update to use module enabled check
             if (Craft::$app->getPlugins()->isPluginEnabled('sprout-lists')) {
-                SproutLists::$app->subscribers->handleUpdateUserIdOnDeleteEvent($event);
+                SproutBase::$app->subscribers->handleUpdateUserIdOnDeleteEvent($event);
             }
         });
-
-        Event::on(DataSources::class, DataSources::EVENT_REGISTER_DATA_SOURCES, static function(RegisterComponentTypesEvent $event) {
-            $event->types[] = SubscriberListDataSource::class;
-        });
-
-        Craft::$app->view->registerTwigExtension(new TwigExtensions());
     }
 
     protected function afterInstall()
     {
-        if (!Craft::$app->getPlugins()->isPluginInstalled('sprout-reports')) {
-            return;
-        }
-
         $dataSourceTypes = [
             SubscriberListDataSource::class
         ];
 
-        foreach ($dataSourceTypes as $dataSourceClass) {
-            /** @var DataSource $dataSource */
-            $dataSource = new $dataSourceClass();
-            SproutBase::$app->dataSources->saveDataSource($dataSource);
-        }
+        SproutBase::$app->dataSources->installDataSources($dataSourceTypes);
     }
 }

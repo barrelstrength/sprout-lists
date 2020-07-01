@@ -7,58 +7,29 @@
 
 namespace barrelstrength\sproutlists\migrations;
 
-use barrelstrength\sproutlists\records\ListElement as ListElementRecord;
-use barrelstrength\sproutlists\records\Subscriber as SubscriberRecord;
-use barrelstrength\sproutlists\records\Subscription as SubscriptionRecord;
+use barrelstrength\sproutlists\SproutLists;
+use barrelstrength\sproutbase\SproutBase;
 use craft\db\Migration;
+use yii\base\ErrorException;
+use yii\base\Exception;
+use yii\base\NotSupportedException;
+use yii\web\ServerErrorHttpException;
 
 class Install extends Migration
 {
+    /**
+     * @throws ErrorException
+     * @throws NotSupportedException
+     * @throws ServerErrorHttpException
+     * @throws Exception
+     */
     public function safeUp()
     {
-        $this->createTable(ListElementRecord::tableName(),
-            [
-                'id' => $this->primaryKey(),
-                'elementId' => $this->integer()->notNull(),
-                'type' => $this->string(),
-                'name' => $this->string(),
-                'handle' => $this->string(),
-                'count' => $this->integer(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid()
-            ]
-        );
-
-        $this->createTable(SubscriberRecord::tableName(),
-            [
-                'id' => $this->primaryKey(),
-                'userId' => $this->integer(),
-                'email' => $this->string(),
-                'firstName' => $this->string(),
-                'lastName' => $this->string(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid()
-            ]
-        );
-
-        $this->createTable(SubscriptionRecord::tableName(),
-            [
-                'id' => $this->primaryKey(),
-                'listId' => $this->integer(),
-                'itemId' => $this->integer(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid()
-            ]
-        );
+        SproutBase::$app->config->runInstallMigrations(SproutLists::getInstance());
     }
 
     public function safeDown()
     {
-        $this->dropTable(ListElementRecord::tableName());
-        $this->dropTable(SubscriberRecord::tableName());
-        $this->dropTable(SubscriptionRecord::tableName());
+        SproutBase::$app->config->runUninstallMigrations(SproutLists::getInstance());
     }
 }

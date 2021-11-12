@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.1 - 2020-11-12
+
+### Fixed
+
+- Fixed issue when loading List Element index page ([#34])
+
+[#34]: https://github.com/barrelstrength/craft-sprout-lists/issues/34
+
 ## 3.2.0 - 2020-04-28
 
 ### Changed

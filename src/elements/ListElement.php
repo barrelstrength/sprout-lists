@@ -149,9 +149,9 @@ class ListElement extends Element implements ListInterface
     protected static function defineSortOptions(): array
     {
         return [
-            'name' => ['label' => Craft::t('sprout-lists', 'Name')],
-            'count' => ['label' => Craft::t('sprout-lists', 'Count')],
-            'dateCreated' => ['label' => Craft::t('sprout-lists', 'Date Created')]
+            'name' => Craft::t('sprout-lists', 'Name'),
+            'count' => Craft::t('sprout-lists', 'Count'),
+            'dateCreated' => Craft::t('sprout-lists', 'Date Created')
         ];
     }
 

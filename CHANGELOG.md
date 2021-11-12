@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.2 - 2020-11-12
+
+### Fixed
+
+- Fixed List and Subscriber Element Type migration
+
 ## 3.2.1 - 2020-11-12
 
 ### Fixed

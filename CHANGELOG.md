@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.3 - 2022-02-28
+
+### Changed
+- Updated `barrelstrength/sprout-base-reports` requirement to v1.5.12
+
 ## 3.2.2 - 2020-11-12
 
 ### Fixed

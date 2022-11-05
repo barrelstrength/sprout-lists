@@ -1,3 +1,10 @@
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+In an effort to reduce the number of packages we publicly maintain, Sprout Lists will not be migrated to Craft 4. If you'd like to take responsibility over maintaining the repository please reach out: [sprout@barrelstrengthdesign.com](mailto:sprout@barrelstrengthdesign.com).
+
+----
+
 # Sprout Lists
 
 Allow users to subscribe to, follow, or like any Element including Entries, Categories, Products, Users, and Lists. Easily display counts and related user info.

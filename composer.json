@@ -3,6 +3,7 @@
   "description": "Subscribe and unsubscribe to things.",
   "version": "3.2.3",
   "type": "craft-plugin",
+  "abandoned": "barrelstrength/sprout-email",
   "keywords": [
     "craft",
     "cms",

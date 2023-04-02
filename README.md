@@ -1,7 +1,7 @@
 
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-In an effort to reduce the number of packages we publicly maintain, Sprout Lists will not be migrated to Craft 4. If you'd like to take responsibility over maintaining the repository please reach out: [sprout@barrelstrengthdesign.com](mailto:sprout@barrelstrengthdesign.com).
+In an effort to reduce the number of packages we publicly maintain, Sprout Lists will not be migrated to Craft 4. Core functionality of building and maintaing email lists will be migrated to [Sprout Email](https://plugins.craftcms.com/sprout-email). If you'd like to fork and use any code in this repository as a starting point for something similar, please do.
 
 ----
 
